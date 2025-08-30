@@ -1,0 +1,53 @@
+remote_theme: shalwxy/jekyll-theme-satellite
+
+title: "Shalwxy"
+description: "My awesome blog using Satellite theme"
+logo_img: "/assets/img/favicon.webp"
+profile_img: "/assets/img/profile.webp"
+
+# Social Links
+email: shalwxy@gmail.com
+github_username: shalwxy
+twitter_username: shalwxy
+instagram_username: shalwxy
+linkedin_username: seungha-lee-2aa442229
+facebook_username: 61579726485028
+
+# External API
+# giscus_repo: "shalwxy/your-blog-repo"
+# giscus_repoId: ""
+# giscus_category: "Q&A"
+# giscus_categoryId: ""
+# goatcounter_code: 
+# google_analytics:
+
+baseurl: ""
+
+# Build settings
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-seo-tag
+  - jekyll-loading-lazy
+  - jekyll-remote-theme
+
+exclude:
+  - docs/
+
+collections:
+  pages:
+    output: true
+    permalink: /:path.html
+
+defaults:
+  -
+    scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "page"
+      date: "1900-01-01"
+
+kramdown:
+  input: GFM
+  hard_wrap: true
