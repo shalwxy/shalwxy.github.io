@@ -6,7 +6,7 @@ tags:
     - 메밀면
     - 레시피
 date: "2025-08-30"
-thumbnail: "/_pages/hobby/recipe/2025-08-30-perilla-oil-naengmyeon/thumbnail.webp"
+thumbnail: "/_pages/Hobby/Recipe/2025-08-30-perilla-oil-naengmyeon/thumbnail.webp"
 ---
 
 # 들기름 막국수
