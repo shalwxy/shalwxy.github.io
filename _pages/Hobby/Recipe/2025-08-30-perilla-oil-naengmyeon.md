@@ -1,8 +1,12 @@
 ---
-layout: post
 title: "들기름 막국수"
-date: 2025-08-30
-tags: [막국수, 들기름, 메밀면, 레시피]
+tags:
+    - 막국수
+    - 들기름
+    - 메밀면
+    - 레시피
+date: "2025-08-30"
+thumbnail: "/_pages/hobby/recipe/2025-08-30-perilla-oil-naengmyeon/thumbnail.webp"
 ---
 
 # 들기름 막국수

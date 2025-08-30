@@ -51,3 +51,6 @@ defaults:
 kramdown:
   input: GFM
   hard_wrap: true
+
+include:
+  - "_pages"
