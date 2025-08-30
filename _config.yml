@@ -14,10 +14,10 @@ linkedin_username: seungha-lee-2aa442229
 facebook_username: 61579726485028
 
 # External API
-# giscus_repo: "shalwxy/your-blog-repo"
-# giscus_repoId: ""
-# giscus_category: "Q&A"
-# giscus_categoryId: ""
+giscus_repo: "shalwxy/shalwxy.github.io"
+giscus_repoId: "R_kgDOPm0RSg"
+giscus_category: "Q&A"
+giscus_categoryId: "DIC_kwDOPm0RSs4CuxMV"
 # goatcounter_code: 
 # google_analytics:
 
