@@ -65,9 +65,13 @@ input::-webkit-search-results-decoration{
 @import "search";
 @import "darkmode";
 
-/* Override for sorry.png aspect ratio */
+/* override */
 .no-posts img {
   aspect-ratio: auto !important;
   object-fit: contain;
   height: auto;
+}
+
+.site-name:hover mark {
+  color: $color-darkorange !important;
 }
