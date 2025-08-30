@@ -10,8 +10,6 @@ thumbnail: "/_pages/Hobby/Recipe/2025-08-30-perilla-oil-naengmyeon/thumbnail.web
 
 # 들기름 막국수
 
-간단하면서도 맛있는 들기름 막국수 레시피입니다.
-
 ---
 
 ## 재료
