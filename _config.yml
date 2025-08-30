@@ -18,7 +18,7 @@ giscus_repo: "shalwxy/shalwxy.github.io"
 giscus_repoId: "R_kgDOPm0RSg"
 giscus_category: "Q&A"
 giscus_categoryId: "DIC_kwDOPm0RSs4CuxMV"
-# goatcounter_code: 
+goatcounter_code: "shalwxy"
 # google_analytics:
 
 baseurl: ""
