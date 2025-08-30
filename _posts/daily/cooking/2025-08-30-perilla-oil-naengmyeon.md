@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: post
 title: "들기름 막국수"
 date: 2025-08-30
 tags: [막국수, 들기름, 메밀면, 레시피]
