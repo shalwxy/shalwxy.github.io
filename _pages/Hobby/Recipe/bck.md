@@ -2,8 +2,6 @@
 title: "수육"
 tags:
     - 돼지고기
-    - 수육
-    - 레시피
 date: "2025-09-01"
 thumbnail: "/_pages/Hobby/Recipe/2025-09-01-boiled-pork-belly/thumbnail.webp"
 ---
@@ -27,7 +25,7 @@ thumbnail: "/_pages/Hobby/Recipe/2025-09-01-boiled-pork-belly/thumbnail.webp"
 
 1. 깊은 냄비에 고기가 잠길 정도로 넣습니다.
 2. 된장 1T, 월계수잎 1개를 넣고 강불에서 10분 정도 끓입니다.
-3. 중불에서 50분간 더 끓여줍니다.
+3. 중불에서 50분간 더 끓여줍니다. (고기의 두께에 따라 삶는 시간을 추가합니다)
 4. 먹기 좋은 크기로 썰어줍니다.
 
 ---
