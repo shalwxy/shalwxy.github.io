@@ -2,8 +2,8 @@
 title: "수육"
 tags:
     - 돼지고기
-date: "2025-09-01"
-thumbnail: "/_pages/Hobby/Recipe/2025-09-01-boiled-pork-belly/thumbnail.webp"
+date: "2025-08-31"
+thumbnail: "/_pages/Hobby/Recipe/2025-08-31-boiled-pork-belly/thumbnail.webp"
 ---
 
 # 수육
