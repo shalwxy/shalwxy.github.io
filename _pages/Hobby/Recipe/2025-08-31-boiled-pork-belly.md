@@ -4,6 +4,8 @@ tags:
     - 돼지고기
 date: "2025-08-31"
 thumbnail: "/_pages/Hobby/Recipe/2025-08-31-boiled-pork-belly/thumbnail.webp"
+image: "/_pages/Hobby/Recipe/2025-08-31-boiled-pork-belly/thumbnail.webp"
+description: "육즙 그대로 맛있는 수육 집에서 간단하게 만들기"
 ---
 
 # 수육
