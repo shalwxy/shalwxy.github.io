@@ -1,0 +1,50 @@
+main:
+  - title: "Lab"
+    url: /lab/
+  - title: "Essay"
+    url: /essay/
+  - title: "Playground"
+    url: /playground/
+
+lab:
+  - title: "Lab"
+    url: /lab/
+    children:
+      - title: "전체 글"
+        url: /lab/
+  - title: "수학"
+    url: /lab/math/
+    children:
+      - title: "집합론"
+        url: /lab/math/set-theory/
+  - title: "과학"
+    url: /lab/science/
+  - title: "공학"
+    url: /lab/engineering/
+    children:
+      - title: "알고리즘"
+        url: /lab/engineering/algorithm/
+
+essay:
+  - title: "Essay"
+    url: /essay/
+    children:
+      - title: "전체 글"
+        url: /essay/
+  - title: "감상"
+    url: /essay/review/
+    children:
+      - title: "독서"
+        url: /essay/review/reading/
+  - title: "자격증"
+    url: /essay/certification/
+    children:
+      - title: "공인중개사"
+        url: /essay/certification/realtor/
+
+playground:
+  - title: "Playground"
+    url: /playground/
+    children:
+      - title: "전체 프로젝트"
+        url: /playground/

@@ -1,56 +1,133 @@
-remote_theme: shalwxy/jekyll-theme-satellite
+remote_theme: "mmistakes/minimal-mistakes@4.26.2"
+minimal_mistakes_skin: "default"
+locale: "ko-KR"
 
-title: "Peach Blossom"
-description: "Connecting Math, Code, and Life"
-logo_img: "/assets/img/favicon.webp"
-profile_img: "/assets/img/profile.webp"
-
-# Social Links
-email: shalwxy@gmail.com
-github_username: shalwxy
-twitter_username: shalwxy
-instagram_username: shalwxy
-linkedin_username: seungha-lee-2aa442229
-facebook_username: 61579726485028
-
-# External API
-giscus_repo: "shalwxy/shalwxy.github.io"
-giscus_repoId: "R_kgDOPm0RSg"
-giscus_category: "Q&A"
-giscus_categoryId: "DIC_kwDOPm0RSs4CuxMV"
-goatcounter_code: "shalwxy"
-google_analytics: "G-GWLCL52Q93"
-
+title: "Persica"
+subtitle: "Science, Life, and Side Projects"
+description: "수학·공학·과학 정리, 일상 기록, 그리고 사이드 프로젝트 전시"
+url: "https://shalwxy.github.io"
 baseurl: ""
+repository: "shalwxy/shalwxy.github.io"
+search: true
 
-# Build settings
+tag_archive:
+  type: liquid
+  path: /tags/
+
+author:
+  name: "shalwxy"
+  bio: "수학과 공학을 공부하고, 일상을 기록하고, 사이드 프로젝트를 만듭니다."
+  links:
+    - label: "GitHub"
+      icon: "fab fa-fw fa-github"
+      url: "https://github.com/shalwxy"
+
+footer:
+  links:
+    - label: "GitHub"
+      icon: "fab fa-fw fa-github"
+      url: "https://github.com/shalwxy"
+
+comments:
+  provider: "giscus"
+  giscus:
+    repo_id: "R_kgDOPm0RSg"
+    category_name: "Q&A"
+    category_id: "DIC_kwDOPm0RSs4CuxMV"
+    discussion_term: "pathname"
+    reactions_enabled: "1"
+    theme: "light"
+    lang: "ko"
+
+analytics:
+  provider: "google-gtag"
+  google:
+    tracking_id: "G-GWLCL52Q93"
+    anonymize_ip: false
+
 plugins:
   - jekyll-feed
   - jekyll-sitemap
   - jekyll-seo-tag
-  - jekyll-loading-lazy
+  - jekyll-include-cache
   - jekyll-remote-theme
+
+include:
+  - _pages
 
 exclude:
   - docs/
+  - private/
+  - Gemfile
+  - Gemfile.lock
+  - vendor
 
 collections:
-  pages:
+  lab:
     output: true
-    permalink: /:path.html
+    permalink: /:collection/:path/
+  essay:
+    output: true
+    permalink: /:collection/:path/
+  playground:
+    output: true
+    permalink: /:collection/:path/
 
 defaults:
-  -
-    scope:
+  - scope:
       path: ""
-      type: "pages"
+      type: pages
     values:
-      layout: "page"
-      date: "1900-01-01"
+      layout: single
+      author_profile: false
+  - scope:
+      path: ""
+      type: lab
+    values:
+      layout: single
+      author_profile: true
+      read_time: true
+      comments: true
+      share: true
+      related: true
+      toc: true
+      toc_sticky: true
+      sidebar:
+        nav: "lab"
+  - scope:
+      path: ""
+      type: essay
+    values:
+      layout: single
+      author_profile: true
+      read_time: true
+      comments: true
+      share: true
+      related: true
+      toc: true
+      toc_sticky: true
+      sidebar:
+        nav: "essay"
+  - scope:
+      path: ""
+      type: playground
+    values:
+      layout: single
+      author_profile: true
+      read_time: true
+      comments: true
+      share: true
+      related: true
+      toc: true
+      toc_sticky: true
+      sidebar:
+        nav: "playground"
 
+markdown: kramdown
 kramdown:
   input: GFM
-  hard_wrap: true
+  hard_wrap: false
+  auto_ids: true
+  syntax_highlighter: rouge
 
-include:
-  - "_pages"
+timezone: Asia/Seoul
