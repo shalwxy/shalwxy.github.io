@@ -11,14 +11,8 @@ repository: "shalwxy/shalwxy.github.io"
 search: true
 naver_site_verification: "1d5f7499820718cfe546c2225dca7a86244bcfc8"
 
-feed:
-  collections:
-    lab:
-      path: "/feed.lab.xml"
-    essay:
-      path: "/feed.essay.xml"
-    playground:
-      path: "/feed.playground.xml"
+atom_feed:
+  path: "/rss.xml"
 
 tag_archive:
   type: liquid
@@ -56,7 +50,6 @@ analytics:
     anonymize_ip: false
 
 plugins:
-  - jekyll-feed
   - jekyll-sitemap
   - jekyll-seo-tag
   - jekyll-include-cache
