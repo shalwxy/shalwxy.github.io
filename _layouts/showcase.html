@@ -1,0 +1,40 @@
+---
+layout: archive
+---
+
+{{ content }}
+
+{% assign entries = site[page.collection] | sort: "date" | reverse %}
+{% if entries.size == 0 %}
+  <p class="notice">아직 전시된 프로젝트가 없습니다.</p>
+{% endif %}
+<div class="showcase">
+  {% for project in entries %}
+    <article class="showcase__card">
+      <a href="{{ project.url | relative_url }}" class="showcase__image">
+        {% if project.header.teaser %}
+          <img src="{{ project.header.teaser | relative_url }}" alt="{{ project.title }}">
+        {% else %}
+          <span class="showcase__image--placeholder">{{ project.title | slice: 0 }}</span>
+        {% endif %}
+      </a>
+      <div class="showcase__body">
+        <h2 class="showcase__title"><a href="{{ project.url | relative_url }}">{{ project.title }}</a></h2>
+        {% if project.excerpt %}
+          <div class="showcase__excerpt">{{ project.excerpt | markdownify }}</div>
+        {% endif %}
+        {% if project.tags.size > 0 %}
+          <p class="showcase__tags">
+            {% for tag in project.tags %}<span class="showcase__tag">#{{ tag }}</span>{% endfor %}
+          </p>
+        {% endif %}
+        <p class="showcase__actions">
+          <a href="{{ project.url | relative_url }}" class="btn btn--primary">자세히 보기</a>
+          {% for link in project.links %}
+            <a href="{{ link.url }}" class="btn btn--inverse" target="_blank" rel="noopener">{{ link.label }}</a>
+          {% endfor %}
+        </p>
+      </div>
+    </article>
+  {% endfor %}
+</div>

@@ -1,0 +1,16 @@
+---
+layout: archive
+---
+
+{{ content }}
+
+{% assign entries_layout = page.entries_layout | default: 'list' %}
+{% assign entries = site[page.collection] | where_exp: "doc", "doc.path contains page.folder" | sort: "date" | reverse %}
+{% if entries.size == 0 %}
+  <p class="notice">아직 작성된 글이 없습니다.</p>
+{% endif %}
+<div class="entries-{{ entries_layout }}">
+  {% for post in entries %}
+    {% include archive-single.html type=entries_layout %}
+  {% endfor %}
+</div>
