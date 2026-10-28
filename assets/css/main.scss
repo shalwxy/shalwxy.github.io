@@ -28,10 +28,15 @@
   }
 }
 
+/* 검색을 오른쪽으로 밀어서 햄버거 바로 왼쪽에 배치 */
+.greedy-nav .search__toggle {
+  margin-left: auto;
+}
+
 /* 커스텀 햄버거 메뉴 (JS로 DOM에 삽입) */
 .persica-nav {
   position: relative;
-  margin: 0 0 0 auto;
+  margin: 0;
 }
 
 .persica-nav__btn {
