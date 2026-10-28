@@ -6,7 +6,14 @@
 @import "minimal-mistakes/skins/{{ site.minimal_mistakes_skin | default: 'default' }}";
 @import "minimal-mistakes";
 
-/* 모바일에서 서브타이틀 숨겨 로고와 메뉴에 공간 확보 */
+/* 상단 masthead는 로고 + 검색만 남김 */
+.greedy-nav .visible-links,
+.greedy-nav .hidden-links,
+.greedy-nav__toggle {
+  display: none !important;
+}
+
+/* 모바일에서 서브타이틀 숨겨 로고 공간 확보 */
 @include breakpoint(max-width 600px) {
   .site-subtitle {
     display: none;
