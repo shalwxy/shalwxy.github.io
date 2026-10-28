@@ -6,7 +6,15 @@
 @import "minimal-mistakes/skins/{{ site.minimal_mistakes_skin | default: 'default' }}";
 @import "minimal-mistakes";
 
-/* 상단 masthead는 로고 + 검색만 남김 */
+/* 상단 masthead 고정 (스크롤해도 상단에 붙어있음) */
+.masthead {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background-color: $background-color;
+}
+
+/* 테마 greedy-nav의 메뉴/햄버거는 숨김 — 커스텀 햄버거로 대체 */
 .greedy-nav .visible-links,
 .greedy-nav .hidden-links,
 .greedy-nav__toggle {
@@ -17,6 +25,62 @@
 @include breakpoint(max-width 600px) {
   .site-subtitle {
     display: none;
+  }
+}
+
+/* 커스텀 햄버거 메뉴 (JS로 DOM에 삽입) */
+.persica-nav {
+  position: relative;
+  margin: 0 0 0 auto;
+}
+
+.persica-nav__btn {
+  border: none;
+  background: transparent;
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  font-size: $type-size-4;
+  color: $primary-color;
+  line-height: 1;
+
+  &:hover {
+    color: mix($primary-color, #000, 70%);
+  }
+}
+
+.persica-nav__menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin: 0.5rem 0 0;
+  padding: 0.25rem 0;
+  list-style: none;
+  background: $background-color;
+  border: 1px solid $border-color;
+  border-radius: $border-radius;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  min-width: 160px;
+  z-index: 30;
+
+  &--hidden {
+    display: none;
+  }
+
+  li {
+    margin: 0;
+    padding: 0;
+  }
+
+  a {
+    display: block;
+    padding: 0.5rem 1rem;
+    color: $text-color;
+    text-decoration: none;
+
+    &:hover {
+      background: mix($primary-color, $background-color, 10%);
+      color: $primary-color;
+    }
   }
 }
 
