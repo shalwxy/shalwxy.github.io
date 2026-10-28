@@ -13,10 +13,15 @@
   }
   .site-title {
     font-size: $type-size-4;
+    padding-right: 0.25rem;
   }
   .greedy-nav .visible-links a {
-    padding: 0.5rem 0.5rem;
+    padding: 0.5rem 0.4rem;
     font-size: $type-size-6;
+  }
+  /* 검색 토글은 모바일에서 숨김 (공간 확보, 거의 쓰이지 않음) */
+  .greedy-nav .search__toggle {
+    display: none;
   }
 }
 
