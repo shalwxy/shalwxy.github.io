@@ -11,5 +11,4 @@ sidebar:
 header:
   overlay_image: /assets/img/thumbnail/book.jpg
   overlay_filter: 0.5
-excerpt: "자격증 공부 과정을 기록합니다."
 ---

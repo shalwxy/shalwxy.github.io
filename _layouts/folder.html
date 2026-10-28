@@ -5,7 +5,11 @@ layout: archive
 {{ content }}
 
 {% assign entries_layout = page.entries_layout | default: 'list' %}
-{% assign entries = site[page.collection] | where_exp: "doc", "doc.path contains page.folder" | sort: "date" | reverse %}
+{% assign entries = site[page.collection] %}
+{% if page.folder %}
+  {% assign entries = entries | where_exp: "doc", "doc.path contains page.folder" %}
+{% endif %}
+{% assign entries = entries | sort: "date" | reverse %}
 {% if entries.size == 0 %}
   <p class="notice">아직 작성된 글이 없습니다.</p>
 {% endif %}

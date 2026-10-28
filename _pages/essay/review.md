@@ -11,5 +11,4 @@ sidebar:
 header:
   overlay_image: /assets/img/thumbnail/book.jpg
   overlay_filter: 0.5
-excerpt: "보고, 읽고, 느낀 것을 기록합니다."
 ---

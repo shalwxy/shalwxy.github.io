@@ -11,5 +11,4 @@ sidebar:
 header:
   overlay_image: /assets/img/thumbnail/book.jpg
   overlay_filter: 0.5
-excerpt: "공인중개사 시험 준비 기록입니다."
 ---

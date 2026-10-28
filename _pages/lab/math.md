@@ -12,5 +12,4 @@ sidebar:
 header:
   overlay_image: /assets/img/thumbnail/bricks.webp
   overlay_filter: 0.5
-excerpt: "집합론을 시작으로 수학의 기초를 정리합니다."
 ---

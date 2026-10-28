@@ -11,5 +11,4 @@ sidebar:
 header:
   overlay_image: /assets/img/thumbnail/book.jpg
   overlay_filter: 0.5
-excerpt: "읽은 책에 대한 감상을 남깁니다."
 ---
