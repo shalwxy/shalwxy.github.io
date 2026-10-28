@@ -12,16 +12,16 @@
     display: none;
   }
   .site-title {
-    font-size: $type-size-4;
-    padding-right: 0.25rem;
+    font-size: $type-size-5;
+    padding-right: 0;
+    margin-right: 0;
   }
   .greedy-nav .visible-links a {
-    padding: 0.5rem 0.4rem;
-    font-size: $type-size-6;
+    padding: 0.5rem 0.25rem !important;
+    font-size: $type-size-7;
   }
-  /* 검색 토글은 모바일에서 숨김 (공간 확보, 거의 쓰이지 않음) */
-  .greedy-nav .search__toggle {
-    display: none;
+  .greedy-nav .masthead__menu-item {
+    margin: 0 !important;
   }
 }
 
