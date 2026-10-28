@@ -6,6 +6,13 @@
 @import "minimal-mistakes/skins/{{ site.minimal_mistakes_skin | default: 'default' }}";
 @import "minimal-mistakes";
 
+/* 모바일에서는 서브타이틀을 숨겨 상단 메뉴 공간 확보 */
+@include breakpoint(max-width 600px) {
+  .site-subtitle {
+    display: none;
+  }
+}
+
 .showcase {
   display: grid;
   grid-template-columns: 1fr;
