@@ -6,10 +6,17 @@
 @import "minimal-mistakes/skins/{{ site.minimal_mistakes_skin | default: 'default' }}";
 @import "minimal-mistakes";
 
-/* 모바일에서는 서브타이틀을 숨겨 상단 메뉴 공간 확보 */
+/* 모바일에서 상단 메뉴 Lab/Essay/Playground 세 개가 모두 보이도록 공간 확보 */
 @include breakpoint(max-width 600px) {
   .site-subtitle {
     display: none;
+  }
+  .site-title {
+    font-size: $type-size-4;
+  }
+  .greedy-nav .visible-links a {
+    padding: 0.5rem 0.5rem;
+    font-size: $type-size-6;
   }
 }
 
