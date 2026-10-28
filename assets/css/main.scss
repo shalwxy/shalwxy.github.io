@@ -21,13 +21,6 @@
   display: none !important;
 }
 
-/* 모바일에서 서브타이틀 숨겨 로고 공간 확보 */
-@include breakpoint(max-width 600px) {
-  .site-subtitle {
-    display: none;
-  }
-}
-
 /* 검색을 오른쪽으로 밀어서 햄버거 바로 왼쪽에 배치 */
 .greedy-nav .search__toggle {
   margin-left: auto;
@@ -86,6 +79,59 @@
       background: mix($primary-color, $background-color, 10%);
       color: $primary-color;
     }
+  }
+}
+
+/* 허브 세 카드 (이름만, 사진 배경) */
+.hub-cards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1em;
+  margin-top: 2em;
+
+  @include breakpoint($medium) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.hub-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 3 / 2;
+  position: relative;
+  overflow: hidden;
+  border-radius: $border-radius;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background-size: cover;
+  background-position: center;
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+  }
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    transition: background 0.3s ease;
+  }
+  &:hover::before {
+    background: rgba(0, 0, 0, 0.25);
+  }
+
+  span {
+    position: relative;
+    z-index: 1;
+    font-size: $type-size-2;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #fff;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
   }
 }
 

@@ -3,7 +3,6 @@ minimal_mistakes_skin: "default"
 locale: "ko-KR"
 
 title: "Persica"
-subtitle: "Science, Life, and Side Projects"
 description: "수학·공학·과학 정리, 일상 기록, 그리고 사이드 프로젝트 전시"
 url: "https://persica.co.kr"
 baseurl: ""

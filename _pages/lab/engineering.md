@@ -12,5 +12,4 @@ sidebar:
 header:
   overlay_image: /assets/img/thumbnail/bricks.webp
   overlay_filter: 0.5
-excerpt: "알고리즘을 시작으로 공학의 기본기를 정리합니다."
 ---
