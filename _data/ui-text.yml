@@ -644,6 +644,7 @@ ko: &DEFAULT_KO
 ko-KR:
   <<: *DEFAULT_KO
   toc_label                  : "목차"
+  menu_label                 : "메뉴"
 
 # Russian / Русский
 # -----------------
