@@ -13,6 +13,7 @@ naver_site_verification: "1d5f7499820718cfe546c2225dca7a86244bcfc8"
 
 atom_feed:
   path: "/rss.xml"
+  hide: true
 
 tag_archive:
   type: liquid
