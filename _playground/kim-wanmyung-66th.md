@@ -110,25 +110,84 @@ classes: wide
 
   /* 모달 */
   .gift-modal-backdrop {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.55);
-    display: none; align-items: center; justify-content: center; z-index: 9998;
+    position: fixed; inset: 0;
+    background: rgba(20, 20, 30, 0.55);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    display: none; align-items: center; justify-content: center;
+    z-index: 9998;
+    padding: 1.2em;
     animation: fadeIn 0.25s ease;
   }
   .gift-modal-backdrop.show { display: flex; }
   .gift-modal {
-    background: #fff; border-radius: 14px; padding: 1.8em 1.6em;
-    max-width: 420px; width: 90%; text-align: center;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-    animation: popIn 0.35s cubic-bezier(.2,1.3,.4,1);
+    position: relative;
+    background: #fff;
+    border-radius: 18px;
+    padding: 2em 1.8em 1.6em;
+    max-width: 420px; width: 100%;
+    text-align: center;
+    box-shadow: 0 24px 70px rgba(0,0,0,0.35);
+    animation: popIn 0.38s cubic-bezier(.2,1.3,.4,1);
+    overflow: hidden;
+    word-break: keep-all;
   }
-  .gift-modal h3 { margin: 0 0 0.5em; font-size: 1.3em; }
-  .gift-modal p { color: #555; line-height: 1.6; margin: 0.4em 0; }
+  .gift-modal::before {
+    content: "";
+    position: absolute; left: 0; right: 0; top: 0;
+    height: 5px;
+    background: linear-gradient(90deg, #e24a6d, #f0a500, #ffd166, #4fc3f7);
+  }
+  .gift-modal h3 {
+    margin: 0 0 0.6em;
+    font-size: 1.35em;
+    line-height: 1.4;
+    color: #222;
+  }
+  .gift-modal p {
+    color: #555;
+    line-height: 1.7;
+    margin: 0.5em 0;
+    font-size: 1em;
+  }
+  .gift-modal .gift-modal-note:empty { display: none; }
   .gift-modal button {
-    margin-top: 1em; padding: 0.6em 1.4em;
-    background: #e24a6d; color: #fff; border: 0; border-radius: 999px;
-    font-size: 0.98em; cursor: pointer;
+    margin-top: 1.4em;
+    padding: 0.8em 2em;
+    background: linear-gradient(135deg, #e24a6d, #f0a500);
+    color: #fff;
+    border: 0;
+    border-radius: 999px;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 6px 18px rgba(226, 74, 109, 0.35);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
   }
-  .gift-modal button:hover { background: #c73a5c; }
+  .gift-modal button:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.05);
+    box-shadow: 0 8px 22px rgba(226, 74, 109, 0.45);
+  }
+  .gift-modal button:active { transform: translateY(0); }
+  /* 잠금 모달 (당일 전) 전용 톤 */
+  .gift-modal.is-locked::before {
+    background: linear-gradient(90deg, #9ca3af, #d4af37, #9ca3af);
+  }
+  .gift-modal.is-locked button {
+    background: linear-gradient(135deg, #6b7280, #9ca3af);
+    box-shadow: 0 6px 18px rgba(107, 114, 128, 0.3);
+  }
+  .gift-modal.is-locked button:hover {
+    box-shadow: 0 8px 22px rgba(107, 114, 128, 0.4);
+  }
+
+  @media (max-width: 640px) {
+    .gift-modal { padding: 1.6em 1.3em 1.3em; border-radius: 16px; }
+    .gift-modal h3 { font-size: 1.2em; }
+    .gift-modal p { font-size: 0.95em; }
+    .gift-modal button { padding: 0.75em 1.7em; }
+  }
 
   @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
   @keyframes popIn {
@@ -221,7 +280,7 @@ classes: wide
     50% { box-shadow: 0 2px 20px rgba(240, 165, 0, 0.45); }
   }
 
-  /* 모바일 반응형 */
+  /* 모바일 반응형 (모달 관련은 모달 블록 안쪽 @media 참고) */
   @media (max-width: 640px) {
     .birthday-hero { padding: 1.8em 1em; }
     .birthday-hero h1 { font-size: 1.3em; }
@@ -229,8 +288,6 @@ classes: wide
     .timeline li { padding-left: 1.2em; }
     .timeline .year { display: block; margin-bottom: 0.2em; }
     .gift-1, .gift-2 { font-size: 1.5em; opacity: 0.6; }
-    .gift-modal { padding: 1.4em 1.2em; }
-    .gift-modal h3 { font-size: 1.15em; }
     .find-status { font-size: 0.9em; padding: 0.4em 0.8em; }
     .photo-card { padding: 0.5em; }
   }
@@ -425,14 +482,21 @@ classes: wide
     confetti({ particleCount: 90, spread: 70, origin: { y: 0.6 }, colors: colors });
   }
 
-  function openModal(title, body, note) {
+  function openModal(title, body, note, opts) {
+    opts = opts || {};
     document.getElementById("gift-modal-title").textContent = title;
     document.getElementById("gift-modal-body").textContent = body;
     document.getElementById("gift-modal-note").textContent = note || "";
-    document.getElementById("gift-modal-backdrop").classList.add("show");
+    const backdrop = document.getElementById("gift-modal-backdrop");
+    const modal = backdrop.querySelector(".gift-modal");
+    if (modal) modal.classList.toggle("is-locked", !!opts.locked);
+    backdrop.classList.add("show");
+    document.body.style.overflow = "hidden";
   }
   window.closeGiftModal = function () {
-    document.getElementById("gift-modal-backdrop").classList.remove("show");
+    const backdrop = document.getElementById("gift-modal-backdrop");
+    backdrop.classList.remove("show");
+    document.body.style.overflow = "";
   };
 
   function notify(payload) {
@@ -467,7 +531,8 @@ classes: wide
       openModal(
         "🔒 아직은 조금 이른 날이에요",
         "선물 상자는 아버님의 생신 당일(10월 31일)에만 열립니다. 그날 이 페이지에 다시 들러 주시면, 작은 즐거움이 기다리고 있을 거예요.",
-        ""
+        "",
+        { locked: true }
       );
       return;
     }
@@ -600,9 +665,25 @@ classes: wide
     });
   }
 
+  function initModalDismiss() {
+    const backdrop = document.getElementById("gift-modal-backdrop");
+    if (!backdrop) return;
+    // 바깥(backdrop) 클릭으로 닫기 — 모달 내부 클릭은 통과시킴
+    backdrop.addEventListener("click", function (e) {
+      if (e.target === backdrop) window.closeGiftModal();
+    });
+    // ESC 로 닫기
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && backdrop.classList.contains("show")) {
+        window.closeGiftModal();
+      }
+    });
+  }
+
   function initAll() {
     initStats();
     initGifts();
+    initModalDismiss();
   }
 
   if (document.readyState === "loading") {
