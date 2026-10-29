@@ -1,6 +1,6 @@
 ---
-title: "아버님께 — 66번째 생신, 그리고 창원시 감사관 임명 축하"
-excerpt: "1960년 가을의 어느 날 세상에 오셔서, 2026년 가을 창원시 감사관으로 첫 출근하신 아버님(김완명)의 66번째 생신을 축하드립니다. 페이지 어딘가에 선물 상자 두 개를 숨겨 두었어요."
+title: "아버님께 — 65번째 생신, 그리고 창원시 감사관 임명 축하"
+excerpt: "1961년 가을의 어느 날 세상에 오셔서, 2026년 가을 창원시 감사관으로 첫 출근하신 아버님(김완명)의 65번째 생신을 축하드립니다. 페이지 어딘가에 선물 상자 두 개를 숨겨 두었어요."
 date: 2026-10-29
 tags:
   - 생일
@@ -317,16 +317,16 @@ classes: wide
 
 <div class="birthday-hero">
   <h1>아버님, <br>생신을 진심으로 축하드립니다 🎉</h1>
-  <p><span class="big-num">66</span><span style="font-size:1.1em">번째 가을</span></p>
+  <p><span class="big-num">65</span><span style="font-size:1.1em">번째 가을</span></p>
   <p>그리고 <strong>창원시 감사관</strong> 임명을 함께 축하드려요.</p>
 </div>
 
 ## 들어가며
 
-1960년 가을의 어느 날,<br>
+1961년 가을의 어느 날,<br>
 한 아이가 세상에 왔습니다.
 
-그로부터 66번의 가을이 더 지난 오늘,<br>
+그로부터 65번의 가을이 더 지난 오늘,<br>
 아버님께서는 **창원시 감사관**이라는 이름으로<br>
 또 하나의 가을을 맞이하십니다.
 
@@ -347,7 +347,7 @@ classes: wide
   <span class="find-status">발견한 선물 상자 <strong><span id="found-count">0</span> / 2</strong></span>
 </div>
 
-## 숫자로 보는 아버님의 66년
+## 숫자로 보는 아버님의 65년
 
 <div class="stats-grid">
   <div class="stat-card">
@@ -367,15 +367,15 @@ classes: wide
   </div>
   <div class="stat-card countdown" id="stat-countdown-card">
     <div class="stat-num" id="stat-countdown">—</div>
-    <div class="stat-label" id="stat-countdown-label">66번째 생신까지</div>
+    <div class="stat-label" id="stat-countdown-label">65번째 생신까지</div>
     <div class="stat-note" id="stat-countdown-note">달력에서 반짝이는 그 날짜가<br>점점 가까워집니다.<br>조금만 더 기다려 주셔요.</div>
   </div>
 </div>
 
-## 짧게 되돌아보는 66년
+## 짧게 되돌아보는 65년
 
 <ul class="timeline">
-  <li><span class="year">1960</span> — 가을, 세상에 처음 등장. <span class="note">경자년, 쥐띠.</span></li>
+  <li><span class="year">1961</span> — 가을, 세상에 처음 등장. <span class="note">신축년, 소띠.</span></li>
   <li><span class="year">… 그 사이</span> — 셀 수 없는 아침과 저녁, 수많은 이름들을 지나오심. <span class="gift gift-1" data-gift="1" title="눌러 보세요" role="button" tabindex="0" aria-label="숨겨진 선물 상자 1">🎁</span></li>
   <li class="has-photo">
     <span class="year">2026·07·28</span> — 창원시 감사관으로 첫 출근. <span class="note">창원시 어딘가의 서류들이 "올 것이 왔구나" 하고 조용히 자세를 바로잡은 날.</span>
@@ -384,7 +384,7 @@ classes: wide
 <figcaption><span class="cap-line">임명장을 손에 쥐신 그날의 사진 한 장.</span><span class="cap-line">함께 서 주신 분들과 어깨를 나란히 하신 모습에서,</span><span class="cap-line">지난 세월 아버님께서 쌓아 오신 성실의 무게가 그대로 느껴져요.</span></figcaption>
     </figure>
   </li>
-  <li><span class="year">2026·10·31</span> — 66번째 생신. <span class="note">할로윈. 세상이 알아서 축제 중.</span></li>
+  <li><span class="year">2026·10·31</span> — 65번째 생신. <span class="note">할로윈. 세상이 알아서 축제 중.</span></li>
 </ul>
 
 ## 제가 그려 본 아버님의 하루
@@ -400,11 +400,11 @@ classes: wide
 
 ## 생신 메시지
 
-세어 보면 66년,<br>
+세어 보면 65년,<br>
 안 세어 보면 어제 같은 시간들을 지나오셨지요.
 
 새로 맡으신 자리는 꼼꼼함과 끈기를 요구할 터인데,<br>
-그 두 가지는 지난 66년의 세월이 이미 넉넉히 증명해 둔<br>
+그 두 가지는 지난 65년의 세월이 이미 넉넉히 증명해 둔<br>
 아버님의 자질이십니다.
 
 올해 생신엔 큰 걱정은 잠시 내려 두시고,<br>
@@ -660,8 +660,8 @@ classes: wide
   }
 
   function initStats() {
-    // 아버님 생년월일: 1960-10-31 (KST 자정 기준)
-    const BIRTH = new Date("1960-10-31T00:00:00+09:00");
+    // 아버님 생년월일: 1961-10-31 (KST 자정 기준)
+    const BIRTH = new Date("1961-10-31T00:00:00+09:00");
     const now = new Date();
     const msPerDay = 86400000;
 
