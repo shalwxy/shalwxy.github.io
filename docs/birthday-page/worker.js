@@ -56,7 +56,7 @@ async function sendTelegram(env, text) {
 
 function fmt(payload, duplicate) {
   const lines = [
-    `<b>🎂 김완명 선생 생신 페이지 알림</b>`,
+    `<b>🎂 아버님 생신 페이지 알림</b>`,
     duplicate
       ? `⚠️ 이미 열렸던 상자의 재방문입니다 (알림 생략 후보).`
       : `✅ ${payload.message || "선물 상자가 열렸습니다."}`,

@@ -234,10 +234,10 @@ classes: wide
 1960년 가을의 어느 날, 한 아이가 세상에 왔습니다. 그로부터 66번의 가을이 더 지난 오늘,
 아버님께서는 **창원시 감사관**이라는 이름으로 또 하나의 가을을 맞이하십니다.
 
-이 페이지는 짧은 축하 편지이자, 약간의 숨바꼭질입니다.
-읽어 내려가시다 보면 **선물 상자 두 개**가 어딘가 숨어 있을 거예요. 눈이 밝으신 감사관님께서
-놓치지 않으시리라 믿습니다. 🔎 하나 찾으실 때마다 저에게 알림이 오고, 그 즉시
-**아버님 통장으로 "축하의 송금"** 이 조용히 꽂힐 예정입니다. (요즘은 리본보다 입금 알림이 더 빠르더라고요.)
+이 페이지는 짧은 축하 편지이자, 작은 숨바꼭질입니다.
+읽어 내려가시다 보면 **선물 상자 두 개**가 어딘가 숨어 있어요. 눈 밝으신 아버님께서
+한 번씩 눌러 봐 주시면, 그때마다 저에게 알림이 오고
+**아버님 통장으로 "축하의 송금"** 이 조용히 들어갑니다. (요즘은 리본보다 입금 알림이 더 빠르더라고요.)
 
 <p><span class="find-status">발견한 선물 상자 <strong><span id="found-count">0</span> / 2</strong></span></p>
 
@@ -247,17 +247,17 @@ classes: wide
   <div class="stat-card">
     <div class="stat-num" id="stat-days">—</div>
     <div class="stat-label">지구에서 보내신 날</div>
-    <div class="stat-note">꽤 긴 출장이지만, 돌아가실 생각은 없으시겠지요.</div>
+    <div class="stat-note">긴 세월을 묵묵히 걸어와 주셔서 감사해요.</div>
   </div>
   <div class="stat-card">
     <div class="stat-num" id="stat-orbits">—</div>
-    <div class="stat-label">지구가 돈 태양 주위</div>
-    <div class="stat-note">공식 기록상으로는 아버님께서 돌리신 것으로 되어 있습니다.</div>
+    <div class="stat-label">함께해 주신 태양의 공전</div>
+    <div class="stat-note">아버님께서 지나오신 햇수. 올해도 한 바퀴 무사히 돌아 주셨습니다.</div>
   </div>
   <div class="stat-card">
     <div class="stat-num" id="stat-meals">—</div>
     <div class="stat-label">드신 밥 (추정, 끼)</div>
-    <div class="stat-note">하루 세 끼로 계산. 간식·야식·자정 라면은 미포함.</div>
+    <div class="stat-note">하루 세 끼로 어림잡은 숫자예요. 그동안 아버님을 지켜 온 든든한 숫자이기도 하지요.</div>
   </div>
   <div class="stat-card countdown" id="stat-countdown-card">
     <div class="stat-num" id="stat-countdown">—</div>
@@ -272,34 +272,33 @@ classes: wide
   <li><span class="year">1960</span> — 가을, 세상에 처음 등장. <span class="note">경자년, 쥐띠.</span></li>
   <li><span class="year">… 그 사이</span> — 셀 수 없는 아침과 저녁, 수많은 이름들을 지나오심. <span class="gift gift-1" data-gift="1" title="눌러 보세요" role="button" tabindex="0" aria-label="숨겨진 선물 상자 1">🎁</span></li>
   <li>
-    <span class="year">2026·07·28</span> — 창원시 감사관으로 첫 출근. <span class="note">"비리야, 잘 지내고 있었니?"</span>
+    <span class="year">2026·07·28</span> — 창원시 감사관으로 첫 출근. <span class="note">창원시 어딘가의 서류들이 "올 것이 왔구나" 하고 조용히 자세를 바로잡은 날.</span>
     <figure class="photo-card">
       <img src="/assets/img/playground/kim-wanmyung-appointment.jpg" alt="창원시 감사관 임명식 — 태극기와 시 상징기 사이, 다섯 분이 주먹을 쥐고 포즈">
-      <figcaption>임명식 그날의 포즈 — 태극기와 창원시기 사이, 아버님과 동료 분들의 주먹이 공중에 떠 있습니다. 각 주먹의 각도가 전부 다른 건 아마도 저만 눈치챘을 거예요.</figcaption>
+      <figcaption>임명장을 손에 쥐신 그날. 함께 서 주신 분들과 어깨를 나란히 하신 사진 한 장에, 지난 세월 아버님께서 쌓아 오신 성실의 무게가 그대로 담겨 있어요.</figcaption>
     </figure>
   </li>
-  <li><span class="year">2026·10·31</span> — 66번째 생신. <span class="note">하필 할로윈. 세상이 알아서 축제 중.</span></li>
+  <li><span class="year">2026·10·31</span> — 66번째 생신. <span class="note">할로윈. 세상이 알아서 축제 중.</span></li>
 </ul>
 
-## 감사관의 하루 (상상도)
+## 제가 그려 본 아버님의 하루
 
-- 08:50 — 출근. 책상 위 서류를 정렬. 각이 1도만 틀어져도 다시 맞춤.
-- 10:00 — 돋보기를 들고 지난 분기 집행 내역을 들여다봄.
-- 12:00 — 점심. "청렴한 백반" 1인분.
-- 14:30 — 어느 부서장 얼굴이 하얗게 질림. 특별한 일은 아님.
-- 18:00 — 퇴근. 손에는 서류 가방, 가슴에는 원칙.
+- 08:50 — 출근. 책상 위 서류를 가지런히 맞추시며 하루를 여십니다.
+- 10:00 — 서류를 한 장 한 장 꼼꼼히 들여다보시며 오전을 보내십니다.
+- 12:00 — 점심. 담백한 백반 한 상이면 충분하시지요.
+- 14:30 — 오후 회의. 묵묵히 들으시고, 꼭 필요한 말씀만 짧게.
+- 18:00 — 퇴근. 손에는 서류 가방, 가슴에는 늘 그 자리의 원칙.
 
-> 참고: 할로윈이라 하여 사탕을 요구하는 민원인이 있으시다면,
-> 감사관님께서는 "그건 다른 관할"이라 안내해 주시리라 믿습니다. <span class="gift gift-2" data-gift="2" title="눌러 보세요" role="button" tabindex="0" aria-label="숨겨진 선물 상자 2">📦</span>
+> 아버님께서 쌓아 오신 성실과 정직이 창원시의 든든한 바탕이 되실 거라 믿어요. <span class="gift gift-2" data-gift="2" title="눌러 보세요" role="button" tabindex="0" aria-label="숨겨진 선물 상자 2">📦</span>
 
 ## 생신 메시지
 
 세어 보면 66년, 안 세어 보면 어제 같은 시간들을 지나오셨지요.
-새로 맡으신 자리는 꼼꼼함과 끈기를 요구할 것이고,
-그 두 가지는 지난 66년이 이미 넉넉히 증명해 두신 아버님의 자질입니다.
+새로 맡으신 자리는 꼼꼼함과 끈기를 요구할 터인데,
+그 두 가지는 지난 66년의 세월이 이미 넉넉히 증명해 둔 아버님의 자질이십니다.
 
-올해 생신엔 큰 걱정 없이, 좋아하시는 것들로만 하루를 채우세요.
-늘 건강하시고, 즐거우시고, 가끔은 서류에서 눈을 떼고 창밖도 보시길 바랍니다.
+올해 생신엔 큰 걱정은 잠시 내려 두시고, 좋아하시는 것들로만 하루를 채우시길 바라요.
+늘 건강하시고 평안하시길, 바쁜 하루 중에도 가끔은 서류에서 눈을 떼시고 창밖의 하늘도 한 번씩 올려다보시는 여유가 함께하시길 바랍니다.
 
 <div class="signoff">
   — 2026년 10월 31일, 마음을 담아 <br>
@@ -312,7 +311,7 @@ classes: wide
 <div class="gift-modal-backdrop" id="gift-modal-backdrop">
   <div class="gift-modal">
     <h3 id="gift-modal-title">🎁 선물 상자 발견!</h3>
-    <p id="gift-modal-body">잠시 후 축하의 송금이 아버님 통장에 도착할 예정입니다.</p>
+    <p id="gift-modal-body">잠시 후 축하의 송금이 아버님 통장에 도착할 예정이에요.</p>
     <p style="color:#999;font-size:0.85em" id="gift-modal-note"></p>
     <button type="button" onclick="closeGiftModal()">고맙습니다</button>
   </div>
@@ -331,6 +330,16 @@ classes: wide
   const NOTIFY_WEBHOOK_URL = "https://green-haze-edce.shalwxy.workers.dev";
 
   const STORAGE_KEY = "wanmyung-66-gifts";
+  // URL 에 ?reset=1 이 붙어 있으면 로컬 발견 상태를 비우고 쿼리를 떼어 낸다 (테스트/재방문 편의).
+  try {
+    const sp = new URLSearchParams(location.search);
+    if (sp.has("reset")) {
+      localStorage.removeItem(STORAGE_KEY);
+      sp.delete("reset");
+      const qs = sp.toString();
+      history.replaceState(null, "", location.pathname + (qs ? "?" + qs : "") + location.hash);
+    }
+  } catch (e) {}
   function loadFound() {
     try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}"); }
     catch (e) { return {}; }
@@ -341,20 +350,20 @@ classes: wide
 
   const messages = {
     "1": {
-      title: "🎁 아버님, 첫 번째 상자를 찾으셨어요!",
-      body: "축하의 송금, 1회차가 곧 아버님 통장으로 이체됩니다. 알림 소리를 기대해 주세요.",
+      title: "🎁 아버님, 첫 번째 상자를 찾아 주셨어요!",
+      body: "축하의 송금 1회차가 곧 아버님 통장으로 조용히 이체됩니다. 알림 소리 한 번만 들어 주셔요.",
       colors: ["#e24a6d", "#f0a500", "#ffd166"]
     },
     "2": {
-      title: "📦 두 번째 상자까지 완파하셨어요!",
-      body: "눈썰미는 역시 아버님. 축하의 송금 2회차가 뒤이어 꽂힐 예정입니다.",
+      title: "📦 아버님, 두 번째 상자도 찾아 주셨어요!",
+      body: "역시 아버님이십니다. 축하의 송금 2회차가 바로 뒤따라 이체됩니다.",
       colors: ["#4fc3f7", "#81d4fa", "#b2ebf2"]
     }
   };
 
   const bonusMessage = {
     title: "🏆 두 상자 모두 발견 — 생신 보너스!",
-    body: "완벽한 감사관답게 하나도 놓치지 않으셨어요. 보너스 이체까지 조용히 추가해 두겠습니다. (감사 결과: 적정)",
+    body: "하나도 놓치지 않으시는 아버님의 꼼꼼함에 보너스 이체도 조용히 더해 둡니다. 오늘 하루 평안하시길 바라요.",
     colors: ["#e24a6d", "#f0a500", "#4fc3f7", "#ffd166", "#9c6ade"]
   };
 
@@ -443,8 +452,8 @@ classes: wide
       // 서버가 중복(이미 다른 디바이스에서 열림)이라 알려주면 안내만 바꿔 띄움
       if (res && res.duplicate) {
         openModal(
-          "이미 열려 있던 상자였어요",
-          "이 상자는 다른 자리에서 먼저 열어 보셨네요. 송금은 이미 처리되어 있습니다.",
+          "이미 열어 보셨던 상자네요",
+          "이 상자는 아버님께서 먼저 한 번 열어 보셨어요. 송금은 그때 이미 조용히 처리되었답니다.",
           ""
         );
       }
