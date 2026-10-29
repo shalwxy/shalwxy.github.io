@@ -14,8 +14,9 @@ classes: wide
 ---
 
 <style>
-  .birthday-wrap { max-width: 760px; margin: 0 auto; }
-  .birthday-wrap h2 { border-bottom: 1px solid #eee; padding-bottom: 0.3em; margin-top: 2em; }
+  .birthday-wrap { max-width: 760px; margin: 0 auto; word-break: keep-all; line-height: 1.7; }
+  .birthday-wrap h2 { border-bottom: 1px solid #eee; padding-bottom: 0.3em; margin-top: 2.4em; }
+  .birthday-wrap p { line-height: 1.75; }
   .birthday-hero {
     position: relative;
     padding: 2.4em 1.6em;
@@ -51,6 +52,8 @@ classes: wide
     padding: 0.6em 0 0.6em 1.6em;
     border-left: 2px dashed #ddd;
     margin-left: 0.5em;
+    word-break: keep-all;
+    line-height: 1.6;
   }
   .timeline li::before {
     content: ""; position: absolute; left: -7px; top: 1em;
@@ -58,7 +61,10 @@ classes: wide
   }
   .timeline .year { font-weight: 700; color: #333; margin-right: 0.4em; }
   .timeline .note { color: #777; font-size: 0.92em; }
+  .timeline li.has-photo { padding-bottom: 1.2em; }
+  .timeline li + li { margin-top: 0.1em; }
 
+  .find-status-wrap { text-align: center; margin: 1.4em 0 0.6em; }
   .find-status {
     display: inline-flex; align-items: center; gap: 0.5em;
     padding: 0.5em 1em; border-radius: 999px;
@@ -174,6 +180,9 @@ classes: wide
     text-align: center;
     box-shadow: 0 2px 6px rgba(0,0,0,0.04);
     transition: transform 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
   }
   .stat-card:hover { transform: translateY(-2px); }
   .stat-card .stat-num {
@@ -186,11 +195,17 @@ classes: wide
   }
   .stat-card .stat-label {
     margin-top: 0.3em;
-    font-size: 0.95em; color: #333; font-weight: 600;
+    font-size: 1em; color: #333; font-weight: 600;
+    word-break: keep-all;
   }
   .stat-card .stat-note {
-    margin-top: 0.35em;
-    font-size: 0.82em; color: #888; line-height: 1.45;
+    margin-top: 0.4em;
+    font-size: 0.88em; color: #777; line-height: 1.55;
+    flex: 1;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    word-break: keep-all;
   }
   .stat-card.countdown .stat-num {
     background: linear-gradient(90deg, #4fc3f7, #9c6ade);
@@ -239,13 +254,15 @@ classes: wide
 한 번씩 눌러 봐 주시면, 그때마다 저에게 알림이 오고
 **아버님 통장으로 "축하의 송금"** 이 조용히 들어갑니다.
 
-<p style="color:#777;font-size:0.92em;line-height:1.6;margin-top:0.6em">
-💡 송금은 제가 직접 확인한 뒤 보내 드리는 터라, 상자를 눌러 주신 시점부터
-<strong>최대 6시간 안에</strong> 아버님 통장에 도착합니다. 조금만 기다려 주셔요.<br>
-이 축하 페이지는 <strong>생신 전후로 약 일주일간</strong> 열어 두었다가 조용히 내릴 예정이에요.
-</p>
+<div style="background:#fafafa;border-radius:10px;padding:0.9em 1.1em;margin-top:1em;color:#666;font-size:0.9em;line-height:1.7">
+  <p style="margin:0 0 0.4em">🔒 선물 상자는 <strong>생신 당일(10월 31일)</strong>에 열립니다. 그 전에 눌러 보셔도 괜찮지만, 그날이 되기 전까지는 조용히 잠들어 있어요.</p>
+  <p style="margin:0 0 0.4em">💡 당일 상자를 눌러 주신 시점부터 <strong>최대 6시간 안에</strong> 아버님 통장에 송금이 도착해요. 조금만 기다려 주셔요.</p>
+  <p style="margin:0">📅 이 축하 페이지는 <strong>생신 전후로 약 일주일간</strong> 열어 두었다가 조용히 내릴 예정이에요.</p>
+</div>
 
-<p><span class="find-status">발견한 선물 상자 <strong><span id="found-count">0</span> / 2</strong></span></p>
+<div class="find-status-wrap">
+  <span class="find-status">발견한 선물 상자 <strong><span id="found-count">0</span> / 2</strong></span>
+</div>
 
 ## 숫자로 보는 아버님의 66년
 
@@ -253,7 +270,7 @@ classes: wide
   <div class="stat-card">
     <div class="stat-num" id="stat-days">—</div>
     <div class="stat-label">지구에서 보내신 날</div>
-    <div class="stat-note">긴 세월을 묵묵히 걸어와 주셔서 감사해요.</div>
+    <div class="stat-note">긴 세월을 묵묵히 걸어와 주셔서 감사해요. 하루하루가 모여 지금의 아버님이 되셨습니다.</div>
   </div>
   <div class="stat-card">
     <div class="stat-num" id="stat-orbits">—</div>
@@ -268,7 +285,7 @@ classes: wide
   <div class="stat-card countdown" id="stat-countdown-card">
     <div class="stat-num" id="stat-countdown">—</div>
     <div class="stat-label" id="stat-countdown-label">66번째 생신까지</div>
-    <div class="stat-note" id="stat-countdown-note">달력에서 반짝이는 그 날짜가 다가옵니다.</div>
+    <div class="stat-note" id="stat-countdown-note">달력에서 반짝이는 그 날짜가 점점 가까워집니다. 조금만 더 기다려 주셔요.</div>
   </div>
 </div>
 
@@ -277,7 +294,7 @@ classes: wide
 <ul class="timeline">
   <li><span class="year">1960</span> — 가을, 세상에 처음 등장. <span class="note">경자년, 쥐띠.</span></li>
   <li><span class="year">… 그 사이</span> — 셀 수 없는 아침과 저녁, 수많은 이름들을 지나오심. <span class="gift gift-1" data-gift="1" title="눌러 보세요" role="button" tabindex="0" aria-label="숨겨진 선물 상자 1">🎁</span></li>
-  <li>
+  <li class="has-photo">
     <span class="year">2026·07·28</span> — 창원시 감사관으로 첫 출근. <span class="note">창원시 어딘가의 서류들이 "올 것이 왔구나" 하고 조용히 자세를 바로잡은 날.</span>
     <figure class="photo-card">
       <img src="/assets/img/playground/kim-wanmyung-appointment.jpg" alt="창원시 감사관 임명식 — 태극기와 시 상징기 사이, 다섯 분이 주먹을 쥐고 포즈">
@@ -338,6 +355,18 @@ classes: wide
   const NOTIFY_WEBHOOK_URL = "https://green-haze-edce.shalwxy.workers.dev";
 
   const STORAGE_KEY = "wanmyung-66-gifts";
+  // 선물 상자를 열 수 있는 날 (한국시간 10월 31일 하루 동안).
+  // ?preview=1 쿼리가 붙으면 테스트용으로 바로 열림 상태로 간주한다.
+  const PREVIEW_MODE = (function () {
+    try { return new URLSearchParams(location.search).has("preview"); }
+    catch (e) { return false; }
+  })();
+  function isOpenDay() {
+    if (PREVIEW_MODE) return true;
+    const now = new Date();
+    const kst = new Date(now.getTime() + (now.getTimezoneOffset() + 540) * 60000);
+    return kst.getMonth() === 9 && kst.getDate() === 31; // 월: 0-based (9 = 10월)
+  }
   // URL 에 ?reset=1 이 붙어 있으면 로컬 발견 상태를 비우고 쿼리를 떼어 낸다 (테스트/재방문 편의).
   try {
     const sp = new URLSearchParams(location.search);
@@ -433,6 +462,16 @@ classes: wide
   }
 
   function markFound(giftId, el) {
+    // 생신 당일이 아니면 상자를 열어 보실 수 없음 (서버 알림도 보내지 않음).
+    if (!isOpenDay()) {
+      openModal(
+        "🔒 아직은 조금 이른 날이에요",
+        "선물 상자는 아버님의 생신 당일(10월 31일)에만 열립니다. 그날 이 페이지에 다시 들러 주시면, 작은 즐거움이 기다리고 있을 거예요.",
+        ""
+      );
+      return;
+    }
+
     const found = loadFound();
     const already = !!found[giftId];
     found[giftId] = true;
@@ -512,7 +551,7 @@ classes: wide
       const dLeft = Math.ceil((nextBday - now) / msPerDay);
       countdownText = "D−" + dLeft;
       countdownLabel = orbits + 1 + "번째 생신까지";
-      countdownNote = "달력에서 반짝이는 그 날짜가 다가옵니다.";
+      countdownNote = "달력에서 반짝이는 그 날짜가 점점 가까워집니다. 조금만 더 기다려 주셔요.";
     } else if (now < dayAfterBday) {
       isToday = true;
       countdownText = "D-DAY";
