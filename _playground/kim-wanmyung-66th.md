@@ -226,19 +226,22 @@ classes: wide
     width: 100%; height: auto; display: block;
     border-radius: 6px;
   }
-  .photo-card figcaption {
-    margin-top: 0.7em;
-    color: #666; font-size: 0.9em;
-    text-align: center;
-    line-height: 1.75;
+  .birthday-wrap .photo-card figcaption {
+    margin: 0.7em 0 0 !important;
+    padding: 0 !important;
+    color: #666 !important;
+    font-size: 0.9em !important;
+    line-height: 1.75 !important;
     word-break: keep-all;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.1em;
+    text-align: center !important;
+    display: block !important;
+    width: 100%;
   }
-  .photo-card figcaption .cap-line {
-    display: block;
+  .birthday-wrap .photo-card figcaption .cap-line {
+    display: block !important;
+    width: 100% !important;
+    text-align: center !important;
+    margin: 0 auto !important;
   }
 
   /* 숫자 카드 */
