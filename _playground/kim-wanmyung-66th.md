@@ -1,0 +1,558 @@
+---
+title: "아버님께 — 66번째 생신, 그리고 창원시 감사관 임명 축하"
+excerpt: "1960년 가을의 어느 날 세상에 오셔서, 2026년 가을 창원시 감사관으로 첫 출근하신 아버님(김완명)의 66번째 생신을 축하드립니다. 페이지 어딘가에 선물 상자 두 개를 숨겨 두었어요."
+date: 2026-10-29
+tags:
+  - 생일
+  - 축하
+  - 창원시
+header:
+  teaser: /assets/img/playground/kim-wanmyung-appointment.jpg
+toc: false
+author_profile: false
+classes: wide
+---
+
+<style>
+  .birthday-wrap { max-width: 760px; margin: 0 auto; }
+  .birthday-wrap h2 { border-bottom: 1px solid #eee; padding-bottom: 0.3em; margin-top: 2em; }
+  .birthday-hero {
+    position: relative;
+    padding: 2.4em 1.6em;
+    text-align: center;
+    background: linear-gradient(135deg, #fff8e7 0%, #ffe9ec 55%, #e8f0ff 100%);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .birthday-hero::before {
+    content: "🎂";
+    position: absolute; top: 10px; left: 14px;
+    font-size: 1.6em; opacity: 0.55;
+  }
+  .birthday-hero::after {
+    content: "🔍";
+    position: absolute; bottom: 10px; right: 14px;
+    font-size: 1.6em; opacity: 0.55;
+  }
+  .birthday-hero h1 {
+    margin: 0 0 0.3em; font-size: 1.6em; line-height: 1.35;
+  }
+  .birthday-hero p { margin: 0.2em 0; color: #555; }
+  .birthday-hero .big-num {
+    font-size: 2.6em; font-weight: 800; letter-spacing: -0.04em;
+    background: linear-gradient(90deg,#e24a6d,#f0a500);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    display: inline-block; margin: 0.1em 0.15em;
+  }
+
+  .timeline { list-style: none; padding: 0; margin: 1.4em 0; }
+  .timeline li {
+    position: relative;
+    padding: 0.6em 0 0.6em 1.6em;
+    border-left: 2px dashed #ddd;
+    margin-left: 0.5em;
+  }
+  .timeline li::before {
+    content: ""; position: absolute; left: -7px; top: 1em;
+    width: 12px; height: 12px; border-radius: 50%; background: #e24a6d;
+  }
+  .timeline .year { font-weight: 700; color: #333; margin-right: 0.4em; }
+  .timeline .note { color: #777; font-size: 0.92em; }
+
+  .find-status {
+    display: inline-flex; align-items: center; gap: 0.5em;
+    padding: 0.5em 1em; border-radius: 999px;
+    background: #f6f6f6; font-size: 0.95em;
+  }
+
+  /* 숨겨진 선물 상자 — 모바일 터치 가능하도록 영역 확보 */
+  .gift {
+    display: inline-block;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    min-width: 44px;
+    min-height: 44px;
+    line-height: 44px;
+    text-align: center;
+    padding: 0 6px;
+    vertical-align: middle;
+    transition: transform 0.18s ease, filter 0.18s ease, opacity 0.18s ease;
+    animation: giftWiggle 2.8s ease-in-out infinite;
+  }
+  .gift[data-found="true"] {
+    filter: grayscale(1);
+    opacity: 0.4 !important;
+    cursor: default;
+    animation: none;
+  }
+  .gift:not([data-found="true"]):hover,
+  .gift:not([data-found="true"]):active {
+    transform: scale(1.3) rotate(-6deg);
+    opacity: 1 !important;
+    filter: drop-shadow(0 0 8px rgba(255, 180, 60, 0.95));
+  }
+  .gift-1 { font-size: 1.3em; opacity: 0.5; }
+  .gift-2 { font-size: 1.25em; opacity: 0.45; }
+
+  @keyframes giftWiggle {
+    0%, 92%, 100% { transform: rotate(0deg) scale(1); }
+    94% { transform: rotate(-8deg) scale(1.1); }
+    96% { transform: rotate(8deg) scale(1.1); }
+    98% { transform: rotate(-5deg) scale(1.05); }
+  }
+
+  /* 모달 */
+  .gift-modal-backdrop {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.55);
+    display: none; align-items: center; justify-content: center; z-index: 9998;
+    animation: fadeIn 0.25s ease;
+  }
+  .gift-modal-backdrop.show { display: flex; }
+  .gift-modal {
+    background: #fff; border-radius: 14px; padding: 1.8em 1.6em;
+    max-width: 420px; width: 90%; text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    animation: popIn 0.35s cubic-bezier(.2,1.3,.4,1);
+  }
+  .gift-modal h3 { margin: 0 0 0.5em; font-size: 1.3em; }
+  .gift-modal p { color: #555; line-height: 1.6; margin: 0.4em 0; }
+  .gift-modal button {
+    margin-top: 1em; padding: 0.6em 1.4em;
+    background: #e24a6d; color: #fff; border: 0; border-radius: 999px;
+    font-size: 0.98em; cursor: pointer;
+  }
+  .gift-modal button:hover { background: #c73a5c; }
+
+  @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+  @keyframes popIn {
+    0% { transform: scale(0.6); opacity: 0 }
+    100% { transform: scale(1); opacity: 1 }
+  }
+
+  /* confetti canvas */
+  #confetti-canvas {
+    position: fixed; inset: 0; pointer-events: none; z-index: 9999;
+  }
+
+  .signoff {
+    margin-top: 3em; padding: 1.4em; text-align: center;
+    background: #fafafa; border-radius: 10px; color: #555;
+    font-size: 0.95em;
+  }
+
+  .photo-card {
+    margin: 1em 0 1.6em;
+    padding: 0.8em;
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  .photo-card img {
+    width: 100%; height: auto; display: block;
+    border-radius: 6px;
+  }
+  .photo-card figcaption {
+    margin-top: 0.6em;
+    color: #666; font-size: 0.9em; text-align: center;
+    line-height: 1.5;
+  }
+
+  /* 숫자 카드 */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.8em;
+    margin: 1.4em 0 1.6em;
+  }
+  .stat-card {
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    padding: 1em 0.9em;
+    text-align: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+    transition: transform 0.2s ease;
+  }
+  .stat-card:hover { transform: translateY(-2px); }
+  .stat-card .stat-num {
+    font-size: 1.9em;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    background: linear-gradient(90deg, #e24a6d, #f0a500);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    line-height: 1.1;
+  }
+  .stat-card .stat-label {
+    margin-top: 0.3em;
+    font-size: 0.95em; color: #333; font-weight: 600;
+  }
+  .stat-card .stat-note {
+    margin-top: 0.35em;
+    font-size: 0.82em; color: #888; line-height: 1.45;
+  }
+  .stat-card.countdown .stat-num {
+    background: linear-gradient(90deg, #4fc3f7, #9c6ade);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .stat-card.countdown[data-today="true"] {
+    background: linear-gradient(135deg, #fff8e7 0%, #ffe9ec 100%);
+    border-color: #f0a500;
+    animation: cakeGlow 2.4s ease-in-out infinite;
+  }
+  @keyframes cakeGlow {
+    0%, 100% { box-shadow: 0 2px 6px rgba(0,0,0,0.04); }
+    50% { box-shadow: 0 2px 20px rgba(240, 165, 0, 0.45); }
+  }
+
+  /* 모바일 반응형 */
+  @media (max-width: 640px) {
+    .birthday-hero { padding: 1.8em 1em; }
+    .birthday-hero h1 { font-size: 1.3em; }
+    .birthday-hero .big-num { font-size: 2em; }
+    .timeline li { padding-left: 1.2em; }
+    .timeline .year { display: block; margin-bottom: 0.2em; }
+    .gift-1, .gift-2 { font-size: 1.5em; opacity: 0.6; }
+    .gift-modal { padding: 1.4em 1.2em; }
+    .gift-modal h3 { font-size: 1.15em; }
+    .find-status { font-size: 0.9em; padding: 0.4em 0.8em; }
+    .photo-card { padding: 0.5em; }
+  }
+</style>
+
+<div class="birthday-wrap" markdown="1">
+
+<div class="birthday-hero">
+  <h1>아버님, <br>생신을 진심으로 축하드립니다 🎉</h1>
+  <p><span class="big-num">66</span><span style="font-size:1.1em">번째 가을</span></p>
+  <p>그리고 <strong>창원시 감사관</strong> 첫 출근을 함께 축하드려요.</p>
+</div>
+
+## 들어가며
+
+1960년 가을의 어느 날, 한 아이가 세상에 왔습니다. 그로부터 66번의 가을이 더 지난 오늘,
+아버님께서는 **창원시 감사관**이라는 이름으로 또 하나의 가을을 맞이하십니다.
+
+이 페이지는 짧은 축하 편지이자, 약간의 숨바꼭질입니다.
+읽어 내려가시다 보면 **선물 상자 두 개**가 어딘가 숨어 있을 거예요. 눈이 밝으신 감사관님께서
+놓치지 않으시리라 믿습니다. 🔎 하나 찾으실 때마다 저에게 알림이 오고, 그 즉시
+**아버님 통장으로 "축하의 송금"** 이 조용히 꽂힐 예정입니다. (요즘은 리본보다 입금 알림이 더 빠르더라고요.)
+
+<p><span class="find-status">발견한 선물 상자 <strong><span id="found-count">0</span> / 2</strong></span></p>
+
+## 숫자로 보는 아버님의 66년
+
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-num" id="stat-days">—</div>
+    <div class="stat-label">지구에서 보내신 날</div>
+    <div class="stat-note">꽤 긴 출장이지만, 돌아가실 생각은 없으시겠지요.</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-num" id="stat-orbits">—</div>
+    <div class="stat-label">지구가 돈 태양 주위</div>
+    <div class="stat-note">공식 기록상으로는 아버님께서 돌리신 것으로 되어 있습니다.</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-num" id="stat-meals">—</div>
+    <div class="stat-label">드신 밥 (추정, 끼)</div>
+    <div class="stat-note">하루 세 끼로 계산. 간식·야식·자정 라면은 미포함.</div>
+  </div>
+  <div class="stat-card countdown" id="stat-countdown-card">
+    <div class="stat-num" id="stat-countdown">—</div>
+    <div class="stat-label" id="stat-countdown-label">66번째 생신까지</div>
+    <div class="stat-note" id="stat-countdown-note">달력에서 반짝이는 그 날짜가 다가옵니다.</div>
+  </div>
+</div>
+
+## 짧게 되돌아보는 66년
+
+<ul class="timeline">
+  <li><span class="year">1960</span> — 가을, 세상에 처음 등장. <span class="note">경자년, 쥐띠.</span></li>
+  <li><span class="year">… 그 사이</span> — 셀 수 없는 아침과 저녁, 수많은 이름들을 지나오심. <span class="gift gift-1" data-gift="1" title="눌러 보세요" role="button" tabindex="0" aria-label="숨겨진 선물 상자 1">🎁</span></li>
+  <li>
+    <span class="year">2026·07·28</span> — 창원시 감사관으로 첫 출근. <span class="note">"비리야, 잘 지내고 있었니?"</span>
+    <figure class="photo-card">
+      <img src="/assets/img/playground/kim-wanmyung-appointment.jpg" alt="창원시 감사관 임명식 — 태극기와 시 상징기 사이, 다섯 분이 주먹을 쥐고 포즈">
+      <figcaption>임명식 그날의 포즈 — 태극기와 창원시기 사이, 아버님과 동료 분들의 주먹이 공중에 떠 있습니다. 각 주먹의 각도가 전부 다른 건 아마도 저만 눈치챘을 거예요.</figcaption>
+    </figure>
+  </li>
+  <li><span class="year">2026·10·31</span> — 66번째 생신. <span class="note">하필 할로윈. 세상이 알아서 축제 중.</span></li>
+</ul>
+
+## 감사관의 하루 (상상도)
+
+- 08:50 — 출근. 책상 위 서류를 정렬. 각이 1도만 틀어져도 다시 맞춤.
+- 10:00 — 돋보기를 들고 지난 분기 집행 내역을 들여다봄.
+- 12:00 — 점심. "청렴한 백반" 1인분.
+- 14:30 — 어느 부서장 얼굴이 하얗게 질림. 특별한 일은 아님.
+- 18:00 — 퇴근. 손에는 서류 가방, 가슴에는 원칙.
+
+> 참고: 할로윈이라 하여 사탕을 요구하는 민원인이 있으시다면,
+> 감사관님께서는 "그건 다른 관할"이라 안내해 주시리라 믿습니다. <span class="gift gift-2" data-gift="2" title="눌러 보세요" role="button" tabindex="0" aria-label="숨겨진 선물 상자 2">📦</span>
+
+## 생신 메시지
+
+세어 보면 66년, 안 세어 보면 어제 같은 시간들을 지나오셨지요.
+새로 맡으신 자리는 꼼꼼함과 끈기를 요구할 것이고,
+그 두 가지는 지난 66년이 이미 넉넉히 증명해 두신 아버님의 자질입니다.
+
+올해 생신엔 큰 걱정 없이, 좋아하시는 것들로만 하루를 채우세요.
+늘 건강하시고, 즐거우시고, 가끔은 서류에서 눈을 떼고 창밖도 보시길 바랍니다.
+
+<div class="signoff">
+  — 2026년 10월 31일, 마음을 담아 <br>
+  며느리 올림
+</div>
+
+</div>
+
+<!-- 숨겨진 선물용 모달 -->
+<div class="gift-modal-backdrop" id="gift-modal-backdrop">
+  <div class="gift-modal">
+    <h3 id="gift-modal-title">🎁 선물 상자 발견!</h3>
+    <p id="gift-modal-body">잠시 후 축하의 송금이 아버님 통장에 도착할 예정입니다.</p>
+    <p style="color:#999;font-size:0.85em" id="gift-modal-note"></p>
+    <button type="button" onclick="closeGiftModal()">고맙습니다</button>
+  </div>
+</div>
+
+<canvas id="confetti-canvas"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+<script>
+(function () {
+  // === 설정: 아래 URL을 사용자의 webhook endpoint 로 교체 ===
+  // 예시 (A) Cloudflare Worker: https://xxx.workers.dev/notify
+  // 예시 (B) n8n Webhook: https://n8n.example.com/webhook/birthday
+  // 예시 (C) IFTTT Webhooks: https://maker.ifttt.com/trigger/EVENT/with/key/KEY
+  // Worker/서비스 쪽에서 Telegram Bot API 로 다시 쏘도록 구성하세요.
+  const NOTIFY_WEBHOOK_URL = "https://green-haze-edce.shalwxy.workers.dev";
+
+  const STORAGE_KEY = "wanmyung-66-gifts";
+  function loadFound() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}"); }
+    catch (e) { return {}; }
+  }
+  function saveFound(obj) {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(obj)); } catch (e) {}
+  }
+
+  const messages = {
+    "1": {
+      title: "🎁 아버님, 첫 번째 상자를 찾으셨어요!",
+      body: "축하의 송금, 1회차가 곧 아버님 통장으로 이체됩니다. 알림 소리를 기대해 주세요.",
+      colors: ["#e24a6d", "#f0a500", "#ffd166"]
+    },
+    "2": {
+      title: "📦 두 번째 상자까지 완파하셨어요!",
+      body: "눈썰미는 역시 아버님. 축하의 송금 2회차가 뒤이어 꽂힐 예정입니다.",
+      colors: ["#4fc3f7", "#81d4fa", "#b2ebf2"]
+    }
+  };
+
+  const bonusMessage = {
+    title: "🏆 두 상자 모두 발견 — 생신 보너스!",
+    body: "완벽한 감사관답게 하나도 놓치지 않으셨어요. 보너스 이체까지 조용히 추가해 두겠습니다. (감사 결과: 적정)",
+    colors: ["#e24a6d", "#f0a500", "#4fc3f7", "#ffd166", "#9c6ade"]
+  };
+
+  function fireConfetti(colors) {
+    if (!window.confetti) return;
+    const end = Date.now() + 1200;
+    (function frame() {
+      confetti({
+        particleCount: 4,
+        angle: 60, spread: 55,
+        origin: { x: 0, y: 0.9 },
+        colors: colors
+      });
+      confetti({
+        particleCount: 4,
+        angle: 120, spread: 55,
+        origin: { x: 1, y: 0.9 },
+        colors: colors
+      });
+      if (Date.now() < end) requestAnimationFrame(frame);
+    })();
+    confetti({ particleCount: 90, spread: 70, origin: { y: 0.6 }, colors: colors });
+  }
+
+  function openModal(title, body, note) {
+    document.getElementById("gift-modal-title").textContent = title;
+    document.getElementById("gift-modal-body").textContent = body;
+    document.getElementById("gift-modal-note").textContent = note || "";
+    document.getElementById("gift-modal-backdrop").classList.add("show");
+  }
+  window.closeGiftModal = function () {
+    document.getElementById("gift-modal-backdrop").classList.remove("show");
+  };
+
+  function notify(payload) {
+    if (!NOTIFY_WEBHOOK_URL || NOTIFY_WEBHOOK_URL.indexOf("REPLACE_ME") === 0) {
+      console.info("[gift] webhook not configured yet", payload);
+      return Promise.resolve({ skipped: true });
+    }
+    return fetch(NOTIFY_WEBHOOK_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+      keepalive: true
+    }).then(function (res) {
+      return res.ok ? res.json().catch(function () { return {}; })
+                    : Promise.resolve({});
+    }).catch(function (err) {
+      console.warn("[gift] notify failed", err);
+      return {};
+    });
+  }
+
+  function updateCount(found) {
+    const n = Object.keys(found).filter(function (k) { return found[k]; }).length;
+    const el = document.getElementById("found-count");
+    if (el) el.textContent = n;
+    return n;
+  }
+
+  function markFound(giftId, el) {
+    const found = loadFound();
+    const already = !!found[giftId];
+    found[giftId] = true;
+    saveFound(found);
+    if (el) el.setAttribute("data-found", "true");
+    const total = updateCount(found);
+
+    if (already) return;
+
+    const meta = messages[giftId] || messages["1"];
+    fireConfetti(meta.colors);
+
+    const now = new Date().toISOString();
+    const ua = navigator.userAgent || "";
+    notify({
+      event: "birthday_gift_found",
+      gift_id: giftId,
+      total_found: total,
+      page: location.pathname,
+      url: location.href,
+      time: now,
+      ua: ua,
+      message: "김완명 선생 생신 페이지에서 선물 상자 " + giftId + " 발견 (" + total + "/2)"
+    }).then(function (res) {
+      // 서버가 중복(이미 다른 디바이스에서 열림)이라 알려주면 안내만 바꿔 띄움
+      if (res && res.duplicate) {
+        openModal(
+          "이미 열려 있던 상자였어요",
+          "이 상자는 다른 자리에서 먼저 열어 보셨네요. 송금은 이미 처리되어 있습니다.",
+          ""
+        );
+      }
+    });
+
+    openModal(
+      meta.title,
+      meta.body,
+      total >= 2 ? "" : "남은 상자 " + (2 - total) + "개가 어딘가에 더 있어요."
+    );
+
+    if (total >= 2) {
+      setTimeout(function () {
+        fireConfetti(bonusMessage.colors);
+        openModal(bonusMessage.title, bonusMessage.body, "");
+        notify({
+          event: "birthday_gift_complete",
+          page: location.pathname,
+          url: location.href,
+          time: new Date().toISOString(),
+          message: "김완명 선생 생신 페이지, 두 상자 모두 발견 완료!"
+        });
+      }, 1600);
+    }
+  }
+
+  function fmtNum(n) {
+    return n.toLocaleString("ko-KR");
+  }
+
+  function initStats() {
+    // 아버님 생년월일: 1960-10-31 (KST 자정 기준)
+    const BIRTH = new Date("1960-10-31T00:00:00+09:00");
+    const now = new Date();
+    const msPerDay = 86400000;
+
+    const daysLived = Math.floor((now - BIRTH) / msPerDay);
+    const orbits = Math.floor(daysLived / 365.2425);
+    const meals = daysLived * 3;
+
+    // 올해 생일 (KST 자정)
+    const y = now.getFullYear();
+    let nextBday = new Date(y + "-10-31T00:00:00+09:00");
+    const dayAfterBday = new Date(nextBday.getTime() + msPerDay);
+
+    let countdownText, countdownLabel, countdownNote, isToday = false;
+    if (now < nextBday) {
+      const dLeft = Math.ceil((nextBday - now) / msPerDay);
+      countdownText = "D−" + dLeft;
+      countdownLabel = orbits + 1 + "번째 생신까지";
+      countdownNote = "달력에서 반짝이는 그 날짜가 다가옵니다.";
+    } else if (now < dayAfterBday) {
+      isToday = true;
+      countdownText = "D-DAY";
+      countdownLabel = "오늘이 바로 그날 🎂";
+      countdownNote = "케이크 위 초를 켜 주세요. 끄시는 건 아버님 몫입니다.";
+    } else {
+      // 올해 생일 지나감 → 내년 생일 D-N
+      nextBday = new Date((y + 1) + "-10-31T00:00:00+09:00");
+      const dLeft = Math.ceil((nextBday - now) / msPerDay);
+      countdownText = "D−" + dLeft;
+      countdownLabel = orbits + 1 + "번째 생신까지";
+      countdownNote = "다음 번 생신 카운트 시작. 올해도 수고 많으셨습니다.";
+    }
+
+    const set = function (id, v) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = v;
+    };
+    set("stat-days", fmtNum(daysLived) + "일");
+    set("stat-orbits", fmtNum(orbits) + "바퀴");
+    set("stat-meals", fmtNum(meals) + "끼");
+    set("stat-countdown", countdownText);
+    set("stat-countdown-label", countdownLabel);
+    set("stat-countdown-note", countdownNote);
+    const card = document.getElementById("stat-countdown-card");
+    if (card && isToday) card.setAttribute("data-today", "true");
+  }
+
+  function initGifts() {
+    const found = loadFound();
+    updateCount(found);
+    document.querySelectorAll(".gift").forEach(function (el) {
+      const id = el.getAttribute("data-gift");
+      if (found[id]) el.setAttribute("data-found", "true");
+      el.addEventListener("click", function () {
+        if (el.getAttribute("data-found") === "true") return;
+        markFound(id, el);
+      });
+      el.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          if (el.getAttribute("data-found") === "true") return;
+          markFound(id, el);
+        }
+      });
+    });
+  }
+
+  function initAll() {
+    initStats();
+    initGifts();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initAll);
+  } else {
+    initAll();
+  }
+})();
+</script>
