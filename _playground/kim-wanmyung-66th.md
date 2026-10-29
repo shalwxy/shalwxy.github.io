@@ -237,7 +237,13 @@ classes: wide
 이 페이지는 짧은 축하 편지이자, 작은 숨바꼭질입니다.
 읽어 내려가시다 보면 **선물 상자 두 개**가 어딘가 숨어 있어요. 눈 밝으신 아버님께서
 한 번씩 눌러 봐 주시면, 그때마다 저에게 알림이 오고
-**아버님 통장으로 "축하의 송금"** 이 조용히 들어갑니다. (요즘은 리본보다 입금 알림이 더 빠르더라고요.)
+**아버님 통장으로 "축하의 송금"** 이 조용히 들어갑니다.
+
+<p style="color:#777;font-size:0.92em;line-height:1.6;margin-top:0.6em">
+💡 송금은 제가 직접 확인한 뒤 보내 드리는 터라, 상자를 눌러 주신 시점부터
+<strong>최대 6시간 안에</strong> 아버님 통장에 도착합니다. 조금만 기다려 주셔요.<br>
+이 축하 페이지는 <strong>생신 전후로 약 일주일간</strong> 열어 두었다가 조용히 내릴 예정이에요.
+</p>
 
 <p><span class="find-status">발견한 선물 상자 <strong><span id="found-count">0</span> / 2</strong></span></p>
 
@@ -311,7 +317,7 @@ classes: wide
 <div class="gift-modal-backdrop" id="gift-modal-backdrop">
   <div class="gift-modal">
     <h3 id="gift-modal-title">🎁 선물 상자 발견!</h3>
-    <p id="gift-modal-body">잠시 후 축하의 송금이 아버님 통장에 도착할 예정이에요.</p>
+    <p id="gift-modal-body">축하의 송금이 최대 6시간 안에 아버님 통장에 도착할 예정이에요.</p>
     <p style="color:#999;font-size:0.85em" id="gift-modal-note"></p>
     <button type="button" onclick="closeGiftModal()">고맙습니다</button>
   </div>
@@ -351,19 +357,19 @@ classes: wide
   const messages = {
     "1": {
       title: "🎁 아버님, 첫 번째 상자를 찾아 주셨어요!",
-      body: "축하의 송금 1회차가 곧 아버님 통장으로 조용히 이체됩니다. 알림 소리 한 번만 들어 주셔요.",
+      body: "축하의 송금 1회차는 최대 6시간 안에 아버님 통장으로 조용히 도착합니다. 조금만 기다려 주셔요.",
       colors: ["#e24a6d", "#f0a500", "#ffd166"]
     },
     "2": {
       title: "📦 아버님, 두 번째 상자도 찾아 주셨어요!",
-      body: "역시 아버님이십니다. 축하의 송금 2회차가 바로 뒤따라 이체됩니다.",
+      body: "역시 아버님이십니다. 2회차 송금도 함께 최대 6시간 안에 도착할 거예요.",
       colors: ["#4fc3f7", "#81d4fa", "#b2ebf2"]
     }
   };
 
   const bonusMessage = {
     title: "🏆 두 상자 모두 발견 — 생신 보너스!",
-    body: "하나도 놓치지 않으시는 아버님의 꼼꼼함에 보너스 이체도 조용히 더해 둡니다. 오늘 하루 평안하시길 바라요.",
+    body: "하나도 놓치지 않으시는 아버님의 꼼꼼함에 보너스 이체도 조용히 더해 둘게요. 송금은 함께 최대 6시간 안에 도착합니다.",
     colors: ["#e24a6d", "#f0a500", "#4fc3f7", "#ffd166", "#9c6ade"]
   };
 
