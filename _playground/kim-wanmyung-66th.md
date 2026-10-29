@@ -257,13 +257,13 @@ classes: wide
   </div>
   <div class="stat-card">
     <div class="stat-num" id="stat-orbits">—</div>
-    <div class="stat-label">함께해 주신 태양의 공전</div>
-    <div class="stat-note">아버님께서 지나오신 햇수. 올해도 한 바퀴 무사히 돌아 주셨습니다.</div>
+    <div class="stat-label">지구와 함께한 공전</div>
+    <div class="stat-note">아버님께서 지구와 함께 돌아 주신 햇수예요. 올해도 한 바퀴 평안히 지나오셨어요.</div>
   </div>
   <div class="stat-card">
     <div class="stat-num" id="stat-meals">—</div>
     <div class="stat-label">드신 밥 (추정, 끼)</div>
-    <div class="stat-note">하루 세 끼로 어림잡은 숫자예요. 그동안 아버님을 지켜 온 든든한 숫자이기도 하지요.</div>
+    <div class="stat-note">하루 세 끼로 어림잡은 숫자예요. 이 많은 끼니마다 어머님의 정갈한 손맛이 함께해 주셨지요.</div>
   </div>
   <div class="stat-card countdown" id="stat-countdown-card">
     <div class="stat-num" id="stat-countdown">—</div>
@@ -304,7 +304,9 @@ classes: wide
 그 두 가지는 지난 66년의 세월이 이미 넉넉히 증명해 둔 아버님의 자질이십니다.
 
 올해 생신엔 큰 걱정은 잠시 내려 두시고, 좋아하시는 것들로만 하루를 채우시길 바라요.
-늘 강건하시고 평안하시길, 새로 맡으신 자리에서도 뜻하신 바가 두루 이루어지시길 진심으로 기원드립니다. 저희도 자주 찾아뵙고 기쁜 소식 더해 드릴게요.
+늘 강건하시고 평안하시길, 새로 맡으신 자리에서도 뜻하신 바가 두루 이루어지시길 진심으로 기원드립니다.
+
+그리고 오랜 세월 아버님 곁에서 변함없는 마음과 따뜻한 손길로 가족을 지켜 주신 **어머님께도** 깊은 감사와 사랑을 함께 전합니다. 저희도 자주 찾아뵙고, 두 분께 기쁜 소식 더해 드릴게요.
 
 <div class="signoff">
   — 2026년 10월 31일, 마음을 담아 <br>
