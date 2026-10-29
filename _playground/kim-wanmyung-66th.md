@@ -226,7 +226,7 @@ classes: wide
 <div class="birthday-hero">
   <h1>아버님, <br>생신을 진심으로 축하드립니다 🎉</h1>
   <p><span class="big-num">66</span><span style="font-size:1.1em">번째 가을</span></p>
-  <p>그리고 <strong>창원시 감사관</strong> 첫 출근을 함께 축하드려요.</p>
+  <p>그리고 <strong>창원시 감사관</strong> 임명을 함께 축하드려요.</p>
 </div>
 
 ## 들어가며
@@ -263,7 +263,7 @@ classes: wide
   <div class="stat-card">
     <div class="stat-num" id="stat-meals">—</div>
     <div class="stat-label">드신 밥 (추정, 끼)</div>
-    <div class="stat-note">하루 세 끼로 어림잡은 숫자예요. 이 많은 끼니마다 어머님의 정갈한 손맛이 함께해 주셨지요.</div>
+    <div class="stat-note">하루 세 끼로 어림잡은 숫자예요. 그 많은 끼니 가운데 대부분을 어머님의 정갈한 손맛이 채워 주셨지요.</div>
   </div>
   <div class="stat-card countdown" id="stat-countdown-card">
     <div class="stat-num" id="stat-countdown">—</div>
@@ -516,15 +516,15 @@ classes: wide
     } else if (now < dayAfterBday) {
       isToday = true;
       countdownText = "D-DAY";
-      countdownLabel = "오늘이 바로 그날 🎂";
-      countdownNote = "케이크 위 초를 켜 주세요. 끄시는 건 아버님 몫입니다.";
+      countdownLabel = "오늘이 바로 그날이에요 🎂";
+      countdownNote = "오늘 하루, 아버님께서 좋아하시는 것들로만 가득하시길 진심으로 바라요.";
     } else {
       // 올해 생일 지나감 → 내년 생일 D-N
       nextBday = new Date((y + 1) + "-10-31T00:00:00+09:00");
       const dLeft = Math.ceil((nextBday - now) / msPerDay);
       countdownText = "D−" + dLeft;
       countdownLabel = orbits + 1 + "번째 생신까지";
-      countdownNote = "다음 번 생신 카운트 시작. 올해도 수고 많으셨습니다.";
+      countdownNote = "지난 생신도 평안히 지나오셨어요. 다음 한 해도 함께 걷겠습니다.";
     }
 
     const set = function (id, v) {
