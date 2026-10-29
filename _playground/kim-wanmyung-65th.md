@@ -450,7 +450,7 @@ classes: wide
   // Worker/서비스 쪽에서 Telegram Bot API 로 다시 쏘도록 구성하세요.
   const NOTIFY_WEBHOOK_URL = "https://green-haze-edce.shalwxy.workers.dev";
 
-  const STORAGE_KEY = "wanmyung-66-gifts";
+  const STORAGE_KEY = "wanmyung-65-gifts";
   // 선물 상자를 열 수 있는 날 (한국시간 10월 31일 하루 동안).
   // ?preview=1 쿼리가 붙으면 테스트용으로 바로 열림 상태로 간주한다.
   const PREVIEW_MODE = (function () {
@@ -619,7 +619,7 @@ classes: wide
       url: location.href,
       time: now,
       ua: ua,
-      message: "김완명 선생 생신 페이지에서 선물 상자 " + giftId + " 발견 (" + total + "/2)"
+      message: "아버님 생신 페이지에서 선물 상자 " + giftId + " 발견 (" + total + "/2)"
     }).then(function (res) {
       // 서버가 중복(이미 다른 디바이스에서 열림)이라 알려주면 안내만 바꿔 띄움
       if (res && res.duplicate) {
@@ -649,7 +649,7 @@ classes: wide
           page: location.pathname,
           url: location.href,
           time: new Date().toISOString(),
-          message: "김완명 선생 생신 페이지, 두 상자 모두 발견 완료!"
+          message: "아버님 생신 페이지, 두 상자 모두 발견 완료!"
         });
       }, 1600);
     }
