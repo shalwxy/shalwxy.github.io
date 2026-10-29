@@ -315,12 +315,18 @@ classes: wide
 
 ## 들어가며
 
-1960년 가을의 어느 날, 한 아이가 세상에 왔습니다. 그로부터 66번의 가을이 더 지난 오늘,
-아버님께서는 **창원시 감사관**이라는 이름으로 또 하나의 가을을 맞이하십니다.
+1960년 가을의 어느 날,<br>
+한 아이가 세상에 왔습니다.
 
-이 페이지는 짧은 축하 편지이자, 작은 숨바꼭질입니다.
-읽어 내려가시다 보면 **선물 상자 두 개**가 어딘가 숨어 있어요. 눈 밝으신 아버님께서
-한 번씩 눌러 봐 주시면, 그때마다 저에게 알림이 오고
+그로부터 66번의 가을이 더 지난 오늘,<br>
+아버님께서는 **창원시 감사관**이라는 이름으로<br>
+또 하나의 가을을 맞이하십니다.
+
+이 페이지는 짧은 축하 편지이자, 작은 숨바꼭질입니다.<br>
+읽어 내려가시다 보면 **선물 상자 두 개**가 어딘가 숨어 있어요.
+
+눈 밝으신 아버님께서 한 번씩 눌러 봐 주시면,<br>
+그때마다 저에게 알림이 오고<br>
 **아버님 통장으로 "축하의 송금"** 이 조용히 들어갑니다.
 
 <div style="background:#fafafa;border-radius:10px;padding:0.9em 1.1em;margin-top:1em;color:#666;font-size:0.9em;line-height:1.7">
@@ -339,22 +345,22 @@ classes: wide
   <div class="stat-card">
     <div class="stat-num" id="stat-days">—</div>
     <div class="stat-label">지구에서 보내신 날</div>
-    <div class="stat-note">긴 세월을 묵묵히 걸어와 주셔서 감사해요. 하루하루가 모여 지금의 아버님이 되셨습니다.</div>
+    <div class="stat-note">긴 세월을 묵묵히 걸어와 주셔서 감사해요.<br>하루하루가 모여 지금의 아버님이 되셨습니다.</div>
   </div>
   <div class="stat-card">
     <div class="stat-num" id="stat-orbits">—</div>
     <div class="stat-label">지구와 함께한 공전</div>
-    <div class="stat-note">아버님께서 지구와 함께 돌아 주신 햇수예요. 올해도 한 바퀴 평안히 지나오셨어요.</div>
+    <div class="stat-note">아버님께서 지구와 함께 돌아 주신 햇수예요.<br>올해도 한 바퀴 평안히 지나오셨어요.</div>
   </div>
   <div class="stat-card">
     <div class="stat-num" id="stat-meals">—</div>
     <div class="stat-label">드신 밥 (추정, 끼)</div>
-    <div class="stat-note">하루 세 끼로 어림잡은 숫자예요. 그 많은 끼니 가운데 대부분을 어머님의 정갈한 손맛이 채워 주셨지요.</div>
+    <div class="stat-note">하루 세 끼로 어림잡은 숫자예요.<br>그 많은 끼니 가운데 대부분을<br>어머님의 정갈한 손맛이 채워 주셨지요.</div>
   </div>
   <div class="stat-card countdown" id="stat-countdown-card">
     <div class="stat-num" id="stat-countdown">—</div>
     <div class="stat-label" id="stat-countdown-label">66번째 생신까지</div>
-    <div class="stat-note" id="stat-countdown-note">달력에서 반짝이는 그 날짜가 점점 가까워집니다. 조금만 더 기다려 주셔요.</div>
+    <div class="stat-note" id="stat-countdown-note">달력에서 반짝이는 그 날짜가<br>점점 가까워집니다.<br>조금만 더 기다려 주셔요.</div>
   </div>
 </div>
 
@@ -385,18 +391,31 @@ classes: wide
 - 14:30 — 오후 회의. 묵묵히 들으시고, 꼭 필요한 말씀만 짧게.
 - 18:00 — 퇴근. 손에는 서류 가방, 가슴에는 늘 그 자리의 원칙.
 
-> 아버님께서 쌓아 오신 성실과 정직이 창원시의 든든한 바탕이 되실 거라 믿어요. <span class="gift gift-2" data-gift="2" title="눌러 보세요" role="button" tabindex="0" aria-label="숨겨진 선물 상자 2">📦</span>
+> 아버님께서 쌓아 오신 성실과 정직이<br>
+> 창원시의 든든한 바탕이 되실 거라 믿어요. <span class="gift gift-2" data-gift="2" title="눌러 보세요" role="button" tabindex="0" aria-label="숨겨진 선물 상자 2">📦</span>
 
 ## 생신 메시지
 
-세어 보면 66년, 안 세어 보면 어제 같은 시간들을 지나오셨지요.
-새로 맡으신 자리는 꼼꼼함과 끈기를 요구할 터인데,
-그 두 가지는 지난 66년의 세월이 이미 넉넉히 증명해 둔 아버님의 자질이십니다.
+세어 보면 66년,<br>
+안 세어 보면 어제 같은 시간들을 지나오셨지요.
 
-올해 생신엔 큰 걱정은 잠시 내려 두시고, 좋아하시는 것들로만 하루를 채우시길 바라요.
-늘 강건하시고 평안하시길, 새로 맡으신 자리에서도 뜻하신 바가 두루 이루어지시길 진심으로 기원드립니다.
+새로 맡으신 자리는 꼼꼼함과 끈기를 요구할 터인데,<br>
+그 두 가지는 지난 66년의 세월이 이미 넉넉히 증명해 둔<br>
+아버님의 자질이십니다.
 
-그리고 오랜 세월 아버님 곁에서 변함없는 마음과 따뜻한 손길로 가족을 지켜 주신 **어머님께도** 깊은 감사와 사랑을 함께 전합니다. 저희도 자주 찾아뵙고, 두 분께 기쁜 소식 더해 드릴게요.
+올해 생신엔 큰 걱정은 잠시 내려 두시고,<br>
+좋아하시는 것들로만 하루를 채우시길 바라요.
+
+늘 강건하시고 평안하시길,<br>
+새로 맡으신 자리에서도 뜻하신 바가 두루 이루어지시길<br>
+진심으로 기원드립니다.
+
+그리고 오랜 세월 아버님 곁에서<br>
+변함없는 마음과 따뜻한 손길로 가족을 지켜 주신 **어머님께도**<br>
+깊은 감사와 사랑을 함께 전합니다.
+
+저희도 자주 찾아뵙고,<br>
+두 분께 기쁜 소식 더해 드릴게요.
 
 <div class="signoff">
   — 2026년 10월 31일, 마음을 담아 <br>
@@ -656,31 +675,35 @@ classes: wide
       const dLeft = Math.ceil((nextBday - now) / msPerDay);
       countdownText = "D−" + dLeft;
       countdownLabel = orbits + 1 + "번째 생신까지";
-      countdownNote = "달력에서 반짝이는 그 날짜가 점점 가까워집니다. 조금만 더 기다려 주셔요.";
+      countdownNote = "달력에서 반짝이는 그 날짜가<br>점점 가까워집니다.<br>조금만 더 기다려 주셔요.";
     } else if (now < dayAfterBday) {
       isToday = true;
       countdownText = "D-DAY";
       countdownLabel = "오늘이 바로 그날이에요 🎂";
-      countdownNote = "오늘 하루, 아버님께서 좋아하시는 것들로만 가득하시길 진심으로 바라요.";
+      countdownNote = "오늘 하루,<br>아버님께서 좋아하시는 것들로만<br>가득하시길 진심으로 바라요.";
     } else {
       // 올해 생일 지나감 → 내년 생일 D-N
       nextBday = new Date((y + 1) + "-10-31T00:00:00+09:00");
       const dLeft = Math.ceil((nextBday - now) / msPerDay);
       countdownText = "D−" + dLeft;
       countdownLabel = orbits + 1 + "번째 생신까지";
-      countdownNote = "지난 생신도 평안히 지나오셨어요. 다음 한 해도 함께 걷겠습니다.";
+      countdownNote = "지난 생신도 평안히 지나오셨어요.<br>다음 한 해도 함께 걷겠습니다.";
     }
 
     const set = function (id, v) {
       const el = document.getElementById(id);
       if (el) el.textContent = v;
     };
+    const setHtml = function (id, v) {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = v;
+    };
     set("stat-days", fmtNum(daysLived) + "일");
     set("stat-orbits", fmtNum(orbits) + "바퀴");
     set("stat-meals", fmtNum(meals) + "끼");
     set("stat-countdown", countdownText);
     set("stat-countdown-label", countdownLabel);
-    set("stat-countdown-note", countdownNote);
+    setHtml("stat-countdown-note", countdownNote);
     const card = document.getElementById("stat-countdown-card");
     if (card && isToday) card.setAttribute("data-today", "true");
   }
