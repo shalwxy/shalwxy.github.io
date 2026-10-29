@@ -144,11 +144,19 @@ classes: wide
     line-height: 1.4;
     color: #222;
   }
-  .gift-modal p {
+  .gift-modal .gift-modal-body p,
+  .gift-modal .gift-modal-note {
     color: #555;
-    line-height: 1.7;
-    margin: 0.5em 0;
+    line-height: 1.75;
+    margin: 0.55em 0;
     font-size: 1em;
+  }
+  .gift-modal .gift-modal-body p:first-child { margin-top: 0; }
+  .gift-modal .gift-modal-body p:last-child { margin-bottom: 0; }
+  .gift-modal .gift-modal-note {
+    margin-top: 0.9em;
+    color: #999;
+    font-size: 0.88em;
   }
   .gift-modal .gift-modal-note:empty { display: none; }
   .gift-modal button {
@@ -393,8 +401,8 @@ classes: wide
 <div class="gift-modal-backdrop" id="gift-modal-backdrop">
   <div class="gift-modal">
     <h3 id="gift-modal-title">🎁 선물 상자 발견!</h3>
-    <p id="gift-modal-body">축하의 송금이 최대 6시간 안에 아버님 통장에 도착할 예정이에요.</p>
-    <p style="color:#999;font-size:0.85em" id="gift-modal-note"></p>
+    <div id="gift-modal-body" class="gift-modal-body"></div>
+    <p class="gift-modal-note" id="gift-modal-note"></p>
     <button type="button" onclick="closeGiftModal()">고맙습니다</button>
   </div>
 </div>
@@ -445,19 +453,28 @@ classes: wide
   const messages = {
     "1": {
       title: "🎁 아버님, 첫 번째 상자를 찾아 주셨어요!",
-      body: "축하의 송금 1회차는 최대 6시간 안에 아버님 통장으로 조용히 도착합니다. 조금만 기다려 주셔요.",
+      body: [
+        "축하의 송금 1회차가 곧 출발합니다.",
+        "최대 여섯 시간 안에 아버님 통장으로 조용히 도착할 거예요."
+      ],
       colors: ["#e24a6d", "#f0a500", "#ffd166"]
     },
     "2": {
       title: "📦 아버님, 두 번째 상자도 찾아 주셨어요!",
-      body: "역시 아버님이십니다. 2회차 송금도 함께 최대 6시간 안에 도착할 거예요.",
+      body: [
+        "역시 아버님이십니다.",
+        "2회차 송금도 함께 최대 여섯 시간 안에 도착합니다."
+      ],
       colors: ["#4fc3f7", "#81d4fa", "#b2ebf2"]
     }
   };
 
   const bonusMessage = {
-    title: "🏆 두 상자 모두 발견 — 생신 보너스!",
-    body: "하나도 놓치지 않으시는 아버님의 꼼꼼함에 보너스 이체도 조용히 더해 둘게요. 송금은 함께 최대 6시간 안에 도착합니다.",
+    title: "🏆 두 상자 모두 발견하셨어요!",
+    body: [
+      "하나도 놓치지 않으시는 아버님께, 보너스 이체도 조용히 더해 둘게요.",
+      "모든 송금은 최대 여섯 시간 안에 도착합니다."
+    ],
     colors: ["#e24a6d", "#f0a500", "#4fc3f7", "#ffd166", "#9c6ade"]
   };
 
@@ -485,7 +502,16 @@ classes: wide
   function openModal(title, body, note, opts) {
     opts = opts || {};
     document.getElementById("gift-modal-title").textContent = title;
-    document.getElementById("gift-modal-body").textContent = body;
+    // body 는 문자열 또는 문단 배열. 배열이면 문단별로 <p> 로 렌더링.
+    const bodyEl = document.getElementById("gift-modal-body");
+    bodyEl.innerHTML = "";
+    const paragraphs = Array.isArray(body) ? body : [body];
+    paragraphs.forEach(function (txt) {
+      if (!txt) return;
+      const p = document.createElement("p");
+      p.textContent = txt;
+      bodyEl.appendChild(p);
+    });
     document.getElementById("gift-modal-note").textContent = note || "";
     const backdrop = document.getElementById("gift-modal-backdrop");
     const modal = backdrop.querySelector(".gift-modal");
@@ -530,7 +556,10 @@ classes: wide
     if (!isOpenDay()) {
       openModal(
         "🔒 아직은 조금 이른 날이에요",
-        "선물 상자는 아버님의 생신 당일(10월 31일)에만 열립니다. 그날 이 페이지에 다시 들러 주시면, 작은 즐거움이 기다리고 있을 거예요.",
+        [
+          "선물 상자는 아버님의 생신 당일, 10월 31일에만 열립니다.",
+          "그날 이 페이지에 다시 들러 주시면, 작은 즐거움이 기다리고 있을 거예요."
+        ],
         "",
         { locked: true }
       );
@@ -564,8 +593,11 @@ classes: wide
       // 서버가 중복(이미 다른 디바이스에서 열림)이라 알려주면 안내만 바꿔 띄움
       if (res && res.duplicate) {
         openModal(
-          "이미 열어 보셨던 상자네요",
-          "이 상자는 아버님께서 먼저 한 번 열어 보셨어요. 송금은 그때 이미 조용히 처리되었답니다.",
+          "이미 한 번 열어 보셨던 상자예요",
+          [
+            "이 상자는 아버님께서 먼저 열어 보셨답니다.",
+            "그때 송금도 함께 처리되었으니, 안심하셔요."
+          ],
           ""
         );
       }
@@ -574,7 +606,7 @@ classes: wide
     openModal(
       meta.title,
       meta.body,
-      total >= 2 ? "" : "남은 상자 " + (2 - total) + "개가 어딘가에 더 있어요."
+      total >= 2 ? "" : "남은 상자가 " + (2 - total) + "개 더 숨어 있어요."
     );
 
     if (total >= 2) {
