@@ -227,9 +227,13 @@ classes: wide
     border-radius: 6px;
   }
   .photo-card figcaption {
-    margin-top: 0.6em;
+    margin-top: 0.7em;
     color: #666; font-size: 0.9em; text-align: center;
-    line-height: 1.5;
+    line-height: 1.75;
+    word-break: keep-all;
+  }
+  @media (max-width: 480px) {
+    .photo-card figcaption br { display: none; }
   }
 
   /* 숫자 카드 */
@@ -363,7 +367,11 @@ classes: wide
     <span class="year">2026·07·28</span> — 창원시 감사관으로 첫 출근. <span class="note">창원시 어딘가의 서류들이 "올 것이 왔구나" 하고 조용히 자세를 바로잡은 날.</span>
     <figure class="photo-card">
       <img src="/assets/img/playground/kim-wanmyung-appointment.jpg" alt="창원시 감사관 임명식 — 태극기와 시 상징기 사이, 다섯 분이 주먹을 쥐고 포즈">
-      <figcaption>임명장을 손에 쥐신 그날. 함께 서 주신 분들과 어깨를 나란히 하신 사진 한 장에, 지난 세월 아버님께서 쌓아 오신 성실의 무게가 그대로 담겨 있어요.</figcaption>
+      <figcaption>
+        임명장을 손에 쥐신 그날의 사진 한 장.<br>
+        함께 서 주신 분들과 어깨를 나란히 하신 모습에서,<br>
+        지난 세월 아버님께서 쌓아 오신 성실의 무게가 그대로 느껴져요.
+      </figcaption>
     </figure>
   </li>
   <li><span class="year">2026·10·31</span> — 66번째 생신. <span class="note">할로윈. 세상이 알아서 축제 중.</span></li>
