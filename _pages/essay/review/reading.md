@@ -9,6 +9,6 @@ author_profile: false
 sidebar:
   nav: "essay"
 header:
-  overlay_image: /assets/img/thumbnail/book.jpg
+  overlay_image: /assets/img/thumbnail/essay-park.jpg
   overlay_filter: 0.5
 ---

@@ -92,7 +92,6 @@ defaults:
       read_time: true
       comments: true
       share: true
-      related: true
       toc: true
       toc_sticky: true
       sidebar:
@@ -106,7 +105,6 @@ defaults:
       read_time: true
       comments: true
       share: true
-      related: true
       toc: true
       toc_sticky: true
       sidebar:
@@ -120,7 +118,6 @@ defaults:
       read_time: true
       comments: true
       share: true
-      related: true
       toc: true
       toc_sticky: true
       sidebar:

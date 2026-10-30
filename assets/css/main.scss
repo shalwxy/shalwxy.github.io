@@ -82,6 +82,11 @@
   }
 }
 
+/* 태그 아카이브: 주소에 #태그 가 있으면 해당 태그 섹션만 표시 */
+.layout--archive:has(.taxonomy__section:target) .taxonomy__section:not(:target) {
+  display: none;
+}
+
 /* 허브 세 카드 (이름만, 사진 배경) */
 .hub-cards {
   display: grid;
@@ -101,7 +106,7 @@
   aspect-ratio: 3 / 2;
   position: relative;
   overflow: hidden;
-  border-radius: $border-radius;
+  border-radius: 16px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   background-size: cover;
   background-position: center;
@@ -127,9 +132,12 @@
   span {
     position: relative;
     z-index: 1;
-    font-size: $type-size-2;
+    font-size: $type-size-3;
     font-weight: 700;
-    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    /* 마지막 글자 뒤 자간만큼 왼쪽을 밀어 시각적 중앙 정렬 */
+    padding-left: 0.22em;
     color: #fff;
     text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
   }
