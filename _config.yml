@@ -1,6 +1,7 @@
 remote_theme: "mmistakes/minimal-mistakes@4.26.2"
 minimal_mistakes_skin: "default"
 locale: "ko-KR"
+date_format: "%Y-%m-%d"
 
 title: "Persica"
 description: "수학·공학·과학 정리, 일상 기록, 그리고 사이드 프로젝트 전시"
@@ -20,7 +21,7 @@ tag_archive:
 
 author:
   name: "shalwxy"
-  bio: "수학과 공학을 공부하고, 일상을 기록하고, 사이드 프로젝트를 만듭니다."
+  bio: ""
   links:
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
@@ -88,10 +89,11 @@ defaults:
       type: lab
     values:
       layout: single
-      author_profile: true
+      author_profile: false
       read_time: true
       comments: true
       share: true
+      show_date: true
       toc: true
       toc_sticky: true
       sidebar:
@@ -101,10 +103,11 @@ defaults:
       type: essay
     values:
       layout: single
-      author_profile: true
+      author_profile: false
       read_time: true
       comments: true
       share: true
+      show_date: true
       toc: true
       toc_sticky: true
       sidebar:
@@ -114,7 +117,7 @@ defaults:
       type: playground
     values:
       layout: single
-      author_profile: true
+      author_profile: false
       read_time: true
       comments: true
       share: true

@@ -3,8 +3,6 @@ title: "Lab"
 layout: folder
 permalink: /lab/
 collection: lab
-entries_layout: grid
-classes: wide
 author_profile: false
 sidebar:
   nav: "lab"

@@ -4,8 +4,6 @@ layout: folder
 permalink: /lab/engineering/algorithm/
 collection: lab
 folder: _lab/engineering/algorithm/
-entries_layout: grid
-classes: wide
 author_profile: false
 sidebar:
   nav: "lab"

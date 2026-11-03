@@ -4,8 +4,6 @@ layout: folder
 permalink: /lab/math/
 collection: lab
 folder: _lab/math/
-entries_layout: grid
-classes: wide
 author_profile: false
 sidebar:
   nav: "lab"
