@@ -4,8 +4,6 @@ layout: folder
 permalink: /lab/math/set-theory/
 collection: lab
 folder: _lab/math/set-theory/
-entries_layout: grid
-classes: wide
 author_profile: false
 sidebar:
   nav: "lab"

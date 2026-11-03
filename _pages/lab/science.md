@@ -4,8 +4,6 @@ layout: folder
 permalink: /lab/science/
 collection: lab
 folder: _lab/science/
-entries_layout: grid
-classes: wide
 author_profile: false
 sidebar:
   nav: "lab"
