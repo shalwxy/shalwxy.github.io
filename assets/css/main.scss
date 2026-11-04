@@ -82,6 +82,25 @@
   }
 }
 
+/* 본문 그림 캡션: 테마 기본(세리프·왼쪽 정렬) 대신 본문 글꼴로 가운데 정렬 */
+.page__content figure {
+  flex-direction: column;
+  align-items: center;
+
+  img {
+    margin-bottom: 0.6em;
+  }
+
+  figcaption {
+    width: 100%;
+    margin-bottom: 0;
+    font-family: $global-font-family;
+    font-size: $type-size-6;
+    text-align: center;
+    letter-spacing: 0.01em;
+  }
+}
+
 /* 태그 아카이브: 주소에 #태그 가 있으면 해당 태그 섹션만 표시 */
 .layout--archive:has(.taxonomy__section:target) .taxonomy__section:not(:target) {
   display: none;

@@ -39,8 +39,10 @@ essay:
   - title: "자격증"
     url: /essay/certification/
     children:
-      - title: "공인중개사"
-        url: /essay/certification/realtor/
+      - title: "감정평가사"
+        url: /essay/certification/appraiser/
+  - title: "교육"
+    url: /essay/education/
 
 playground:
   - title: "Playground"
