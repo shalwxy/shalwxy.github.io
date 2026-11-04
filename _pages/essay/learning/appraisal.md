@@ -1,9 +1,9 @@
 ---
-title: "교육"
+title: "감평"
 layout: folder
-permalink: /essay/education/
+permalink: /essay/learning/appraisal/
 collection: essay
-folder: _essay/education/
+folder: _essay/learning/appraisal/
 entries_layout: list
 author_profile: false
 sidebar:

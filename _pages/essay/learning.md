@@ -1,9 +1,9 @@
 ---
-title: "감정평가사"
+title: "배움"
 layout: folder
-permalink: /essay/certification/appraiser/
+permalink: /essay/learning/
 collection: essay
-folder: _essay/certification/appraiser/
+folder: _essay/learning/
 entries_layout: list
 author_profile: false
 sidebar:
