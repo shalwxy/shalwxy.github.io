@@ -1,5 +1,5 @@
 ---
-title: "감상"
+title: "후기"
 layout: folder
 permalink: /essay/review/
 collection: essay

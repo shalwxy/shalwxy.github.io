@@ -1,9 +1,9 @@
 ---
-title: "자격증"
+title: "건강"
 layout: folder
-permalink: /essay/certification/
+permalink: /essay/learning/health/
 collection: essay
-folder: _essay/certification/
+folder: _essay/learning/health/
 entries_layout: list
 author_profile: false
 sidebar:
