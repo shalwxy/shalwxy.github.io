@@ -101,6 +101,49 @@
   }
 }
 
+/* 그림 확대 창(Magnific Popup) 캡션: 본문 캡션과 같은 글꼴·가운데 정렬 */
+.mfp-bottom-bar {
+  text-align: center;
+}
+
+.mfp-title {
+  padding-right: 0;
+  font-family: $global-font-family;
+  font-size: $type-size-6;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.mfp-counter {
+  position: static;
+  display: block;
+  margin-top: 0.25em;
+  font-family: $global-font-family;
+}
+
+/* 본문 콜아웃(Q&A 등): 연한 배경 + 왼쪽 세로선. 글자는 본문보다 한두 포인트 작게 */
+.page__content .callout {
+  margin: 1.5em 0;
+  padding: 1em 1.25em;
+  border-left: 4px solid $primary-color;
+  border-radius: $border-radius;
+  background: mix($primary-color, $background-color, 6%);
+  font-size: 0.9em;
+
+  > :first-child {
+    margin-top: 0;
+  }
+
+  > :last-child {
+    margin-bottom: 0;
+  }
+
+  // 코드 블록은 본문의 코드 블록과 같은 크기 유지 (0.75em ÷ 0.9)
+  .highlight {
+    font-size: 0.8333em;
+  }
+}
+
 /* 태그 아카이브: 주소에 #태그 가 있으면 해당 태그 섹션만 표시 */
 .layout--archive:has(.taxonomy__section:target) .taxonomy__section:not(:target) {
   display: none;
