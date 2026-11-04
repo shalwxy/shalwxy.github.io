@@ -1,9 +1,9 @@
 ---
-title: "공인중개사"
+title: "교육"
 layout: folder
-permalink: /essay/certification/realtor/
+permalink: /essay/education/
 collection: essay
-folder: _essay/certification/realtor/
+folder: _essay/education/
 entries_layout: list
 author_profile: false
 sidebar:
