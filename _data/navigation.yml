@@ -24,6 +24,8 @@ lab:
     children:
       - title: "알고리즘"
         url: /lab/engineering/algorithm/
+      - title: "데이터"
+        url: /lab/engineering/data/
 
 essay:
   - title: "Essay"
