@@ -1,9 +1,9 @@
 ---
-title: "건강"
+title: "생활"
 layout: folder
-permalink: /essay/learning/health/
+permalink: /essay/learning/life/
 collection: essay
-folder: _essay/learning/health/
+folder: _essay/learning/life/
 entries_layout: list
 author_profile: false
 sidebar:

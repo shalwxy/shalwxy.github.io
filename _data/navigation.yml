@@ -41,8 +41,8 @@ essay:
   - title: "배움"
     url: /essay/learning/
     children:
-      - title: "건강"
-        url: /essay/learning/health/
+      - title: "생활"
+        url: /essay/learning/life/
       - title: "감평"
         url: /essay/learning/appraisal/
 
