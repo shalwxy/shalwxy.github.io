@@ -82,6 +82,23 @@
   }
 }
 
+/* 본문 표: 테마 기본은 내용 폭만큼만 그려 좁아 보이므로 본문 폭에 맞춘다. 좁은 화면에선 가로 스크롤 유지 */
+.page__content table {
+  display: table;
+  width: 100%;
+
+  @media (max-width: $small) {
+    display: block;
+    width: auto;
+  }
+
+  // 첫 열은 항목 이름이라 줄바꿈하지 않는다 ("기준금/리" 같은 어색한 분리 방지)
+  th:first-child,
+  td:first-child {
+    white-space: nowrap;
+  }
+}
+
 /* 본문 그림 캡션: 테마 기본(세리프·왼쪽 정렬) 대신 본문 글꼴로 가운데 정렬 */
 .page__content figure {
   flex-direction: column;
