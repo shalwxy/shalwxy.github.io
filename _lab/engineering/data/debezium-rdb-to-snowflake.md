@@ -1,5 +1,5 @@
 ---
-title: "Debezium을 활용한 RDB to Snowflake"
+title: "[CDC] Debezium을 활용한 RDB to Snowflake"
 excerpt: "Debezium CDC의 개념과 동작 방식을 정리하고, AWS Aurora PostgreSQL의 변경 사항을 MSK Connect와 Debezium, Snowflake Kafka 커넥터를 거쳐 Snowflake까지 안정적으로 반영하는 과정을 기록한다."
 date: 2026-11-04
 tags:
