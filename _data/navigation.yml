@@ -26,6 +26,8 @@ lab:
         url: /lab/engineering/data/
       - title: "알고리즘"
         url: /lab/engineering/algorithm/
+      - title: "분산시스템"
+        url: /lab/engineering/distributed/
 
 essay:
   - title: "Essay"
