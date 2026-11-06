@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # 로컬에서 블로그를 띄워 생일 축하 페이지를 확인하는 스크립트.
-#   PC:    http://localhost:4000/playground/kim-wanmyung-66th/
-#   모바일: 같은 Wi-Fi 에서 http://<이 맥의 IP>:4000/playground/kim-wanmyung-66th/
+#   PC:    http://localhost:4000/playground/kim-wanmyung-65th/
+#   모바일: 같은 Wi-Fi 에서 http://<이 맥의 IP>:4000/playground/kim-wanmyung-65th/
 #
 # 사용법:
 #   bash docs/birthday-page/serve.sh
@@ -26,9 +26,9 @@ LAN_IP="$(ipconfig getifaddr en0 2>/dev/null || ipconfig getifaddr en1 2>/dev/nu
 echo ""
 echo "=============================================="
 echo " Jekyll serve 를 시작합니다."
-echo "   PC:    http://localhost:4000/playground/kim-wanmyung-66th/"
+echo "   PC:    http://localhost:4000/playground/kim-wanmyung-65th/"
 if [ -n "$LAN_IP" ]; then
-  echo "   모바일: http://$LAN_IP:4000/playground/kim-wanmyung-66th/"
+  echo "   모바일: http://$LAN_IP:4000/playground/kim-wanmyung-65th/"
   echo "          (맥과 폰이 같은 Wi-Fi 에 있어야 합니다)"
 fi
 echo " 종료: Ctrl+C"

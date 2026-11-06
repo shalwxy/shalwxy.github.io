@@ -1,8 +1,8 @@
 ---
 title: "[LLM] Slack 에러 알림에 원인 후보를 달아 주는 봇"
-excerpt: "운영 에러가 Slack에 올라오면 담당자가 '어느 코드인지, 전에도 봤는지'를 매번 수동으로 찾던 일을 LLM 봇에 맡긴 과정. 에러 텍스트를 LLM에 그냥 던지지 않기 위해 둔 가드레일 — 회귀 후보 주입, 분석 재사용, 비용·동시성 상한, 프롬프트 규율."
+excerpt: "Slack 에러 알림에 원인 후보를 달아 주는 LLM 봇을 만들며 둔 맥락 주입과 가드레일을 다룬다."
 date: 2026-09-15
-published: false
+published: true
 tags:
   - LLM
   - 운영
@@ -43,14 +43,14 @@ LLM이 모르는 것은 **우리 저장소**다. 에러 텍스트만으로는 �
 ```
 [에러]
 panic: runtime error: invalid memory address
-  at core/service/withdrawal_service.go:463
-  at svc/handlers/check_eligibility/handler.go:58
+  at internal/order/service.go:463
+  at internal/order/handler.go:58
 
-[withdrawal_service.go:450-480 소스]
+[service.go:450-480 소스]
 ...
 
-[withdrawal_service.go 최근 커밋]
-- 2일 전  a1b2c3  fix: check_type 분기 추가
+[service.go 최근 커밋]
+- 2일 전  a1b2c3  fix: 분기 추가
 - 9일 전  d4e5f6  refactor: validator 완화
 ...
 
@@ -59,7 +59,7 @@ panic: runtime error: invalid memory address
 
 ### 결과
 
-**성공** — 답이 "**2일 전 커밋 a1b2c3에서 추가된 check_type 분기에서 `req.ToAddress`가 nil일 때 역참조**" 수준으로 구체화됐다. 담당자는 커밋 하나를 열어 확인하면 된다.
+**성공** — 답이 "**2일 전 커밋 a1b2c3에서 추가된 분기에서 `req.ToAddress`가 nil일 때 역참조**" 수준으로 구체화됐다. 담당자는 커밋 하나를 열어 확인하면 된다.
 
 ### 분석
 
@@ -124,7 +124,7 @@ LLM에 보내기 전에 이메일·지갑 주소·토큰 문자열 패턴을 마
 
 ## 벤더 모델 폐기 — 가장 뻔한 장애
 
-운영 몇 달 뒤 **LLM 벤더가 모델 하나를 폐기**해 404가 났고, 봇을 포함한 LLM 기능 전체가 멈췄다. 모델 이름을 설정으로 빼 두어 교체 자체는 금방 했지만, **모델 폐기 공지를 모니터링하지 않았다**는 게 교훈이었다. 이후 404를 "모델 없음"으로 구분해 안내하고, 모델 이름을 환경별 설정으로 관리한다.
+운영 두 달 뒤 **LLM 벤더가 모델 하나를 폐기**해 404가 났고, 봇을 포함한 LLM 기능 전체가 멈췄다. 모델 이름을 설정으로 빼 두어 교체 자체는 금방 했지만, **모델 폐기 공지를 모니터링하지 않았다**는 게 교훈이었다. 이후 404를 "모델 없음"으로 구분해 안내하고, 모델 이름을 환경별 설정으로 관리한다.
 
 ## 정리
 
