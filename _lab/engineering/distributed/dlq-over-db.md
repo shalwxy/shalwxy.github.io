@@ -1,8 +1,8 @@
 ---
 title: "[DLQ] 비정상 이벤트는 DB가 아니라 DLQ로"
-excerpt: "메시지 컨슈머가 '이상한 메시지'를 받았을 때, DB에 저장하고 조회에서 숨기는 방식에서 DLQ로 보내고 DB에는 쓰지 않는 방식으로 옮긴 과정. 조회·집계·인덱스 세 가지에서 왜 DLQ가 더 싼지 정리한다."
+excerpt: "비정상 메시지를 DB에 저장해 숨기는 대신 DLQ로 보내는 선택을 다룬다."
 date: 2024-12-16
-published: false
+published: true
 tags:
   - Kafka
   - 에러 처리
@@ -104,11 +104,11 @@ func (h *Handler) Handle(ctx context.Context, msg *Message) error {
 
 ```yaml
 consumer:
-  topic: activity.asset-result.nft-item
+  topic: activity.events
   retry:
     max_attempts: 3
     delay: 24m
-  dead_letter_topic: activity.asset-result.nft-item.DLQ
+  dead_letter_topic: activity.events.DLQ
 ```
 
 ### 결과
@@ -137,7 +137,7 @@ consumer:
 
 가장 좋은 비정상은 **아예 발생하지 않은 비정상**이다. 생산자 서비스의 입력 검증·스키마 검증·테스트가 꼼꼼하면 소비자가 받을 비정상은 애초에 줄어든다.
 
-- 얻는 것: DLQ도 재시도도 필요 없다. 생산자가 보장하는 스키마만 믿으면 된다.
+- 얻는 것: 비정상 메시지 자체가 줄어 DLQ로 흘러가는 양이 작아진다(일시 장애용 재시도·DLQ는 여전히 둔다). 생산자가 보장하는 스키마를 믿을 수 있다.
 - 치르는 것: **내가 소유하지 않는 생산자**(다른 팀의 서비스, 외부 벤더)에 의존한다. 상대가 깨면 내 쪽에서 안전망이 없다.
 - 같은 조직 안이라면 **스키마 레지스트리**(Confluent Schema Registry 등)를 써서 생산자·소비자가 같은 스키마로 묶이게 한다. 조직이 다르면 소비자가 DLQ로 받아들이는 쪽이 현실적이다.
 

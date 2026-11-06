@@ -1,8 +1,8 @@
 ---
 title: "[Saga] 롤백 토픽 대신 결과 토픽"
-excerpt: "출금 한도를 선차감한 뒤 실패하면 되돌려야 하는 보상(Compensation) 로직을, 롤백 전용 토픽 대신 '결과 토픽에서 실패만 골라 되돌리는' 구조로 바꾼 과정. 순서와 중복을 신경 써야 할 토픽을 하나로 줄인다."
+excerpt: "Saga 보상 로직을 롤백 전용 토픽 대신 결과 토픽의 한 분기로 처리하는 과정."
 date: 2025-12-29
-published: false
+published: true
 tags:
   - Saga
   - Kafka
@@ -62,13 +62,14 @@ Kafka 토픽을 하나 더 두면 **"순서·중복·스키마"**를 하나 더 
 
 ```go
 func (c *WithdrawalResultConsumer) Handle(ctx, evt ResultEvent) error {
-    if evt.Status == StatusSuccess {
+    switch evt.Status {
+    case StatusSuccess:
         return nil   // 선차감 그대로 → 확정
-    }
-    if evt.Status == StatusFailed || evt.Status == StatusDropped || evt.Status == StatusUnknown {
+    case StatusFailed, StatusDropped, StatusUnknown:
         return c.limitService.Rollback(ctx, evt.WalletAddress, evt.TokenSymbol, evt.Amount)
+    default:
+        return fmt.Errorf("unexpected status: %v", evt.Status)
     }
-    return fmt.Errorf("unexpected status: %v", evt.Status)
 }
 ```
 
@@ -114,9 +115,9 @@ CREATE TABLE daily_withdrawal (
 );
 ```
 
-새 토큰이 추가되면 **코드의 enum에 한 줄 추가**하면 끝. 테이블·컬럼은 그대로. [앞서 정리한 "정책은 enum/설정으로"](/lab/engineering/distributed/policy-as-enum/) 패턴과 같다.
+새 토큰이 추가되면 **코드의 enum에 한 줄 추가**하면 끝. 테이블·컬럼은 그대로. [별도로 정리한 "정책은 enum/설정으로"](/lab/engineering/distributed/policy-as-enum/) 패턴과 같다.
 
-## 다른 방법 — Outbox로 결과 발행 보장
+## 추가로 고려할 것 — Outbox로 결과 발행 보장
 
 결과 토픽에 메시지를 **반드시 한 번은 보내야** 보상이 트리거된다. 발행자가 "결과를 DB에 쓰고 Kafka에 보내고"를 하다가 Kafka 호출에서 실패하면 **결과가 안 보내지는 상태**가 생긴다. 이걸 피하려면 **Transactional Outbox 패턴**을 쓴다.
 
@@ -138,9 +139,9 @@ COMMIT;
 |---|---|---|---|
 | 보상 전용 토픽 | 많음 | 보상 필요 여부 미리 판단 | 두 토픽 통합 상태 관리 |
 | **결과 토픽 하나 (채택)** | 하나 | 결과를 그대로 발행 | 결과 상태에 따라 분기 |
-| 다른 방법. + Outbox | 하나 + outbox 테이블 | 트랜잭션 보장 | 같음 |
+| + Outbox (추가 적용) | 하나 + outbox 테이블 | 트랜잭션 보장 | 같음 |
 
-**채택 — 결과 토픽 하나.** 보상은 **별도 사건이 아니라 결과의 한 분기**다. 결과 토픽 하나를 소비하면서 "실패일 때만 보상"이 가장 자연스럽고, 순서·중복·스키마를 신경 쓸 자리가 한 곳으로 모인다.
+**채택: 시도 2.** 보상은 **별도 사건이 아니라 결과의 한 분기**다. 결과 토픽 하나를 소비하면서 "실패일 때만 보상"이 가장 자연스럽고, 순서·중복·스키마를 신경 쓸 자리가 한 곳으로 모인다.
 
 - Saga 보상을 **별도 토픽**으로 나누기 전에, 그 보상이 **결과의 한 분기로 표현 가능한지** 먼저 본다. 대부분 가능하다.
 - **발행자는 사건만 알리고, 보상이 필요한지는 소비자가 결정**한다. 발행자가 미리 판단하면 다른 소비자가 다른 보상 로직을 가질 수 없다.

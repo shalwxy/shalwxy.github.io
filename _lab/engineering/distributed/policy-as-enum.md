@@ -1,8 +1,8 @@
 ---
 title: "[설계] 정책은 코드 분기가 아니라 enum/설정으로"
-excerpt: "'OTP로 검증할까, 잠금 여부로 할까' 같은 기획이 자주 흔들릴 때, 매번 코드를 고치지 않고 API가 enum을 받게 해 '무엇을 검사할지'를 호출자가 고르게 한 과정."
+excerpt: "자주 바뀌는 '무엇을 검사할지'를 코드 분기 대신 enum/설정으로 옮기는 과정."
 date: 2026-07-09
-published: false
+published: true
 tags:
   - API 설계
   - Go
@@ -10,7 +10,7 @@ tags:
 
 ## 문제
 
-출금 전에 여러 가지 검사를 한다 — 국가 코드, 등급, 일일 한도, 사용자의 잠금 설정. 어느 검사를 돌릴지가 **기획에 따라 몇 번이고 바뀌었다.** "이번 분기는 OTP로 검증하자", "아니, 사용자 잠금 설정으로 하자", "프론트 어떤 화면에서는 한도만 보자", …
+출금 전에 여러 가지 검사를 한다 — 국가 코드, 등급, 일일 한도, 사용자의 잠금 설정. 어느 검사를 돌릴지가 **기획에 따라 몇 번이고 바뀌었다.** "이번 분기는 등급으로 거르자", "아니, 사용자 잠금 설정으로 하자", "프론트 어떤 화면에서는 한도만 보자", …
 
 처음 구현은 자연스럽게 분기문이었다.
 
@@ -24,7 +24,7 @@ func (s *Service) CheckEligibility(ctx context.Context, req Request) error {
 }
 ```
 
-이 코드가 **기획이 바뀔 때마다 한 번씩 수정**됐다. "이번엔 OTP 검증을 뺀다", "저 API에서는 잠금만 본다" 같은 요구가 들어오면 함수를 쪼개거나 플래그를 넣거나 호출부에 따라 분기가 늘어난다. 매번 코드를 고치고 배포하고 롤백하는 일이 반복됐다.
+이 코드가 **기획이 바뀔 때마다 한 번씩 수정**됐다. "이번엔 등급 검증을 뺀다", "저 API에서는 잠금만 본다" 같은 요구가 들어오면 함수를 쪼개거나 플래그를 넣거나 호출부에 따라 분기가 늘어난다. 매번 코드를 고치고 배포하고 롤백하는 일이 반복됐다.
 
 문제의 본질은 "**어느 검사를 돌릴지**"가 **코드에 하드코딩**돼 있다는 점이었다. 이 결정은 서비스 코드에 속하기엔 너무 자주 바뀌고, 호출자별로도 다르다.
 
@@ -113,14 +113,14 @@ const (
     CheckTypePolicyRegionCountry CheckType = 1
     CheckTypePolicyRankVip       CheckType = 2
     CheckTypePolicyLimitDaily    CheckType = 3
-    CheckTypeUseSettingLock      CheckType = 4
+    CheckTypeUserSettingLock      CheckType = 4
 )
 
 func (t CheckType) Validate() bool {
     switch t {
     case CheckTypeAll, CheckTypePolicyRegionCountry,
          CheckTypePolicyRankVip, CheckTypePolicyLimitDaily,
-         CheckTypeUseSettingLock:
+         CheckTypeUserSettingLock:
         return true
     default:
         return false
@@ -138,7 +138,7 @@ func (s *Service) Check(ctx context.Context, req Request) error {
     if t == CheckTypeAll || t == CheckTypePolicyLimitDaily {
         if err := s.checkDailyLimit(ctx, req); err != nil { return err }
     }
-    if t == CheckTypeAll || t == CheckTypeUseSettingLock {
+    if t == CheckTypeAll || t == CheckTypeUserSettingLock {
         if err := s.checkUserLock(ctx, req); err != nil { return err }
     }
     return nil
@@ -196,7 +196,7 @@ enum은 "호출자가 매번 고른다"는 구조다. 그와 다르게 **"서비
 withdrawal:
   check:
     region:      true
-    rank_mvp:    true
+    rank_vip:    true
     daily_limit: true
     user_lock:   false   # 이번 분기엔 사용자 잠금 검사 생략
 ```
@@ -214,7 +214,7 @@ withdrawal:
 | **enum (채택)** | enum 하나 선택 | 서비스에만 분기 추가 | 자주 쓰는 소수의 조합 + 호출자별로 다른 선택 |
 | 다른 방법. 설정 | 호출자는 건드리지 않음 | 설정 키 추가 | 서비스 전체에 영향을 주는 결정 |
 
-**채택: enum.** "무엇을 할지"가 자주 바뀌고 호출자마다 다를 때, 결정을 **코드가 아니라 데이터**에 담는다. 호출자는 enum 하나만 넘기고, 서비스는 enum 값으로 분기한다. 새 종류는 enum에 값 하나 + 서비스에 `if` 한 줄 추가로 끝난다.
+**채택: 시도 3.** "무엇을 할지"가 자주 바뀌고 호출자마다 다를 때, 결정을 **코드가 아니라 데이터**에 담는다. 호출자는 enum 하나만 넘기고, 서비스는 enum 값으로 분기한다. 새 종류는 enum에 값 하나 + 서비스에 `if` 한 줄 추가로 끝난다.
 
 - 코드가 **기획 변경 때마다 수정된다**면, 그 결정이 코드가 아니라 데이터여야 한다는 신호다.
 - enum의 **zero value는 안전한 디폴트**(`ALL`, `UNSPECIFIED → 기본 동작`)로 둔다. 호출자의 실수가 장애가 되지 않도록.

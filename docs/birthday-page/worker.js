@@ -15,7 +15,7 @@
 //       네임스페이스: 새로 하나 만들어 연결 (예: "birthday-gifts")
 //   - CORS 허용 Origin 은 Worker 코드 내 ALLOWED_ORIGINS 에 persica.co.kr 추가.
 //
-// Worker URL 을 받으면 _playground/kim-wanmyung-66th.md 안의
+// Worker URL 을 받으면 _playground/kim-wanmyung-65th.md 안의
 //   const NOTIFY_WEBHOOK_URL = "REPLACE_ME_WITH_YOUR_WEBHOOK_URL";
 // 를 그 URL 로 교체하고 커밋/푸시.
 
