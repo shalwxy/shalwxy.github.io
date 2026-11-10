@@ -112,6 +112,8 @@ public static int maxWindowSum(int k, int[] arr) {
 
 구간 합을 한 번만 구하는 게 아니라 K가 여러 번 바뀌며 반복 질의된다면, 프리픽스 합 배열을 미리 만들어 두는 방법도 있다. `prefix[i]`를 `arr[0..i-1]`의 합으로 두면, 구간 `[i, i+k)`의 합은 `prefix[i+k] - prefix[i]`로 한 번에 구해진다.
 
+`arr[0..i]`(i를 포함)의 합으로 둘 수도 있지만, 그러면 구간이 배열 맨 앞(`i = 0`)에서 시작할 때 `prefix[i-1]`이 없어 따로 분기해야 한다. `arr[0..i-1]`(i를 포함하지 않는) 쪽으로 한 칸 밀어 `prefix[0] = 0`을 "인덱스 0 앞까지의 합"으로 두면, 맨 앞에서 시작하는 구간도 예외 없이 `prefix[i+k] - prefix[i]` 하나의 식으로 처리된다. [별 세기](/lab/engineering/algorithm/star-count/)에서 사진 바깥을 0으로 취급해 경계 체크를 없앤 것과 같은 방식이다.
+
 ```java
 int[] prefix = new int[arr.length + 1];
 for (int i = 0; i < arr.length; i++) {
