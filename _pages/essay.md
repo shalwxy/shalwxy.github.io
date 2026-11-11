@@ -1,5 +1,6 @@
 ---
 title: "Essay"
+description: "일상을 기록하는 공간, Essay"
 layout: folder
 permalink: /essay/
 collection: essay

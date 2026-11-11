@@ -1,5 +1,6 @@
 ---
 title: "Lab"
+description: "배우고 정리하는 공간, Lab"
 layout: folder
 permalink: /lab/
 collection: lab

@@ -1,5 +1,6 @@
 ---
 title: "Playground"
+description: "만든 것들을 전시하는 공간, Playground"
 layout: showcase
 permalink: /playground/
 collection: playground
