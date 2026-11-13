@@ -6,7 +6,7 @@ tags:
   - 시각화
   - 동시성
 header:
-  teaser: /assets/img/thumbnail/playground-spring.jpg
+  teaser: /assets/img/thumbnail/playground-jitter.svg
 links:
   - label: "관련 글 보기"
     url: /lab/engineering/distributed/policy-refresh-with-jitter/
