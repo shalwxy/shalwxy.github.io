@@ -46,7 +46,7 @@ WAL(Write-Ahead Log)은 DBMS가 데이터 무결성과 장애 복구를 보장�
 
 **Q. 변경을 디스크의 데이터 페이지에 바로 쓰지 않고 왜 WAL에 먼저 남기나?**
 
-변경 내용을 디스크의 데이터 페이지에 곧바로 쓰려면 디스크 곳곳에 흩어진 위치에 접근해야 해서 random I/O가 생기고, I/O 비용과 commit 지연이 커진다. 반면 WAL은 파일 끝에 append만 하므로 sequential I/O라 쓰기 비용이 낮다.
+변경 내용을 디스크의 데이터 페이지에 곧바로 쓰려면 디스크 곳곳에 흩어진 위치에 접근해야 해서 random I/O가 생긴다. 그 결과 I/O 비용과 commit 지연이 커진다. 반면 WAL은 파일 끝에 append만 하므로 sequential I/O라 쓰기 비용이 낮다.
 
 그래서 DBMS는 데이터가 바뀌면 메모리 버퍼 풀의 페이지를 수정하고 그 내용을 WAL에 기록한다. commit 시점에는 로그만 디스크에 남기고, 데이터 접근은 버퍼 풀을 통해 한다. 실제 데이터 페이지는 이후 **checkpoint**(특정 시점까지의 변경을 버퍼 풀에서 디스크로 반영했음을 기록하는 지점)에 일괄 반영된다. 이렇게 쿼리 성능과 트랜잭션 안정성을 함께 얻는다.
 
@@ -114,7 +114,7 @@ SELECT * FROM pg_publication_tables;
 
 #### Replication Slot
 
-PostgreSQL의 WAL을 외부 소비자(Debezium)가 안전하게 읽을 수 있도록 **WAL을 보존하는 메커니즘**이다. CDC 관점에서는 "어디까지 읽었는지"를 기억하는 체크포인트 역할을 한다. PostgreSQL은 Slot을 쓰는 소비자가 WAL을 모두 처리할 때까지 WAL을 유지하고, 처리된 WAL은 checkpoint 이후 자동으로 삭제한다.
+PostgreSQL의 WAL을 외부 소비자(Debezium)가 안전하게 읽을 수 있도록 **WAL을 보존하는 메커니즘**이다. CDC 관점에서는 "어디까지 읽었는지"를 기억하는 체크포인트 역할을 한다. PostgreSQL은 Slot을 쓰는 소비자가 WAL을 모두 처리할 때까지 WAL을 유지한다. 처리된 WAL은 checkpoint 이후 자동으로 삭제한다.
 
 <div class="callout" markdown="1">
 
@@ -129,7 +129,7 @@ Slot 내부에 LSN(Log Sequence Number) 기준으로 기록한다. Logical Repli
 
 `restart_lsn`은 `confirmed_flush_lsn`을 따라 이동하며 항상 `restart_lsn <= confirmed_flush_lsn`이다.
 
-Debezium은 WAL을 읽어 이벤트를 만들고 Kafka에 안전하게 전달한 뒤, 마지막으로 처리한 이벤트의 LSN을 PostgreSQL에 보낸다. PostgreSQL은 그 값으로 `confirmed_flush_lsn`을 갱신한다. 이 메커니즘 덕에 아직 소비되지 않은 WAL이 삭제되지 않고, Debezium이 장애 후 재시작해도 못 받은 변경을 다시 캡처할 수 있다.
+Debezium은 WAL을 읽어 이벤트를 만들고 Kafka에 안전하게 전달한 뒤, 마지막으로 처리한 이벤트의 LSN을 PostgreSQL에 보낸다. PostgreSQL은 그 값으로 `confirmed_flush_lsn`을 갱신한다. 이 메커니즘 덕에 아직 소비되지 않은 WAL이 삭제되지 않는다. 그래서 Debezium이 장애 후 재시작해도 못 받은 변경을 다시 캡처할 수 있다.
 
 </div>
 
@@ -137,7 +137,7 @@ Debezium은 WAL을 읽어 이벤트를 만들고 Kafka에 안전하게 전달한
 
 **Q. Debezium이 중단되면 Slot은 어떻게 되나?**
 
-PostgreSQL은 Slot을 유지한 채 `confirmed_flush_lsn`을 더 갱신하지 않는다. `restart_lsn`도 멈추므로 그 이후의 WAL은 삭제되지 않는다. 데이터 유실을 막기 위한 의도된 설계이고, Debezium이 재기동되면 마지막 confirmed LSN부터 다시 읽는다. 다만 중단이 길어지면 WAL이 계속 쌓이므로 **운영에서는 Slot 상태를 반드시 모니터링**해야 한다.
+PostgreSQL은 Slot을 유지한 채 `confirmed_flush_lsn`을 더 갱신하지 않는다. `restart_lsn`도 멈추므로 그 이후의 WAL은 삭제되지 않는다. 데이터 유실을 막기 위한 의도된 설계다. Debezium이 재기동되면 마지막 confirmed LSN부터 다시 읽는다. 다만 중단이 길어지면 WAL이 계속 쌓이므로 **운영에서는 Slot 상태를 반드시 모니터링**해야 한다.
 
 ```sql
 -- Replication Slot의 lag 확인
@@ -152,7 +152,7 @@ FROM pg_replication_slots;
 
 **Q. Slot과 PostgreSQL checkpoint는 어떤 관계인가?**
 
-checkpoint는 WAL의 변경을 디스크에 반영하고 불필요한 WAL을 정리하는 메커니즘인데, Slot이 있으면 checkpoint가 돌아도 `restart_lsn` 이전의 WAL은 삭제되지 않는다. 즉 Slot은 checkpoint 위에 얹힌 **WAL 보존 제한 장치**로, CDC를 위해 WAL 수명을 의도적으로 늘린다.
+checkpoint는 WAL의 변경을 디스크에 반영하고 불필요한 WAL을 정리하는 메커니즘이다. 그런데 Slot이 있으면 checkpoint가 돌아도 `restart_lsn` 이전의 WAL은 삭제되지 않는다. 즉 Slot은 checkpoint 위에 얹힌 **WAL 보존 제한 장치**로, CDC를 위해 WAL 수명을 의도적으로 늘린다.
 
 </div>
 
@@ -168,9 +168,9 @@ CDC 파이프라인을 더 쓰지 않을 때 **반드시** 제거한다. 쓰지 
 
 **Q. Debezium이 재시작되면 WAL의 어느 지점부터 이어 읽나?**
 
-Debezium은 Kafka Connect 기반이라 마지막으로 처리한 LSN을 **Kafka Connect offset 토픽**에 기록하고, 재시작 시 Slot이 아니라 offset 토픽의 LSN을 기준으로 이어 읽는다.
+Debezium은 Kafka Connect 기반이라 마지막으로 처리한 LSN을 **Kafka Connect offset 토픽**에 기록한다. 재시작할 때는 Slot이 아니라 이 offset 토픽의 LSN을 기준으로 이어 읽는다.
 
-MSK Connect에서 offset 토픽은 아래 이름으로 생성되고, LSN이 담긴 메시지를 볼 수 있다. 커넥터를 삭제했다 다시 만들면 UUID가 바뀐다. `offset.storage.topic`으로 토픽을 직접 지정할 수 있다고 하지만 테스트해 보니 적용되지 않는 듯했다.
+MSK Connect에서 offset 토픽은 아래 이름으로 생성된다. 메시지를 열어 보면 LSN이 담겨 있다. 커넥터를 삭제했다 다시 만들면 UUID가 바뀐다. `offset.storage.topic`으로 토픽을 직접 지정할 수 있다고 하지만 테스트해 보니 적용되지 않는 듯했다.
 
 ```
 __amazon_msk_connect_offsets_{커넥터이름}_{커넥터 UUID}
@@ -198,7 +198,7 @@ offset 토픽의 LSN을 WAL에서 찾을 수 없는 특수한 상황에서는, o
 
 **Q. Failover가 나면 새 Primary에서도 CDC가 이어지나?**
 
-PostgreSQL 17부터 Failover Replication Slot이 제공되어 이어진다. 그 미만 버전에서는 Logical Replication Slot이 Secondary에 동기화되지 않아, Failover 후 새 Primary에 Slot을 다시 만들고 Debezium offset 토픽을 초기화해 재구동해야 한다.
+PostgreSQL 17부터 Failover Replication Slot이 제공되어 이어진다. 그 미만 버전에서는 Logical Replication Slot이 Secondary에 동기화되지 않는다. 그래서 Failover 후에는 새 Primary에 Slot을 다시 만들고 Debezium offset 토픽을 초기화해 재구동해야 한다.
 
 다만 Aurora는 Primary와 Secondary가 복제 볼륨을 공유해 Failover 후에도 Slot이 유지된다고 한다(DBA 확인). 실제로 테스트해 보니 Failover 뒤 Debezium을 다시 만들지 않아도 새 Primary에서 CDC가 정상적으로 이어졌다.
 
@@ -208,7 +208,7 @@ PostgreSQL 17부터 Failover Replication Slot이 제공되어 이어진다. 그 
 
 **Q. heartbeat를 켰는데도 WAL이 계속 쌓인다?**
 
-WAL은 인스턴스 전체가 공유한다. CDC 대상이 아닌 테이블이나 같은 인스턴스의 다른 데이터베이스가 바쁘면 WAL은 계속 쌓이는데, Debezium은 **자기가 실제로 받은 이벤트의 LSN까지만** `confirmed_flush_lsn`을 올릴 수 있다. heartbeat는 Debezium이 Kafka에 "살아 있다"는 이벤트를 보내는 것이지 **DB에 WAL을 만들어 주지는 않는다.** 대상 테이블에 변경이 없으면 확인할 LSN이 없어 Slot이 그 자리에 멈추고, `restart_lsn` 이전 WAL을 지우지 못해 디스크가 찬다.
+WAL은 인스턴스 전체가 공유한다. CDC 대상이 아닌 테이블이나 같은 인스턴스의 다른 데이터베이스가 바쁘면 WAL은 계속 쌓인다. 그런데 Debezium은 **자기가 실제로 받은 이벤트의 LSN까지만** `confirmed_flush_lsn`을 올릴 수 있다. heartbeat는 Debezium이 Kafka에 "살아 있다"는 이벤트를 보내는 것이지 **DB에 WAL을 만들어 주지는 않는다.** 대상 테이블에 변경이 없으면 확인할 LSN이 없어 Slot이 그 자리에 멈춘다. 그러면 `restart_lsn` 이전 WAL을 지우지 못해 디스크가 찬다.
 
 해결은 둘 중 하나다.
 
@@ -525,7 +525,7 @@ CREATE OR REPLACE TABLE ANALYTICS.DEV.ORDERS (
 
 ### STREAM
 
-STREAM은 테이블의 **변경분만** 추적하는 객체다. 로그 테이블에 새 레코드가 들어오면 STREAM에 기록되고, 타겟에 MERGE할 때 전체를 스캔하지 않고 변경분만 처리할 수 있다.
+STREAM은 테이블의 **변경분만** 추적하는 객체다. 로그 테이블에 새 레코드가 들어오면 STREAM에 기록된다. 그래서 타겟에 MERGE할 때 전체를 스캔하지 않고 변경분만 처리할 수 있다.
 
 ```sql
 CREATE OR REPLACE STREAM ANALYTICS.DEV.STREAM_ORDERS_DBZ_LOG
@@ -655,7 +655,7 @@ DB 메이저 버전 업그레이드는 Blue-Green 방식으로 진행되는데, 
 
 ### 대량 배치와 CDC 랙
 
-보존 기간이 지난 이력을 지우는 배치처럼 **한 번에 많은 행을 바꾸는 작업은 WAL을 한꺼번에 만들어 CDC 랙을 키운다.** 실제로 로그인 내역 삭제 배치 때문에 컨슈머 랙이 치솟아, 삭제 속도를 분당 500건으로 제한했다가 랙이 해소된 뒤 원복한 적이 있다. DB에 부하를 주는 배치는 CDC 랙을 보면서 속도를 조절한다.
+보존 기간이 지난 이력을 지우는 배치처럼 **한 번에 많은 행을 바꾸는 작업은 WAL을 한꺼번에 만들어 CDC 랙을 키운다.** 실제로 로그인 내역 삭제 배치 때문에 컨슈머 랙이 치솟은 적이 있다. 그때 삭제 속도를 분당 500건으로 제한했고, 랙이 해소된 뒤에 다시 원래 속도로 되돌렸다. DB에 부하를 주는 배치는 CDC 랙을 보면서 속도를 조절한다.
 
 ## 운영 체크리스트
 

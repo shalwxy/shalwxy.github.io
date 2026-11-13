@@ -101,7 +101,7 @@ func (c *BridgeConsumer) Handle(ctx, evt BridgeEvent) error {
 
 **int32 두 개**로 키를 만들었다. PostgreSQL의 `pg_advisory_xact_lock`은 **bigint 하나** 또는 **int32 두 개**를 키로 받는다. 거래 ID는 보통 긴 해시라, 해시 함수로 두 int32로 변환해 쓴다. 두 개짜리를 쓰면 "용도 범주 + ID" 같은 식으로 네임스페이스를 나눌 수 있다 — 서로 다른 종류의 락이 같은 키 공간을 공유하지 않도록.
 
-**최대 5000개로 제한**했다. advisory lock은 **PostgreSQL 서버 메모리**에 보관된다. 트랜잭션이 길어지거나 커넥션이 잠기면 락이 누적되어 메모리가 부푼다. 애플리케이션 레벨에서 "동시 보유 락 수"를 세어 5000개를 넘으면 백프레셔(일시 중단)를 걸었다. PostgreSQL의 공유 락 테이블은 `max_locks_per_transaction × (max_connections + max_prepared_transactions)` 크기로 서버 시작 시 고정되는데(기본 `max_locks_per_transaction`은 64), advisory lock도 일반 락과 **이 같은 공유 테이블**을 쓴다. advisory lock이 누적되면 이 공간을 함께 소모한다.
+**최대 5000개로 제한**했다. advisory lock은 **PostgreSQL 서버 메모리**에 보관된다. 트랜잭션이 길어지거나 커넥션이 잠기면 락이 누적되어 메모리가 부푼다. 애플리케이션 레벨에서 "동시 보유 락 수"를 세어 5000개를 넘으면 백프레셔(일시 중단)를 걸었다. PostgreSQL의 공유 락 테이블은 `max_locks_per_transaction × (max_connections + max_prepared_transactions)` 크기로 서버 시작 시 고정된다(기본 `max_locks_per_transaction`은 64). advisory lock도 일반 락과 **이 같은 공유 테이블**을 쓴다. advisory lock이 누적되면 이 공간을 함께 소모한다.
 
 ### 분석 — 락의 역할을 명확히 정의
 
@@ -115,7 +115,7 @@ func (c *BridgeConsumer) Handle(ctx, evt BridgeEvent) error {
 
 "중복 처리 방지"를 쓰려고 생각했는데 사실은 "동시 쓰기 방지"가 필요했다면, `SETNX`는 진짜 처리되어야 할 이벤트를 잘못 막는다. 반대로 "동시 쓰기 방지"만으로는 같은 이벤트 중복 삽입을 못 막는다.
 
-브리지의 경우 **정확히는 "동시 쓰기 방지 + 조회 후 분기"** 였다. 락 안에서 조회를 다시 하지 않고 바로 `UPSERT`를 쓰면 될 것 같지만, 두 이벤트의 **병합 로직이 복잡**(요청 데이터와 결과 데이터가 일부 겹치고 일부 다름)해서 코드 가독성 때문에 "조회 → 분기 → INSERT 또는 UPDATE" 패턴으로 짰다.
+브리지의 경우 **정확히는 "동시 쓰기 방지 + 조회 후 분기"** 였다. 락 안에서 조회를 다시 하지 않고 바로 `UPSERT`를 쓰면 될 것 같지만, 두 이벤트의 **병합 로직이 복잡**하다(요청 데이터와 결과 데이터가 일부 겹치고 일부 다름). 그래서 코드 가독성을 위해 "조회 → 분기 → INSERT 또는 UPDATE" 패턴으로 짰다.
 
 ### 알림 이벤트 발행 시점
 
