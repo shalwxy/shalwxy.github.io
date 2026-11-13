@@ -186,11 +186,6 @@
   display: none;
 }
 
-/* 메인 블로그(루트) 히어로의 "HUB" 글자: 워드마크처럼 자간을 넓게 */
-.layout--splash .page__title {
-  letter-spacing: 0.22em;
-}
-
 /* 허브 세 카드 (이름만, 사진 배경) */
 .hub-cards {
   display: grid;

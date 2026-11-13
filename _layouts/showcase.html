@@ -2,6 +2,12 @@
 layout: archive
 ---
 
+{%- comment -%}
+  .page__content 래퍼: 테마 번들 JS(main.min.js)가 제목 앵커 링크를 달 때
+  document.querySelector(".page__content")를 null 체크 없이 바로 쓰는데,
+  archive 계열 레이아웃(folder/showcase)은 원래 이 클래스가 없어서 콘솔 에러가 난다.
+{%- endcomment -%}
+<div class="page__content">
 {{ content }}
 
 {% assign entries = site[page.collection] | sort: "date" | reverse %}
@@ -37,4 +43,5 @@ layout: archive
       </div>
     </article>
   {% endfor %}
+</div>
 </div>

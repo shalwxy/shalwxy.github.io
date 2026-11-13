@@ -8,6 +8,11 @@ author_profile: false
 {% assign docs = site.lab | concat: site.essay | concat: site.playground %}
 {% assign all_tags = docs | map: "tags" | join: "," | split: "," | uniq | sort_natural %}
 
+{%- comment -%}
+  .page__content 래퍼: 테마 번들 JS가 document.querySelector(".page__content")를
+  null 체크 없이 쓰는데, archive 레이아웃은 원래 이 클래스가 없어서 콘솔 에러가 난다.
+{%- endcomment -%}
+<div class="page__content">
 <ul class="taxonomy__index">
   {% for tag in all_tags %}{% if tag != "" %}
     {% assign tagged = docs | where_exp: "doc", "doc.tags contains tag" %}
@@ -25,3 +30,4 @@ author_profile: false
     <a href="#page-title" class="back-to-top">{{ site.data.ui-text[site.locale].back_to_top | default: 'Back to Top' }} &uarr;</a>
   </section>
 {% endif %}{% endfor %}
+</div>

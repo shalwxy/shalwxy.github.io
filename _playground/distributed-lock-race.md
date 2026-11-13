@@ -28,9 +28,9 @@ classes: wide
   </div>
 
   <div class="lr-bots" id="lr-bots">
-    <div class="lr-bot"><span>봇1</span><div class="lr-bot-track"><div class="lr-bot-fill" id="lr-bot-fill-0"></div></div></div>
-    <div class="lr-bot"><span>봇2</span><div class="lr-bot-track"><div class="lr-bot-fill" id="lr-bot-fill-1"></div></div></div>
-    <div class="lr-bot"><span>봇3</span><div class="lr-bot-track"><div class="lr-bot-fill" id="lr-bot-fill-2"></div></div></div>
+    <div class="lr-bot" id="lr-bot-0"><span class="lr-bot-dot lr-bot-dot-0"></span>봇1</div>
+    <div class="lr-bot" id="lr-bot-1"><span class="lr-bot-dot lr-bot-dot-1"></span>봇2</div>
+    <div class="lr-bot" id="lr-bot-2"><span class="lr-bot-dot lr-bot-dot-2"></span>봇3</div>
   </div>
 
   <div class="lr-board" id="lr-board">
@@ -55,12 +55,44 @@ classes: wide
 .lr-stat span { display: block; font-size: 0.78em; color: #6b6b6b; margin-bottom: 0.2em; }
 .lr-stat strong { font-size: 1.5em; font-weight: 700; }
 .lr-bots { display: flex; gap: 1em; margin-bottom: 1em; flex-wrap: wrap; }
-.lr-bot { flex: 1 1 140px; font-size: 0.8em; color: #666; }
-.lr-bot span { display: block; margin-bottom: 0.3em; }
-.lr-bot-track { height: 10px; background: #e4e6ea; border-radius: 5px; overflow: hidden; }
-.lr-bot-fill { height: 100%; width: 0%; background: #7b8fa6; }
-.lr-bot-fill.lr-bot-fired { background: #d1483a; }
+.lr-bot {
+  flex: 1 1 140px; font-size: 0.85em; color: #666;
+  display: flex; align-items: center; gap: 0.6em;
+  background: #f7f7f8; border-radius: 8px; padding: 0.55em 0.8em;
+}
+.lr-bot-dot {
+  width: 10px; height: 10px; border-radius: 50%; background: #c9ccd1; flex-shrink: 0;
+  transition: background 0.15s ease;
+}
 .lr-bot.lr-bot-stunned { opacity: 0.35; filter: grayscale(1); }
+/* 봇이 락을 조준 중일 때: 자신의 식별 색으로 깜빡이는 점으로 표시 (프로그레스바 대신) */
+.lr-bot-dot-0.lr-dot-aiming { background: #d1483a; animation: lr-dot-pulse-0 0.6s ease-in-out infinite; }
+.lr-bot-dot-1.lr-dot-aiming { background: #3a7bd1; animation: lr-dot-pulse-1 0.6s ease-in-out infinite; }
+.lr-bot-dot-2.lr-dot-aiming { background: #3a9a5a; animation: lr-dot-pulse-2 0.6s ease-in-out infinite; }
+@keyframes lr-dot-pulse-0 { 0%, 100% { box-shadow: 0 0 0 0 rgba(209, 72, 58, 0.5); } 50% { box-shadow: 0 0 0 5px rgba(209, 72, 58, 0.12); } }
+@keyframes lr-dot-pulse-1 { 0%, 100% { box-shadow: 0 0 0 0 rgba(58, 123, 209, 0.5); } 50% { box-shadow: 0 0 0 5px rgba(58, 123, 209, 0.12); } }
+@keyframes lr-dot-pulse-2 { 0%, 100% { box-shadow: 0 0 0 0 rgba(58, 154, 90, 0.5); } 50% { box-shadow: 0 0 0 5px rgba(58, 154, 90, 0.12); } }
+
+/* 봇의 조준 효과: 커서처럼 생긴 작은 조준점이 노리는 락 주변을 들썩이며 떠돌다가,
+   충전이 끝나갈 즈음 정확히 락 위로 자리를 잡는다(JS가 위치를 흔들고, 여기 transition이 매끈하게 이어준다). */
+.lr-aim {
+  position: absolute; width: 26px; height: 26px;
+  margin-left: -13px; margin-top: -13px;
+  border-radius: 50%; border: 2px solid #7b8fa6;
+  pointer-events: none; opacity: 0.8;
+  transition: left 0.14s ease-out, top 0.14s ease-out, scale 0.15s ease, opacity 0.15s ease;
+}
+.lr-aim::before {
+  content: ""; position: absolute; left: 50%; top: 50%;
+  width: 4px; height: 4px; margin: -2px; border-radius: 50%; background: #7b8fa6;
+}
+.lr-aim.lr-aim-locked { scale: 1.4; opacity: 1; border-width: 3px; }
+.lr-aim-0 { border-color: #d1483a; }
+.lr-aim-0::before { background: #d1483a; }
+.lr-aim-1 { border-color: #3a7bd1; }
+.lr-aim-1::before { background: #3a7bd1; }
+.lr-aim-2 { border-color: #3a9a5a; }
+.lr-aim-2::before { background: #3a9a5a; }
 .lr-board {
   position: relative; height: 340px; background: #eef1f4;
   border: 1px solid #dadfe4; border-radius: 10px; overflow: hidden; margin-bottom: 1em;
@@ -83,10 +115,36 @@ classes: wide
   text-align: center; border: none; cursor: pointer;
   box-shadow: 0 2px 8px rgba(0,0,0,0.25);
   animation: lr-pop 0.15s ease;
+  /* 버튼 기본 포커스 링/탭 하이라이트는 둥근 모양을 무시하고 사각형으로 그려지므로 꺼둔다 */
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.lr-lock:focus-visible {
+  outline: 2px solid #fdd79a;
+  outline-offset: 2px;
 }
 .lr-lock-fake { background: #7a2e26; }
 .lr-lock-power { background: #e8c468; color: #3d2b00; }
 @keyframes lr-pop { from { transform: scale(0.4); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+/* 클릭/선점된 락이 사라지기 전 짧게 보여주는 상태: 자물쇠는 열림, 가짜 락은 폭발, 토큰은 반짝임 */
+.lr-lock-open { background: #3f8f63; animation: lr-lock-open 0.38s ease forwards; }
+@keyframes lr-lock-open {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.25) rotate(-8deg); }
+  100% { transform: scale(0.85) rotate(4deg); opacity: 0; }
+}
+.lr-lock-boom { background: #e8a33a; animation: lr-lock-boom 0.45s ease forwards; }
+@keyframes lr-lock-boom {
+  0% { transform: scale(1); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25); }
+  30% { transform: scale(1.5); box-shadow: 0 0 0 14px rgba(232, 163, 58, 0.35); }
+  100% { transform: scale(1.9); opacity: 0; box-shadow: 0 0 0 28px rgba(232, 163, 58, 0); }
+}
+.lr-lock-key { background: #f4d35e; color: #3d2b00; animation: lr-lock-key 0.42s ease forwards; }
+@keyframes lr-lock-key {
+  0% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.3) rotate(15deg); box-shadow: 0 0 0 10px rgba(244, 211, 94, 0.3); }
+  100% { transform: scale(0.6) rotate(25deg); opacity: 0; box-shadow: 0 0 0 20px rgba(244, 211, 94, 0); }
+}
 .lr-particle {
   position: absolute; width: 8px; height: 8px; margin: -4px; border-radius: 50%;
   background: #f4b740; pointer-events: none;
@@ -118,11 +176,12 @@ classes: wide
   var banner = document.getElementById('lr-banner');
   var startBtn = document.getElementById('lr-start');
   var stopBtn = document.getElementById('lr-stop');
-  var botFills = [
-    document.getElementById('lr-bot-fill-0'),
-    document.getElementById('lr-bot-fill-1'),
-    document.getElementById('lr-bot-fill-2')
-  ];
+
+  var LOCK_VARIANTS = {
+    open: { icon: '🔓', cls: 'lr-lock-open', delay: 380 },
+    boom: { icon: '💥', cls: 'lr-lock-boom', delay: 450 },
+    key: { icon: '✨', cls: 'lr-lock-key', delay: 420 }
+  };
 
   var state = null;
   var countdownTimer = null;
@@ -172,10 +231,11 @@ classes: wide
   }
 
   // 사람이 락을 보고 마우스를 옮겨 클릭하기까지의 시간까지 감안해 넉넉하게 잡았다.
+  // (난이도를 살짝 낮춰서 봇이 조금 더 느리게 움직인다)
   function botDelayRange(timeLeft) {
     var progress = 1 - timeLeft / GAME_DURATION; // 0(시작) -> 1(막판)
-    var maxDelay = 1500 - progress * 600;         // 1500ms -> 900ms
-    var minDelay = 600 - progress * 250;          // 600ms -> 350ms
+    var maxDelay = 1800 - progress * 650;         // 1800ms -> 1150ms
+    var minDelay = 750 - progress * 250;          // 750ms -> 500ms
     return [minDelay, maxDelay];
   }
 
@@ -198,19 +258,83 @@ classes: wide
     return 'normal';
   }
 
-  function resetBotBar(i) {
-    var fill = botFills[i];
-    fill.style.transition = 'none';
-    fill.style.width = '0%';
-    fill.classList.remove('lr-bot-fired');
+  function setDotAiming(i, on) {
+    var dot = document.querySelector('#lr-bot-' + i + ' .lr-bot-dot');
+    if (dot) dot.classList.toggle('lr-dot-aiming', on);
   }
 
-  function armBotBar(i, delay) {
-    resetBotBar(i);
-    var fill = botFills[i];
-    void fill.offsetWidth; // transition 재적용을 위한 강제 reflow
-    fill.style.transition = 'width ' + delay + 'ms linear';
-    fill.style.width = '100%';
+  // 봇의 충전을 프로그레스바가 아니라, 화면 전체를 돌아다니며 락을 찾아 헤매다가
+  // 막판에 정확한 위치를 찾아내 자리 잡는 조준점으로 보여준다.
+  var AIM_JITTER_INTERVAL = 150;
+  var AIM_SETTLE_LEAD = 150; // 발사 이 ms 전부터는 흔들림을 멈추고 과녁에 정확히 고정
+  var AIM_MARGIN = 14; // 보드 테두리에 조준점이 붙지 않도록 두는 여백
+
+  function clearBotAim(i) {
+    if (state && state.botAimTimers && state.botAimTimers[i]) {
+      clearInterval(state.botAimTimers[i].jitter);
+      clearTimeout(state.botAimTimers[i].settle);
+      state.botAimTimers[i] = null;
+    }
+    var aim = state && state.botAimEls && state.botAimEls[i];
+    if (aim && aim.parentNode) aim.remove();
+    if (state && state.botAimEls) state.botAimEls[i] = null;
+    setDotAiming(i, false);
+  }
+
+  function armBotAim(i, lockObj, delay) {
+    clearBotAim(i);
+    var rect = lockObj.el.getBoundingClientRect();
+    var boardRect = board.getBoundingClientRect();
+    var cx = rect.left - boardRect.left + rect.width / 2;
+    var cy = rect.top - boardRect.top + rect.height / 2;
+    var bw = boardRect.width;
+    var bh = boardRect.height;
+    // 보드 전체를 헤맬 수 있을 만큼 넉넉한 반경에서 시작해, 과녁 바로 위까지 좁혀 들어온다.
+    var searchRadius = Math.max(bw, bh);
+
+    var aim = document.createElement('div');
+    aim.className = 'lr-aim lr-aim-' + i;
+    aim.style.left = randRange(AIM_MARGIN, Math.max(AIM_MARGIN, bw - AIM_MARGIN)) + 'px';
+    aim.style.top = randRange(AIM_MARGIN, Math.max(AIM_MARGIN, bh - AIM_MARGIN)) + 'px';
+    board.appendChild(aim);
+    setDotAiming(i, true);
+
+    var start = Date.now();
+    var settleAt = Math.max(0, delay - AIM_SETTLE_LEAD);
+
+    var jitter = setInterval(function () {
+      var progress = settleAt > 0 ? (Date.now() - start) / settleAt : 1; // 0(시작, 헤맴) -> 1(정착 직전, 발견)
+      progress = Math.min(1, progress);
+      var eased = Math.pow(1 - progress, 2); // 한동안 넓게 헤매다가 막판에 빠르게 좁혀진다
+      var radius = 10 + eased * searchRadius;
+      var angle = Math.random() * Math.PI * 2;
+      var dist = Math.random() * radius;
+      var jx = Math.max(AIM_MARGIN, Math.min(bw - AIM_MARGIN, cx + Math.cos(angle) * dist));
+      var jy = Math.max(AIM_MARGIN, Math.min(bh - AIM_MARGIN, cy + Math.sin(angle) * dist));
+      aim.style.left = jx + 'px';
+      aim.style.top = jy + 'px';
+    }, AIM_JITTER_INTERVAL);
+
+    var settle = setTimeout(function () {
+      clearInterval(jitter);
+      aim.style.left = cx + 'px';
+      aim.style.top = cy + 'px';
+      aim.classList.add('lr-aim-locked');
+    }, settleAt);
+
+    state.botAimEls[i] = aim;
+    state.botAimTimers[i] = { jitter: jitter, settle: settle };
+  }
+
+  // 클릭/선점된 락을 바로 지우지 않고, 종류에 맞는 아이콘으로 잠깐 바꾼 뒤 사라지게 한다.
+  function resolveLockVisual(lockObj, variant) {
+    var el = lockObj.el;
+    if (!el) return;
+    lockObj.el = null;
+    el.disabled = true;
+    el.textContent = variant.icon;
+    el.classList.add(variant.cls);
+    setTimeout(function () { if (el.parentNode) el.remove(); }, variant.delay);
   }
 
   function updateHud() {
@@ -273,11 +397,12 @@ classes: wide
     var boardRect = board.getBoundingClientRect();
     var px = rect.left - boardRect.left + rect.width / 2;
     var py = rect.top - boardRect.top + rect.height / 2;
-    lockObj.el.remove();
 
     var kind = lockObj.kind;
 
     if (kind === 'fake') {
+      resolveLockVisual(lockObj, LOCK_VARIANTS.boom);
+      for (var fi = 0; fi < BOT_COUNT; fi++) clearBotAim(fi);
       state.combo = 0;
       shakeBoard();
       playTone(110, 0.3, 'square');
@@ -288,6 +413,8 @@ classes: wide
       return;
     }
     if (kind === 'powerup') {
+      resolveLockVisual(lockObj, LOCK_VARIANTS.key);
+      for (var pi = 0; pi < BOT_COUNT; pi++) clearBotAim(pi);
       state.priorityToken = true;
       playTone(1300, 0.15, 'triangle');
       setBanner('🔑 우선순위 토큰 획득! 다음 락은 무조건 내가 먼저.', 'lr-info');
@@ -297,6 +424,7 @@ classes: wide
     }
 
     // normal / normal-priority / shard: 성공 처리
+    resolveLockVisual(lockObj, LOCK_VARIANTS.open);
     registerSuccess(px, py);
     if (kind === 'shard') {
       reconcileShardBots();
@@ -310,7 +438,7 @@ classes: wide
       }
     } else {
       setBanner('🟢 선점 성공!' + comboSuffix(), 'lr-good');
-      for (var i = 0; i < BOT_COUNT; i++) resetBotBar(i);
+      for (var i = 0; i < BOT_COUNT; i++) clearBotAim(i);
       clearPendingTimer();
       finishRoundNormalGap();
     }
@@ -322,7 +450,7 @@ classes: wide
       if (i === excludeIndex) continue;
       var target = state.round.botTargets[i];
       if (target && target.claimed) {
-        resetBotBar(i);
+        clearBotAim(i);
         clearTimeout(state.round.botTimers[i]);
       }
     }
@@ -331,7 +459,7 @@ classes: wide
   function handleBotFire(lockObj, botIndex) {
     if (!state || !state.running || !state.round || lockObj.claimed) return;
     lockObj.claimed = true;
-    botFills[botIndex].classList.add('lr-bot-fired');
+    clearBotAim(botIndex);
 
     var kind = lockObj.kind;
     var botName = '봇' + (botIndex + 1);
@@ -339,7 +467,7 @@ classes: wide
     if (kind === 'shard') {
       // 같은 조각을 노리던 다른 봇만 정리하고, 다른 조각을 노리는 봇은 그대로 둔다
       reconcileShardBots(botIndex);
-      if (lockObj.el) lockObj.el.remove();
+      resolveLockVisual(lockObj, LOCK_VARIANTS.open);
       playTone(220, 0.15, 'sawtooth');
       setBanner(botName + '이(가) 조각 하나를 가져갔습니다.', '');
       var allDone = state.round.locks.every(function (l) { return l.claimed; });
@@ -351,10 +479,10 @@ classes: wide
     }
 
     // 나머지 종류는 봇끼리도 같은 락 하나를 두고 경쟁하므로 다른 봇은 전부 정리한다
-    for (var i = 0; i < BOT_COUNT; i++) { if (i !== botIndex) resetBotBar(i); }
-    if (lockObj.el) lockObj.el.remove();
+    for (var i = 0; i < BOT_COUNT; i++) { if (i !== botIndex) clearBotAim(i); }
 
     if (kind === 'fake') {
+      resolveLockVisual(lockObj, LOCK_VARIANTS.boom);
       state.botStun[botIndex] = 3;
       updateBotStunVisuals();
       playTone(220, 0.15, 'square');
@@ -364,6 +492,7 @@ classes: wide
       return;
     }
     if (kind === 'powerup') {
+      resolveLockVisual(lockObj, LOCK_VARIANTS.key);
       state.botPriority[botIndex] = true;
       playTone(220, 0.15, 'triangle');
       setBanner('🙅 ' + botName + '이(가) 우선순위 토큰을 채갔습니다. 다음 락은 그 봇이 가져갑니다.', 'lr-info');
@@ -373,6 +502,7 @@ classes: wide
     }
 
     // normal: 기존 패널티
+    resolveLockVisual(lockObj, LOCK_VARIANTS.open);
     state.missed++;
     state.combo = 0;
     shakeBoard();
@@ -387,7 +517,7 @@ classes: wide
     if (!state.round) return;
     locks.forEach(function (l) { if (!l.claimed && l.el) l.el.remove(); });
     state.round.botTimers.forEach(clearTimeout);
-    for (var i = 0; i < BOT_COUNT; i++) resetBotBar(i);
+    for (var i = 0; i < BOT_COUNT; i++) clearBotAim(i);
     if (kind === 'fake') {
       setBanner('🙂 가짜 락을 무시했습니다 — 안전!', '');
     } else if (kind === 'powerup') {
@@ -416,22 +546,22 @@ classes: wide
     var botTimers = [];
     if (kind === 'normal-bot-priority') {
       setBanner('⚙ 봇' + (rewardBot + 1) + '이(가) 토큰 보상으로 이 락을 가져갑니다.', 'lr-info');
-      armBotBar(rewardBot, 200);
+      armBotAim(rewardBot, lockObj, 200);
       botTimers[rewardBot] = setTimeout(function () { handleBotFire(lockObj, rewardBot); }, 200);
-      for (var r = 0; r < BOT_COUNT; r++) { if (r !== rewardBot) resetBotBar(r); }
+      for (var r = 0; r < BOT_COUNT; r++) { if (r !== rewardBot) clearBotAim(r); }
     } else if (kind === 'normal' || kind === 'fake' || kind === 'powerup') {
       var range = botDelayRange(state.timeLeft);
       for (var i = 0; i < BOT_COUNT; i++) {
-        if (state.botStun[i] > 0) { resetBotBar(i); continue; }
+        if (state.botStun[i] > 0) { clearBotAim(i); continue; }
         (function (botIndex) {
           var delay = randRange(range[0], range[1]);
-          armBotBar(botIndex, delay);
+          armBotAim(botIndex, lockObj, delay);
           botTimers[botIndex] = setTimeout(function () { handleBotFire(lockObj, botIndex); }, delay);
         })(i);
       }
     } else {
       // 'normal-priority': 플레이어 토큰 효과로 이번 라운드는 봇이 아예 참여하지 않는다
-      for (var j = 0; j < BOT_COUNT; j++) resetBotBar(j);
+      for (var j = 0; j < BOT_COUNT; j++) clearBotAim(j);
     }
 
     var timeoutMs = kind === 'fake' ? 1600 : kind === 'powerup' ? 1800 : ROUND_TIMEOUT;
@@ -460,12 +590,12 @@ classes: wide
     var botTimers = [];
     var botTargets = [];
     for (var i = 0; i < BOT_COUNT; i++) {
-      if (state.botStun[i] > 0) { resetBotBar(i); continue; }
+      if (state.botStun[i] > 0) { clearBotAim(i); continue; }
       (function (botIndex) {
         var target = locks[Math.floor(Math.random() * locks.length)];
         botTargets[botIndex] = target;
         var delay = randRange(range[0], range[1]);
-        armBotBar(botIndex, delay);
+        armBotAim(botIndex, target, delay);
         botTimers[botIndex] = setTimeout(function () { handleBotFire(target, botIndex); }, delay);
       })(i);
     }
@@ -483,7 +613,7 @@ classes: wide
 
   function updateBotStunVisuals() {
     for (var i = 0; i < BOT_COUNT; i++) {
-      var container = botFills[i].closest('.lr-bot');
+      var container = document.getElementById('lr-bot-' + i);
       if (container) container.classList.toggle('lr-bot-stunned', state.botStun[i] > 0);
     }
   }
@@ -526,6 +656,7 @@ classes: wide
       running: true, points: 0, claims: 0, missed: 0, rounds: 0,
       combo: 0, priorityToken: false, best: loadBest(),
       botStun: [0, 0, 0], botPriority: [false, false, false],
+      botAimEls: [null, null, null], botAimTimers: [null, null, null],
       timeLeft: GAME_DURATION, round: null
     };
     updateHud();
@@ -547,7 +678,7 @@ classes: wide
       state.round.botTimers.forEach(clearTimeout);
       state.round.locks.forEach(function (l) { if (l.el) l.el.remove(); });
     }
-    for (var i = 0; i < BOT_COUNT; i++) resetBotBar(i);
+    for (var i = 0; i < BOT_COUNT; i++) clearBotAim(i);
 
     var newRecord = false;
     if (state.points > state.best) { state.best = state.points; saveBest(state.best); newRecord = true; }

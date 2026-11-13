@@ -1,3 +1,10 @@
+{%- comment -%}
+  히어로 배경 이미지(header.overlay_image)는 인라인 style의 background-image라 발견이 늦어,
+  제목 글자가 먼저 그려지고 사진이 뒤늦게 팝인하는 게 보일 수 있다. 미리 받아두게 preload.
+{%- endcomment -%}
+{%- if page.header.overlay_image -%}
+<link rel="preload" as="image" href="{{ page.header.overlay_image | relative_url }}" fetchpriority="high">
+{%- endif -%}
 <link rel="icon" type="image/svg+xml" href="{{ '/assets/favicon.svg' | relative_url }}">
 <link rel="icon" type="image/png" href="{{ '/assets/favicon.png' | relative_url }}">
 {%- comment -%} rel="apple-touch-icon"은 2007년 iOS 규격을 Android Chrome 등이 그대로 채택한 산업 표준(rel 값은 고정, 파일명은 자유). {%- endcomment -%}
