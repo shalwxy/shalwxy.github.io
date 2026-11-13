@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="하트와 박동 그래프 — CPR 리듬 게임 일러스트">
+  <defs>
+    <linearGradient id="cr-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fdeceb"/>
+      <stop offset="100%" stop-color="#fbdcdb"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="800" fill="url(#cr-bg)"/>
+
+  <!-- heartbeat line -->
+  <polyline points="100,420 380,420 440,420 480,280 520,560 560,340 600,420 900,420 950,350 1000,420 1100,420"
+            fill="none" stroke="#d1483a" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- heart -->
+  <path d="M600,560
+           C600,460 480,420 480,340
+           C480,280 540,260 600,320
+           C660,260 720,280 720,340
+           C720,420 600,460 600,560 Z"
+        fill="#d1483a" opacity="0.92"/>
+
+  <!-- pulse rings -->
+  <circle cx="600" cy="400" r="260" fill="none" stroke="#4f7a55" stroke-width="5" opacity="0.35"/>
+  <circle cx="600" cy="400" r="320" fill="none" stroke="#4f7a55" stroke-width="5" opacity="0.2"/>
+</svg>

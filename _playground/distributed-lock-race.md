@@ -41,6 +41,7 @@ classes: wide
 
   <div class="lr-controls">
     <button type="button" class="btn btn--primary" id="lr-start">시작</button>
+    <button type="button" class="btn btn--warning" id="lr-stop" disabled>정지</button>
   </div>
 </div>
 
@@ -116,6 +117,7 @@ classes: wide
   var hintEl = document.getElementById('lr-board-hint');
   var banner = document.getElementById('lr-banner');
   var startBtn = document.getElementById('lr-start');
+  var stopBtn = document.getElementById('lr-stop');
   var botFills = [
     document.getElementById('lr-bot-fill-0'),
     document.getElementById('lr-bot-fill-1'),
@@ -529,7 +531,8 @@ classes: wide
     updateHud();
     updateBotStunVisuals();
     hintEl.style.display = 'none';
-    startBtn.textContent = '초기화';
+    startBtn.disabled = true;
+    stopBtn.disabled = false;
     setBanner('시작! 🔒가 뜨면 바로 클릭하세요.', '');
     countdownTimer = setInterval(tick, 1000);
     spawnRound();
@@ -556,18 +559,15 @@ classes: wide
       '🏁 종료 — 점수 ' + state.points + '점 (선점 ' + state.claims + ', 뺏김 ' + state.missed + ')' + (newRecord ? ' 🏆 신기록!' : ''),
       newRecord ? 'lr-good' : ''
     );
+    startBtn.disabled = false;
     startBtn.textContent = '다시 시작';
+    stopBtn.disabled = true;
   }
 
   // 페이지 로드 시 저장된 최고 기록을 바로 보여준다
   document.getElementById('lr-best').textContent = loadBest();
 
-  startBtn.addEventListener('click', function () {
-    if (state && state.running) {
-      endGame();
-    } else {
-      startGame();
-    }
-  });
+  startBtn.addEventListener('click', startGame);
+  stopBtn.addEventListener('click', endGame);
 })();
 </script>
