@@ -1,5 +1,5 @@
 ---
-title: "[운영] 정책 갱신에 jitter"
+title: "[운영과 성능] 주기적 작업의 부하 분산"
 excerpt: "여러 인스턴스가 같은 주기로 정책을 갱신해 생기는 부하 스파이크를 jitter로 흩뿌리는 과정."
 date: 2026-01-16
 published: true

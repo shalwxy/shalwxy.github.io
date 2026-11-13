@@ -1,5 +1,5 @@
 ---
-title: "[설계] '일정 시간 잠금'을 Redis TTL이 아니라 DB 컬럼으로"
+title: "[데이터 모델링] 쿨다운 상태의 모델링"
 excerpt: "'일정 시간 잠금'을 Redis TTL이 아니라 DB 컬럼의 '변경 시각'으로 모델링하는(쿨다운) 과정."
 date: 2026-09-30
 published: true

@@ -1,5 +1,5 @@
 ---
-title: "[Saga] 롤백 토픽 대신 결과 토픽"
+title: "[동시성·일관성] Saga: 보상 로직의 위치"
 excerpt: "Saga 보상 로직을 롤백 전용 토픽 대신 결과 토픽의 한 분기로 처리하는 과정."
 date: 2025-12-29
 published: true

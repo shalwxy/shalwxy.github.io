@@ -1,5 +1,5 @@
 ---
-title: "[API] 벤더 응답이 '200 OK + outcome'일 때의 에러 분기"
+title: "[책임과 경계] API: 처리 결과와 비즈니스 결과의 분리"
 excerpt: "성공/실패 여부를 HTTP 상태코드가 아니라 응답 본문의 outcome 필드로 옮기는 설계를 다룬다."
 date: 2025-09-09
 published: true
