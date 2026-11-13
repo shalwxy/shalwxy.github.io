@@ -12,22 +12,19 @@ lab:
     children:
       - title: "전체 글"
         url: /lab/
-  - title: "수학"
-    url: /lab/math/
-    children:
-      - title: "집합론"
-        url: /lab/math/set-theory/
-  - title: "과학"
-    url: /lab/science/
   - title: "공학"
     url: /lab/engineering/
     children:
-      - title: "데이터"
-        url: /lab/engineering/data/
       - title: "알고리즘"
         url: /lab/engineering/algorithm/
+      - title: "데이터"
+        url: /lab/engineering/data/
+      - title: "설계"
+        url: /lab/engineering/design/
       - title: "분산시스템"
         url: /lab/engineering/distributed/
+      - title: "운영"
+        url: /lab/engineering/ops/
 
 essay:
   - title: "Essay"
@@ -45,8 +42,6 @@ essay:
     children:
       - title: "생활"
         url: /essay/learning/life/
-      - title: "감평"
-        url: /essay/learning/appraisal/
 
 playground:
   - title: "Playground"

@@ -115,7 +115,7 @@ CREATE TABLE daily_withdrawal (
 );
 ```
 
-새 토큰이 추가되면 **코드의 enum에 한 줄 추가**하면 끝. 테이블·컬럼은 그대로. [별도로 정리한 "정책은 enum/설정으로"](/lab/engineering/distributed/policy-as-enum/) 패턴과 같다.
+새 토큰이 추가되면 **코드의 enum에 한 줄 추가**하면 끝. 테이블·컬럼은 그대로. [별도로 정리한 "결정 로직의 경계"](/lab/engineering/design/policy-as-enum/) 패턴과 같다.
 
 ## 추가로 고려할 것 — Outbox로 결과 발행 보장
 

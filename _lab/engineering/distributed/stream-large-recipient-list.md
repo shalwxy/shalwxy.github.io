@@ -134,7 +134,7 @@ if len(req.Recipients) > 0 {
 }
 ```
 
-"빈 목록 = 변경 없음"으로 정했다. 진짜로 전부 지우고 싶으면 **별도 RPC**(`ClearRecipients`)를 쓴다. "비어 있음"과 "지정 안 함"을 같은 값으로 받는 API는 이런 사고의 단골이다 — [enum 글에서의 optional 이야기](/lab/engineering/distributed/policy-as-enum/)와 같은 뿌리다.
+"빈 목록 = 변경 없음"으로 정했다. 진짜로 전부 지우고 싶으면 **별도 RPC**(`ClearRecipients`)를 쓴다. "비어 있음"과 "지정 안 함"을 같은 값으로 받는 API는 이런 사고의 단골이다 — [enum 글에서의 optional 이야기](/lab/engineering/design/policy-as-enum/)와 같은 뿌리다.
 
 ### 스트리밍 RPC용 공통 미들웨어
 
