@@ -58,7 +58,7 @@ func (s *BookmarkService) Add(ctx, userID, itemID) error {
 
 ### 접근
 
-카운트를 **Redis**에 올린다. 요청 경로에서는 Redis `INCR` 하나만 하고, 24시간 같은 윈도우로 IP·사용자 기준 중복을 제외한다. DB에는 주기적 flush.
+카운트를 **Redis**에 올린다. 요청 경로에서는 Redis `INCR` 하나만 하고, 일정 시간 윈도우로 IP·사용자 기준 중복을 제외한다. DB에는 주기적 flush.
 
 ```go
 func (s *ItemService) GetItem(ctx, itemID, clientIP, userID) (*Item, error) {
@@ -69,7 +69,7 @@ func (s *ItemService) GetItem(ctx, itemID, clientIP, userID) (*Item, error) {
 
 func incrementViewCount(itemID, clientIP, userID string) {
     key := fmt.Sprintf("view:%s:%s:%s", itemID, clientIP, userID)
-    added, _ := redis.SetNX(ctx, key, "1", 24*time.Hour)
+    added, _ := redis.SetNX(ctx, key, "1", dedupWindow)
     if added {
         redis.Incr(ctx, "view_count:"+itemID)
     }
@@ -78,7 +78,7 @@ func incrementViewCount(itemID, clientIP, userID string) {
 
 ### 결과
 
-**부분 성공** — 응답은 빨라지고, DB 쓰기 부담도 사라졌다. 24시간 중복 제외도 들어갔다.
+**부분 성공** — 응답은 빨라지고, DB 쓰기 부담도 사라졌다. 중복 제외 로직도 들어갔다.
 
 하지만 **카운트가 흩어지는 문제**가 새로 생겼다.
 
@@ -105,7 +105,7 @@ Redis로 옮긴 건 "쓰기 비용"을 해결했지만, **"카운트의 주인�
 집계 컨슈머 (별도 서비스):
     "item.viewed" / "item.bookmarked" / "item.unbookmarked" 구독
     ↓
-    24시간 중복 제외 (Redis)
+    중복 제외 (Redis)
     ↓
     카운트 갱신 (Redis + DB)
 ```
@@ -125,7 +125,7 @@ func (s *ItemService) GetItem(ctx, itemID, clientIP, userID) (*Item, error) {
 // 집계 컨슈머
 func (c *CountConsumer) HandleViewed(ctx, evt ViewEvent) error {
     key := fmt.Sprintf("view:%s:%s:%s", evt.ItemID, evt.ClientIP, evt.UserID)
-    added, _ := redis.SetNX(ctx, key, "1", 24*time.Hour)
+    added, _ := redis.SetNX(ctx, key, "1", dedupWindow)
     if !added {
         return nil   // 중복 조회, 집계 안 함
     }

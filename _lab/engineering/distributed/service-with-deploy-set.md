@@ -49,12 +49,12 @@ tags:
 |---|---|---|---|
 | 1 | Helm 템플릿 | 배포 차트 저장소 | 환경 공통 Deployment·Service·ConfigMap 템플릿 (값은 환경별 주입) |
 | 2 | 환경별 매니페스트 | 배포 매니페스트 저장소 | dev · test · qa · stage · live 각각의 Deployment · HPA · Service |
-| 3 | 게이트웨이 route | 게이트웨이(Envoy) 설정 저장소 | gRPC → REST 변환 규칙, 인증 적용/skip 목록 |
-| 4 | CI 배포 job | 서비스 저장소의 `.gitlab-ci.yml` | 이미지 빌드 + 환경별 배포 트리거 (live는 빌드까지만) |
+| 3 | 게이트웨이 route | 게이트웨이 설정 저장소 | gRPC → REST 변환 규칙, 인증 적용/skip 목록 |
+| 4 | CI 배포 job | 서비스 저장소의 CI 설정 파일 | 이미지 빌드 + 환경별 배포 트리거 (live는 빌드까지만) |
 | 5 | 시크릿·설정 | 시크릿 저장소 | DB 접속, 외부 키 — 환경마다 |
 
 ```yaml
-# .gitlab-ci.yml (요지)
+# CI 설정 파일 (요지)
 stages: [build, deploy]
 
 build:

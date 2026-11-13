@@ -105,7 +105,7 @@ if (res.authorized) {
     showMessage("이 카드는 이미 다른 계정에서 사용 중입니다");
 } else if (res.outcome === "SESSION_NOT_FOUND") {
     restartFlow();
-} else if (res.outcome === "SUSPICIOUS_PAYMENT_INSTRUMENT") {
+} else if (res.outcome === "REJECTED_BY_RISK_CHECK") {
     showMessage("안전상 결제가 거절됐습니다");
 } else {
     showMessage("처리 중 오류가 발생했어요");
@@ -133,9 +133,9 @@ HTTP 상태코드가 떠맡던 "성공/실패"와 "다시 보낼 수 있나"의 
 
 - `UNSUPPORTED_CARD_TYPE` — 지원하지 않는 카드사·카드 종류
 - `ALREADY_IN_USE` — 같은 카드가 다른 계정에서 이미 쓰이고 있음 (멀티계정 방지)
-- `SUSPICIOUS_PAYMENT_INSTRUMENT` — 벤더의 사기 탐지가 걸림
+- `REJECTED_BY_RISK_CHECK` — 벤더의 사기 탐지가 걸림
 - `SESSION_NOT_FOUND` — 3DS 중간 세션이 만료됨 (처음부터 재시작)
-- `COUNTRY_CODE_MISMATCH` — 카드 발급국과 신청 국가가 다름
+- `REGION_NOT_SUPPORTED` — 카드 발급국과 신청 국가가 다름
 - `ALREADY_PROCESSED` — 같은 트랜잭션에 대한 중복 완료 요청
 
 각각이 **프론트에서 다른 안내·다른 액션**을 유발한다. 이걸 HTTP 상태코드로 전하려면 커스텀 코드를 쓰거나 메시지 문자열에 담아야 하는데, 둘 다 파싱이 깨지기 쉽다. outcome 필드는 **강 타입 enum**으로 두면 프론트가 자동완성까지 받으며 분기할 수 있다.
@@ -148,12 +148,12 @@ HTTP 상태코드가 떠맡던 "성공/실패"와 "다시 보낼 수 있나"의 
 
 ```protobuf
 enum Outcome {
-    OUTCOME_UNSPECIFIED               = 0;
-    OUTCOME_UNSUPPORTED_CARD_TYPE     = 1;
-    OUTCOME_ALREADY_IN_USE            = 2;
-    OUTCOME_SUSPICIOUS_PAYMENT        = 3;
-    OUTCOME_SESSION_NOT_FOUND         = 4;
-    OUTCOME_COUNTRY_CODE_MISMATCH     = 5;
+    OUTCOME_UNSPECIFIED            = 0;
+    OUTCOME_UNSUPPORTED_CARD_TYPE  = 1;
+    OUTCOME_ALREADY_IN_USE         = 2;
+    OUTCOME_REJECTED_BY_RISK_CHECK = 3;
+    OUTCOME_SESSION_NOT_FOUND      = 4;
+    OUTCOME_REGION_NOT_SUPPORTED   = 5;
     // ...
 }
 ```
