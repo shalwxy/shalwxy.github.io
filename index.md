@@ -1,7 +1,7 @@
 ---
 layout: splash
 permalink: /
-title: "Persica"
+title: "HUB"
 author_profile: false
 header:
   overlay_image: /assets/img/thumbnail/hub-peach.jpg

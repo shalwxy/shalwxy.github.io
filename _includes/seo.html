@@ -2,6 +2,15 @@
 {%- assign title_separator = site.title_separator | default: '-' -%}
 
 {%- assign page_title = page.title | default: site.title | replace: '|', '&#124;' -%}
+{%- comment -%}
+  루트 페이지: 히어로 배경엔 "HUB"만 보여주지만, 탭 제목/OG 제목은 "{{ site.title }} Hub"로.
+  서브 블로그 허브(/lab/, /essay/, /playground/)는 탭 제목을 "{{ site.title }} Lab" 형태로 통일.
+{%- endcomment -%}
+{%- if page.url == '/' -%}
+  {%- assign page_title = site.title | append: ' Hub' -%}
+{%- elsif page.url == '/lab/' or page.url == '/essay/' or page.url == '/playground/' -%}
+  {%- assign page_title = site.title | append: ' ' | append: page.title -%}
+{%- endif -%}
 {%- comment -%} 4.26.2 버그 패치: page_title이 site.title을 이미 포함하면 접미사 생략 (upstream master 반영분). {%- endcomment -%}
 {%- if page_title contains site.title -%}
   {%- assign seo_title = page_title | replace: '|', '&#124;' -%}

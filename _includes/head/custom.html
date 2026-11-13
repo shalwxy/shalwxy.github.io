@@ -7,23 +7,78 @@
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5774744752286664" crossorigin="anonymous"></script>
 {% endif %}
 
+{%- comment -%}
+  삼선 메뉴: 서브 블로그(lab/essay/playground) 안에서는 Lab/Essay/Playground 대신
+  그 블로그의 카테고리(navigation.yml)를 보여준다. 데스크톱에서는 왼쪽 사이드바에 같은
+  카테고리 목록이 항상 보이므로, 그쪽과 중복되지 않게 삼선 메뉴는 모바일 화면에서만
+  보이도록 persica-nav--sub 클래스를 붙이고 CSS(main.scss)에서 분기한다.
+  메인 블로그(루트)에는 이미 Lab/Essay/Playground 허브 카드가 있어서 삼선 메뉴 자체가
+  중복이므로 아예 띄우지 않는다.
+{%- endcomment -%}
+{%- assign is_root = false -%}
+{%- if page.url == '/' -%}
+  {%- assign is_root = true -%}
+{%- endif -%}
+{%- assign url_section = page.url | split: '/' | where_exp: "s", "s != ''" | first -%}
+{%- assign nav_items = nil -%}
+{%- assign in_sub_blog = false -%}
+{%- if url_section == 'lab' or url_section == 'essay' or url_section == 'playground' -%}
+  {%- assign in_sub_blog = true -%}
+  {%- assign nav_items = site.data.navigation[url_section] -%}
+{%- endif -%}
+{%- capture menu_items_html -%}
+  {%- if nav_items -%}
+    {%- for item in nav_items -%}
+      <li role="none"><a role="menuitem" href="{{ item.url | relative_url }}">{{ item.title }}</a></li>
+      {%- for child in item.children -%}
+        <li role="none" class="persica-nav__item--sub"><a role="menuitem" href="{{ child.url | relative_url }}">{{ child.title }}</a></li>
+      {%- endfor -%}
+    {%- endfor -%}
+  {%- else -%}
+    <li role="none"><a role="menuitem" href="{{ '/lab/' | relative_url }}">Lab</a></li>
+    <li role="none"><a role="menuitem" href="{{ '/essay/' | relative_url }}">Essay</a></li>
+    <li role="none"><a role="menuitem" href="{{ '/playground/' | relative_url }}">Playground</a></li>
+  {%- endif -%}
+{%- endcapture -%}
+{%- assign wrap_class = 'persica-nav' -%}
+{%- if in_sub_blog -%}
+  {%- assign wrap_class = 'persica-nav persica-nav--sub' -%}
+{%- endif -%}
+
+{%- comment -%}
+  Home 링크: masthead.html은 테마가 include_cached로 불러와 한 번 렌더링한 HTML을
+  모든 페이지가 재사용하므로, 거기서 page.url별로 href를 분기해도 무시된다.
+  이 파일(head/custom.html)은 캐시되지 않으므로 여기서 계산해서 스크립트로 다시 씌운다.
+{%- endcomment -%}
+{%- assign home_url = '/' -%}
+{%- if in_sub_blog -%}
+  {%- assign home_url = '/' | append: url_section | append: '/' -%}
+{%- endif -%}
+
 <script>
 (function() {
+  var homeHref = '{{ home_url | relative_url }}';
+
+  function setupHomeLink() {
+    var title = document.querySelector('.site-title');
+    if (title) title.setAttribute('href', homeHref);
+    var logo = document.querySelector('.site-logo');
+    if (logo) logo.setAttribute('href', homeHref);
+  }
+
   function setupMenu() {
+    if ({{ is_root }}) return;
+
     var nav = document.querySelector('.greedy-nav');
     if (!nav || nav.querySelector('.persica-nav')) return;
 
     var wrap = document.createElement('div');
-    wrap.className = 'persica-nav';
+    wrap.className = '{{ wrap_class }}';
     wrap.innerHTML =
       '<button class="persica-nav__btn" type="button" aria-label="메뉴" aria-expanded="false">' +
         '<i class="fas fa-bars" aria-hidden="true"></i>' +
       '</button>' +
-      '<ul class="persica-nav__menu persica-nav__menu--hidden" role="menu">' +
-        '<li role="none"><a role="menuitem" href="/lab/">Lab</a></li>' +
-        '<li role="none"><a role="menuitem" href="/essay/">Essay</a></li>' +
-        '<li role="none"><a role="menuitem" href="/playground/">Playground</a></li>' +
-      '</ul>';
+      '<ul class="persica-nav__menu persica-nav__menu--hidden" role="menu">{{ menu_items_html | strip_newlines }}</ul>';
     nav.appendChild(wrap);
 
     var btn = wrap.querySelector('.persica-nav__btn');
@@ -43,10 +98,15 @@
     });
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', setupMenu);
-  } else {
+  function init() {
+    setupHomeLink();
     setupMenu();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
   }
 })();
 </script>

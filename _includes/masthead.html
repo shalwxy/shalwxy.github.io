@@ -1,0 +1,43 @@
+{% capture logo_path %}{{ site.logo }}{% endcapture %}
+
+{%- comment -%}
+  Home 링크: 서브 블로그(lab/essay/playground) 안에 있으면 해당 서브 블로그 메인으로, 그 외에는 사이트 루트로.
+  이 파일은 테마가 include_cached로 불러와서 한 번 렌더링된 HTML이 모든 페이지에 재사용되므로,
+  Liquid로 page.url별 분기를 해봤자 무시된다. 그래서 href는 "/"로 고정해 두고, 실제 분기는
+  (캐시되지 않는) head/custom.html의 스크립트가 페이지별로 다시 써준다.
+{%- endcomment -%}
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        {% unless logo_path == empty %}
+          <a class="site-logo" href="{{ '/' | relative_url }}"><img src="{{ logo_path | relative_url }}" alt="Home"></a>
+        {% endunless %}
+        <a class="site-title" href="{{ '/' | relative_url }}">Home</a>
+        <ul class="visible-links">
+          {%- for link in site.data.navigation.main -%}
+            <li class="masthead__menu-item">
+              <a
+                href="{{ link.url | relative_url }}"
+                {% if link.description %} title="{{ link.description }}"{% endif %}
+                {% if link.target %} target="{{ link.target }}"{% endif %}
+              >{{ link.title }}</a>
+            </li>
+          {%- endfor -%}
+        </ul>
+        {% if site.search == true %}
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">{{ site.data.ui-text[site.locale].search_label | default: "Toggle search" }}</span>
+          <i class="fas fa-search"></i>
+        </button>
+        {% endif %}
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">{{ site.data.ui-text[site.locale].menu_label | default: "Toggle menu" }}</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>

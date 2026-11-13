@@ -80,6 +80,26 @@
       color: $primary-color;
     }
   }
+
+  .persica-nav__item--sub a {
+    padding-left: 2rem;
+    font-size: $type-size-6;
+    color: $muted-text-color;
+  }
+}
+
+/* 서브 블로그(lab/essay/playground): 데스크톱에서는 왼쪽 사이드바 카테고리만,
+   모바일에서는 삼선 메뉴만 보이게 — 같은 카테고리 내비게이션이 두 곳에 겹치지 않도록 분리 */
+.persica-nav--sub {
+  @include breakpoint($large) {
+    display: none;
+  }
+}
+
+@media screen and (max-width: $large - 1) {
+  .sidebar {
+    display: none;
+  }
 }
 
 /* 본문 표: 테마 기본은 내용 폭만큼만 그려 좁아 보이므로 본문 폭에 맞춘다. 좁은 화면에선 가로 스크롤 유지 */
@@ -164,6 +184,11 @@
 /* 태그 아카이브: 주소에 #태그 가 있으면 해당 태그 섹션만 표시 */
 .layout--archive:has(.taxonomy__section:target) .taxonomy__section:not(:target) {
   display: none;
+}
+
+/* 메인 블로그(루트) 히어로의 "HUB" 글자: 워드마크처럼 자간을 넓게 */
+.layout--splash .page__title {
+  letter-spacing: 0.22em;
 }
 
 /* 허브 세 카드 (이름만, 사진 배경) */
