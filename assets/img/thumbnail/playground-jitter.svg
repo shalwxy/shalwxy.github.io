@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="시계 둘레에 흩어진 점들 — 지터 일러스트">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#eef2f6"/>
+      <stop offset="100%" stop-color="#dfe7ee"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="800" fill="url(#bg)"/>
+
+  <!-- clock face -->
+  <circle cx="600" cy="400" r="230" fill="#fdfdfe" stroke="#c7ccd4" stroke-width="6"/>
+
+  <!-- tick marks -->
+  <g stroke="#b7bec8" stroke-width="5" stroke-linecap="round">
+    <line x1="600" y1="186" x2="600" y2="210"/>
+    <line x1="600" y1="590" x2="600" y2="614"/>
+    <line x1="386" y1="400" x2="410" y2="400"/>
+    <line x1="790" y1="400" x2="814" y2="400"/>
+  </g>
+
+  <!-- clock hands -->
+  <line x1="600" y1="400" x2="600" y2="260" stroke="#7b8fa6" stroke-width="10" stroke-linecap="round"/>
+  <line x1="600" y1="400" x2="700" y2="400" stroke="#4a5a68" stroke-width="10" stroke-linecap="round"/>
+  <circle cx="600" cy="400" r="14" fill="#4a5a68"/>
+
+  <!-- scattered instance dots around the rim: jitter spreads them across the whole circle -->
+  <g>
+    <circle cx="600" cy="170" r="16" fill="#d1483a"/>
+    <circle cx="742" cy="213" r="16" fill="#7b8fa6"/>
+    <circle cx="830" cy="330" r="16" fill="#7b8fa6"/>
+    <circle cx="845" cy="470" r="16" fill="#d1483a"/>
+    <circle cx="780" cy="590" r="16" fill="#7b8fa6"/>
+    <circle cx="650" cy="650" r="16" fill="#7b8fa6"/>
+    <circle cx="520" cy="645" r="16" fill="#7b8fa6"/>
+    <circle cx="400" cy="580" r="16" fill="#d1483a"/>
+    <circle cx="358" cy="455" r="16" fill="#7b8fa6"/>
+    <circle cx="372" cy="310" r="16" fill="#7b8fa6"/>
+    <circle cx="460" cy="205" r="16" fill="#7b8fa6"/>
+  </g>
+
+  <!-- small caption dots bottom-left: clustered (before jitter) for contrast -->
+  <g>
+    <circle cx="150" cy="700" r="14" fill="#d1483a"/>
+    <circle cx="178" cy="700" r="14" fill="#d1483a"/>
+    <circle cx="206" cy="700" r="14" fill="#d1483a"/>
+    <circle cx="234" cy="700" r="14" fill="#d1483a"/>
+  </g>
+</svg>
