@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="세 점과 그 외접원 — 외심 찾기 일러스트">
+  <defs>
+    <linearGradient id="cc-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#eef6f0"/>
+      <stop offset="100%" stop-color="#dcebe0"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="800" fill="url(#cc-bg)"/>
+
+  <!-- circumcircle -->
+  <circle cx="600" cy="400" r="230" fill="none" stroke="#4f7a55" stroke-width="6" stroke-dasharray="4 10"/>
+
+  <!-- triangle -->
+  <polygon points="600,190 790,520 410,520" fill="none" stroke="#2a5a8a" stroke-width="8" stroke-linejoin="round"/>
+
+  <!-- triangle vertices -->
+  <circle cx="600" cy="190" r="16" fill="#d1483a"/>
+  <circle cx="790" cy="520" r="16" fill="#d1483a"/>
+  <circle cx="410" cy="520" r="16" fill="#d1483a"/>
+
+  <!-- circumcenter -->
+  <circle cx="600" cy="400" r="14" fill="#4f7a55" stroke="#fdfdfe" stroke-width="4"/>
+</svg>
