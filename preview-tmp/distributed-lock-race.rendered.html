@@ -1,0 +1,554 @@
+<p><a href="/lab/engineering/distributed/preempt-over-check/"><code>확인과 사용 간극의 제거</code></a> 글에서 다룬 분산 락 선점을 게임으로 만들었다. 화면에 🔒가 뜨면 나와 봇 노드 3개가 동시에 그 락을 노린다. <strong>가장 먼저 잡는 쪽이 가져가고, 나머지는 전부 "이미 선점됨"으로 튕겨 나간다.</strong> 봇마다 충전 바가 있어서 얼마나 빨리 선점을 시도할지 눈으로 보면서 타이밍을 잴 수 있다. <strong>봇은 라운드 수가 아니라 경과 시간에 따라 점점 빨라진다</strong> — 시작할 땐 여유롭다가 60초에 가까워질수록 충전 바가 훨씬 빨리 찬다.</p>
+<p>가끔 다른 것도 섞여 나온다. 💣 가짜 락(<a href="/lab/engineering/distributed/dlq-over-db/"><code>DLQ</code> 글</a>에서 다룬 "비정상 메시지"와 같은 개념), 🔑 우선순위 토큰, 그리고 락이 한꺼번에 여러 개 뜨는 "샤딩 타임"까지. <strong>봇도 나와 똑같은 조건으로 움직인다.</strong> 봇이 가짜 락에 속으면 그 봇은 몇 라운드 동안 멈추고, 봇이 토큰을 채가면 바로 다음 락은 그 봇의 보상으로 돌아간다 — 나와 똑같은 보상·페널티를 봇도 받는다. 연속으로 성공하면 콤보 배율이 붙고, 최고 점수는 브라우저에 저장된다.</p>
+<div class="lr-wrap">
+  <div class="lr-hud">
+    <div class="lr-stat"><span>남은 시간</span><strong id="lr-time">60</strong></div>
+    <div class="lr-stat"><span>점수</span><strong id="lr-score">0</strong></div>
+    <div class="lr-stat"><span>콤보</span><strong id="lr-combo">x1</strong></div>
+    <div class="lr-stat"><span>최고 기록</span><strong id="lr-best">0</strong></div>
+  </div>
+
+  <div class="lr-bots" id="lr-bots">
+    <div class="lr-bot"><span>봇1</span><div class="lr-bot-track"><div class="lr-bot-fill" id="lr-bot-fill-0"></div></div></div>
+    <div class="lr-bot"><span>봇2</span><div class="lr-bot-track"><div class="lr-bot-fill" id="lr-bot-fill-1"></div></div></div>
+    <div class="lr-bot"><span>봇3</span><div class="lr-bot-track"><div class="lr-bot-fill" id="lr-bot-fill-2"></div></div></div>
+  </div>
+
+  <div class="lr-board" id="lr-board">
+    <p class="lr-board-hint" id="lr-board-hint">시작 버튼을 누르면 🔒가 나타납니다.</p>
+  </div>
+
+  <div class="lr-banner" id="lr-banner">봇의 충전 바가 다 차기 전에 🔒를 클릭해보자. 60초 동안 겨뤄본다.</div>
+
+  <div class="lr-controls">
+    <button type="button" class="btn btn--primary" id="lr-start">시작</button>
+  </div>
+</div>
+
+<style>
+.lr-wrap { max-width: 720px; margin: 2em auto; }
+.lr-hud { display: flex; gap: 1em; margin-bottom: 1em; flex-wrap: wrap; }
+.lr-stat {
+  flex: 1 1 140px; background: #f7f7f8; border-radius: 8px;
+  padding: 0.7em 1em; text-align: center;
+}
+.lr-stat span { display: block; font-size: 0.78em; color: #6b6b6b; margin-bottom: 0.2em; }
+.lr-stat strong { font-size: 1.5em; font-weight: 700; }
+.lr-bots { display: flex; gap: 1em; margin-bottom: 1em; flex-wrap: wrap; }
+.lr-bot { flex: 1 1 140px; font-size: 0.8em; color: #666; }
+.lr-bot span { display: block; margin-bottom: 0.3em; }
+.lr-bot-track { height: 10px; background: #e4e6ea; border-radius: 5px; overflow: hidden; }
+.lr-bot-fill { height: 100%; width: 0%; background: #7b8fa6; }
+.lr-bot-fill.lr-bot-fired { background: #d1483a; }
+.lr-bot.lr-bot-stunned { opacity: 0.35; filter: grayscale(1); }
+.lr-board {
+  position: relative; height: 340px; background: #eef1f4;
+  border: 1px solid #dadfe4; border-radius: 10px; overflow: hidden; margin-bottom: 1em;
+}
+.lr-board.lr-shake { animation: lr-shake 0.35s; }
+@keyframes lr-shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+}
+.lr-board-hint {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  color: #999; font-size: 0.9em; width: 80%; text-align: center;
+}
+.lr-lock {
+  position: absolute; width: 56px; height: 56px; border-radius: 50%;
+  background: #4a5a68; color: #fdd79a; font-size: 1.6em; line-height: 56px;
+  text-align: center; border: none; cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  animation: lr-pop 0.15s ease;
+}
+.lr-lock-fake { background: #7a2e26; }
+.lr-lock-power { background: #e8c468; color: #3d2b00; }
+@keyframes lr-pop { from { transform: scale(0.4); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.lr-particle {
+  position: absolute; width: 8px; height: 8px; margin: -4px; border-radius: 50%;
+  background: #f4b740; pointer-events: none;
+  animation: lr-particle-fly 0.5s ease-out forwards;
+}
+@keyframes lr-particle-fly {
+  from { transform: translate(0, 0); opacity: 1; }
+  to { transform: translate(var(--dx), var(--dy)); opacity: 0; }
+}
+.lr-banner {
+  padding: 0.9em 1.1em; border-radius: 8px; background: #eef1f4;
+  font-weight: 600; margin-bottom: 1em; min-height: 1.4em;
+}
+.lr-banner.lr-good { background: #e5f0e6; color: #335c38; }
+.lr-banner.lr-bad { background: #fbe4e1; color: #a9342a; }
+.lr-banner.lr-info { background: #eaf1fb; color: #2a5a8a; }
+.lr-controls { display: flex; gap: 0.6em; }
+</style>
+
+<script>
+(function () {
+  var GAME_DURATION = 60;
+  var BOT_COUNT = 3;
+  var ROUND_TIMEOUT = 3000;
+  var BEST_KEY = 'lr-best-score';
+
+  var board = document.getElementById('lr-board');
+  var hintEl = document.getElementById('lr-board-hint');
+  var banner = document.getElementById('lr-banner');
+  var startBtn = document.getElementById('lr-start');
+  var botFills = [
+    document.getElementById('lr-bot-fill-0'),
+    document.getElementById('lr-bot-fill-1'),
+    document.getElementById('lr-bot-fill-2')
+  ];
+
+  var state = null;
+  var countdownTimer = null;
+  var audioCtx = null;
+
+  function randRange(a, b) { return a + Math.random() * (b - a); }
+
+  function loadBest() {
+    try { return parseInt(localStorage.getItem(BEST_KEY), 10) || 0; } catch (e) { return 0; }
+  }
+  function saveBest(v) {
+    try { localStorage.setItem(BEST_KEY, String(v)); } catch (e) { /* 저장 불가 시 조용히 무시 */ }
+  }
+
+  function playTone(freq, duration, type) {
+    try {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      var osc = audioCtx.createOscillator();
+      var gain = audioCtx.createGain();
+      osc.type = type || 'sine';
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0.16, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+      osc.connect(gain); gain.connect(audioCtx.destination);
+      osc.start(); osc.stop(audioCtx.currentTime + duration);
+    } catch (e) { /* 오디오 미지원 환경이면 조용히 무시 */ }
+  }
+
+  function shakeBoard() {
+    board.classList.remove('lr-shake');
+    void board.offsetWidth;
+    board.classList.add('lr-shake');
+  }
+
+  function spawnParticles(x, y) {
+    for (var i = 0; i < 8; i++) {
+      var angle = (Math.PI * 2 * i) / 8;
+      var p = document.createElement('span');
+      p.className = 'lr-particle';
+      p.style.left = x + 'px';
+      p.style.top = y + 'px';
+      p.style.setProperty('--dx', Math.cos(angle) * 50 + 'px');
+      p.style.setProperty('--dy', Math.sin(angle) * 50 + 'px');
+      board.appendChild(p);
+      (function (el) { setTimeout(function () { el.remove(); }, 500); })(p);
+    }
+  }
+
+  // 사람이 락을 보고 마우스를 옮겨 클릭하기까지의 시간까지 감안해 넉넉하게 잡았다.
+  function botDelayRange(timeLeft) {
+    var progress = 1 - timeLeft / GAME_DURATION; // 0(시작) -> 1(막판)
+    var maxDelay = 1500 - progress * 600;         // 1500ms -> 900ms
+    var minDelay = 600 - progress * 250;          // 600ms -> 350ms
+    return [minDelay, maxDelay];
+  }
+
+  function multiplierFor(combo) {
+    if (combo >= 6) return 3;
+    if (combo >= 3) return 2;
+    return 1;
+  }
+
+  function comboSuffix() {
+    var m = multiplierFor(state.combo);
+    return m > 1 ? (' (콤보 x' + m + '!)') : '';
+  }
+
+  function pickRoundKind() {
+    var r = Math.random();
+    if (r < 0.12) return 'shard';
+    if (r < 0.12 + 0.15) return 'fake';
+    if (r < 0.12 + 0.15 + 0.08) return 'powerup';
+    return 'normal';
+  }
+
+  function resetBotBar(i) {
+    var fill = botFills[i];
+    fill.style.transition = 'none';
+    fill.style.width = '0%';
+    fill.classList.remove('lr-bot-fired');
+  }
+
+  function armBotBar(i, delay) {
+    resetBotBar(i);
+    var fill = botFills[i];
+    void fill.offsetWidth; // transition 재적용을 위한 강제 reflow
+    fill.style.transition = 'width ' + delay + 'ms linear';
+    fill.style.width = '100%';
+  }
+
+  function updateHud() {
+    document.getElementById('lr-time').textContent = state.timeLeft;
+    document.getElementById('lr-score').textContent = state.points;
+    document.getElementById('lr-combo').textContent = 'x' + multiplierFor(state.combo) + (state.combo > 0 ? ' (' + state.combo + ')' : '');
+    document.getElementById('lr-best').textContent = state.best;
+  }
+
+  function setBanner(text, cls) {
+    banner.textContent = text;
+    banner.className = 'lr-banner' + (cls ? ' ' + cls : '');
+  }
+
+  function randomPos() {
+    var rect = board.getBoundingClientRect();
+    var size = 56;
+    return { x: randRange(10, Math.max(10, rect.width - size - 10)), y: randRange(10, Math.max(10, rect.height - size - 10)) };
+  }
+
+  function makeLockElement(kind) {
+    var el = document.createElement('button');
+    el.type = 'button';
+    el.className = 'lr-lock' + (kind === 'fake' ? ' lr-lock-fake' : kind === 'powerup' ? ' lr-lock-power' : '');
+    el.textContent = kind === 'fake' ? '💣' : kind === 'powerup' ? '🔑' : '🔒';
+    return el;
+  }
+
+  function clearPendingTimer() {
+    if (!state.round) return;
+    clearTimeout(state.round.timer);
+    state.round.botTimers.forEach(clearTimeout);
+  }
+
+  function registerSuccess(px, py) {
+    state.combo++;
+    state.points += multiplierFor(state.combo);
+    state.claims++;
+    spawnParticles(px, py);
+    playTone(880, 0.12, 'sine');
+    updateHud();
+  }
+
+  function finishRoundNormalGap() {
+    state.round = null;
+    if (state.running) setTimeout(spawnRound, randRange(400, 800));
+  }
+
+  function finishRoundAfterPenalty() {
+    state.round = null;
+    if (state.running) setTimeout(spawnRound, randRange(900, 1400));
+  }
+
+  function handleLockClick(lockObj) {
+    if (!state || !state.running || !state.round || lockObj.claimed) return;
+    if (state.round.locks.indexOf(lockObj) === -1) return;
+    lockObj.claimed = true;
+
+    var rect = lockObj.el.getBoundingClientRect();
+    var boardRect = board.getBoundingClientRect();
+    var px = rect.left - boardRect.left + rect.width / 2;
+    var py = rect.top - boardRect.top + rect.height / 2;
+    lockObj.el.remove();
+
+    var kind = lockObj.kind;
+
+    if (kind === 'fake') {
+      state.combo = 0;
+      shakeBoard();
+      playTone(110, 0.3, 'square');
+      setBanner('💥 가짜 락이었습니다! 잠깐 멈칫...', 'lr-bad');
+      clearPendingTimer();
+      updateHud();
+      finishRoundAfterPenalty();
+      return;
+    }
+    if (kind === 'powerup') {
+      state.priorityToken = true;
+      playTone(1300, 0.15, 'triangle');
+      setBanner('🔑 우선순위 토큰 획득! 다음 락은 무조건 내가 먼저.', 'lr-info');
+      clearPendingTimer();
+      finishRoundNormalGap();
+      return;
+    }
+
+    // normal / normal-priority / shard: 성공 처리
+    registerSuccess(px, py);
+    if (kind === 'shard') {
+      reconcileShardBots();
+      var allDone = state.round.locks.every(function (l) { return l.claimed; });
+      if (allDone) {
+        setBanner('🟢 샤딩 타임 클리어!' + comboSuffix(), 'lr-good');
+        clearPendingTimer();
+        finishRoundNormalGap();
+      } else {
+        setBanner('🟢 조각 선점!' + comboSuffix(), 'lr-good');
+      }
+    } else {
+      setBanner('🟢 선점 성공!' + comboSuffix(), 'lr-good');
+      for (var i = 0; i < BOT_COUNT; i++) resetBotBar(i);
+      clearPendingTimer();
+      finishRoundNormalGap();
+    }
+  }
+
+  function reconcileShardBots(excludeIndex) {
+    if (!state.round || state.round.kind !== 'shard' || !state.round.botTargets) return;
+    for (var i = 0; i < BOT_COUNT; i++) {
+      if (i === excludeIndex) continue;
+      var target = state.round.botTargets[i];
+      if (target && target.claimed) {
+        resetBotBar(i);
+        clearTimeout(state.round.botTimers[i]);
+      }
+    }
+  }
+
+  function handleBotFire(lockObj, botIndex) {
+    if (!state || !state.running || !state.round || lockObj.claimed) return;
+    lockObj.claimed = true;
+    botFills[botIndex].classList.add('lr-bot-fired');
+
+    var kind = lockObj.kind;
+    var botName = '봇' + (botIndex + 1);
+
+    if (kind === 'shard') {
+      // 같은 조각을 노리던 다른 봇만 정리하고, 다른 조각을 노리는 봇은 그대로 둔다
+      reconcileShardBots(botIndex);
+      if (lockObj.el) lockObj.el.remove();
+      playTone(220, 0.15, 'sawtooth');
+      setBanner(botName + '이(가) 조각 하나를 가져갔습니다.', '');
+      var allDone = state.round.locks.every(function (l) { return l.claimed; });
+      if (allDone) {
+        clearPendingTimer();
+        finishRoundNormalGap();
+      }
+      return;
+    }
+
+    // 나머지 종류는 봇끼리도 같은 락 하나를 두고 경쟁하므로 다른 봇은 전부 정리한다
+    for (var i = 0; i < BOT_COUNT; i++) { if (i !== botIndex) resetBotBar(i); }
+    if (lockObj.el) lockObj.el.remove();
+
+    if (kind === 'fake') {
+      state.botStun[botIndex] = 3;
+      updateBotStunVisuals();
+      playTone(220, 0.15, 'square');
+      setBanner('🙈 ' + botName + '이(가) 가짜 락에 속아 잠시 멈춥니다!', 'lr-info');
+      clearPendingTimer();
+      finishRoundNormalGap();
+      return;
+    }
+    if (kind === 'powerup') {
+      state.botPriority[botIndex] = true;
+      playTone(220, 0.15, 'triangle');
+      setBanner('🙅 ' + botName + '이(가) 우선순위 토큰을 채갔습니다. 다음 락은 그 봇이 가져갑니다.', 'lr-info');
+      clearPendingTimer();
+      finishRoundNormalGap();
+      return;
+    }
+
+    // normal: 기존 패널티
+    state.missed++;
+    state.combo = 0;
+    shakeBoard();
+    playTone(160, 0.2, 'sawtooth');
+    clearPendingTimer();
+    setBanner('🔴 ' + botName + '에게 선점당했습니다 — AlreadyExists', 'lr-bad');
+    updateHud();
+    finishRoundNormalGap();
+  }
+
+  function expireRound(locks, kind) {
+    if (!state.round) return;
+    locks.forEach(function (l) { if (!l.claimed && l.el) l.el.remove(); });
+    state.round.botTimers.forEach(clearTimeout);
+    for (var i = 0; i < BOT_COUNT; i++) resetBotBar(i);
+    if (kind === 'fake') {
+      setBanner('🙂 가짜 락을 무시했습니다 — 안전!', '');
+    } else if (kind === 'powerup') {
+      setBanner('⌛ 우선순위 토큰을 놓쳤습니다.', '');
+    } else if (kind === 'shard') {
+      setBanner('⏳ 샤딩 타임 일부를 놓쳤습니다.', '');
+    } else if (kind === 'normal-priority') {
+      setBanner('⌛ 우선순위였는데 놓쳤습니다...', '');
+    } else {
+      setBanner('⏳ 아무도 못 잡고 사라졌습니다. 다음 락!', '');
+    }
+    state.round = null;
+    if (state.running) setTimeout(spawnRound, randRange(400, 800));
+  }
+
+  function spawnSingle(kind, rewardBot) {
+    var el = makeLockElement(kind);
+    var pos = randomPos();
+    el.style.left = pos.x + 'px';
+    el.style.top = pos.y + 'px';
+    board.appendChild(el);
+
+    var lockObj = { el: el, claimed: false, kind: kind };
+    el.addEventListener('click', function () { handleLockClick(lockObj); });
+
+    var botTimers = [];
+    if (kind === 'normal-bot-priority') {
+      setBanner('⚙ 봇' + (rewardBot + 1) + '이(가) 토큰 보상으로 이 락을 가져갑니다.', 'lr-info');
+      armBotBar(rewardBot, 200);
+      botTimers[rewardBot] = setTimeout(function () { handleBotFire(lockObj, rewardBot); }, 200);
+      for (var r = 0; r < BOT_COUNT; r++) { if (r !== rewardBot) resetBotBar(r); }
+    } else if (kind === 'normal' || kind === 'fake' || kind === 'powerup') {
+      var range = botDelayRange(state.timeLeft);
+      for (var i = 0; i < BOT_COUNT; i++) {
+        if (state.botStun[i] > 0) { resetBotBar(i); continue; }
+        (function (botIndex) {
+          var delay = randRange(range[0], range[1]);
+          armBotBar(botIndex, delay);
+          botTimers[botIndex] = setTimeout(function () { handleBotFire(lockObj, botIndex); }, delay);
+        })(i);
+      }
+    } else {
+      // 'normal-priority': 플레이어 토큰 효과로 이번 라운드는 봇이 아예 참여하지 않는다
+      for (var j = 0; j < BOT_COUNT; j++) resetBotBar(j);
+    }
+
+    var timeoutMs = kind === 'fake' ? 1600 : kind === 'powerup' ? 1800 : ROUND_TIMEOUT;
+    var timer = setTimeout(function () { expireRound([lockObj], kind); }, timeoutMs);
+
+    state.round = { kind: kind, locks: [lockObj], timer: timer, botTimers: botTimers };
+  }
+
+  function spawnShardRound() {
+    setBanner('⚡ 샤딩 타임! 뜬 락을 전부 잡아보자', 'lr-info');
+    var count = Math.random() < 0.5 ? 2 : 3;
+    var locks = [];
+    for (var k = 0; k < count; k++) {
+      var el = makeLockElement('shard');
+      var pos = randomPos();
+      el.style.left = pos.x + 'px';
+      el.style.top = pos.y + 'px';
+      board.appendChild(el);
+      var lockObj = { el: el, claimed: false, kind: 'shard' };
+      (function (lo) { lo.el.addEventListener('click', function () { handleLockClick(lo); }); })(lockObj);
+      locks.push(lockObj);
+    }
+
+    // 봇마다 조각 하나씩 무작위로 찍어서 그 조각만 노린다 (같은 조각을 여러 봇이 노릴 수도 있다)
+    var range = botDelayRange(state.timeLeft);
+    var botTimers = [];
+    var botTargets = [];
+    for (var i = 0; i < BOT_COUNT; i++) {
+      if (state.botStun[i] > 0) { resetBotBar(i); continue; }
+      (function (botIndex) {
+        var target = locks[Math.floor(Math.random() * locks.length)];
+        botTargets[botIndex] = target;
+        var delay = randRange(range[0], range[1]);
+        armBotBar(botIndex, delay);
+        botTimers[botIndex] = setTimeout(function () { handleBotFire(target, botIndex); }, delay);
+      })(i);
+    }
+
+    var timer = setTimeout(function () { expireRound(locks, 'shard'); }, ROUND_TIMEOUT + 800);
+    state.round = { kind: 'shard', locks: locks, timer: timer, botTimers: botTimers, botTargets: botTargets };
+  }
+
+  function findPendingBotPriority() {
+    for (var i = 0; i < BOT_COUNT; i++) {
+      if (state.botPriority[i] && state.botStun[i] === 0) return i;
+    }
+    return -1;
+  }
+
+  function updateBotStunVisuals() {
+    for (var i = 0; i < BOT_COUNT; i++) {
+      var container = botFills[i].closest('.lr-bot');
+      if (container) container.classList.toggle('lr-bot-stunned', state.botStun[i] > 0);
+    }
+  }
+
+  function spawnRound() {
+    if (!state.running) return;
+    hintEl.style.display = 'none';
+    state.rounds++;
+
+    for (var s = 0; s < BOT_COUNT; s++) { if (state.botStun[s] > 0) state.botStun[s]--; }
+    updateBotStunVisuals();
+
+    var kind;
+    var rewardBot = -1;
+    if (state.priorityToken) {
+      kind = 'normal-priority';
+      state.priorityToken = false;
+    } else {
+      rewardBot = findPendingBotPriority();
+      if (rewardBot !== -1) {
+        kind = 'normal-bot-priority';
+        state.botPriority[rewardBot] = false;
+      } else {
+        kind = pickRoundKind();
+      }
+    }
+
+    if (kind === 'shard') { spawnShardRound(); return; }
+    spawnSingle(kind, rewardBot);
+  }
+
+  function tick() {
+    state.timeLeft--;
+    updateHud();
+    if (state.timeLeft <= 0) endGame();
+  }
+
+  function startGame() {
+    state = {
+      running: true, points: 0, claims: 0, missed: 0, rounds: 0,
+      combo: 0, priorityToken: false, best: loadBest(),
+      botStun: [0, 0, 0], botPriority: [false, false, false],
+      timeLeft: GAME_DURATION, round: null
+    };
+    updateHud();
+    updateBotStunVisuals();
+    hintEl.style.display = 'none';
+    startBtn.textContent = '초기화';
+    setBanner('시작! 🔒가 뜨면 바로 클릭하세요.', '');
+    countdownTimer = setInterval(tick, 1000);
+    spawnRound();
+  }
+
+  function endGame() {
+    if (!state) return;
+    state.running = false;
+    clearInterval(countdownTimer);
+    if (state.round) {
+      clearTimeout(state.round.timer);
+      state.round.botTimers.forEach(clearTimeout);
+      state.round.locks.forEach(function (l) { if (l.el) l.el.remove(); });
+    }
+    for (var i = 0; i < BOT_COUNT; i++) resetBotBar(i);
+
+    var newRecord = false;
+    if (state.points > state.best) { state.best = state.points; saveBest(state.best); newRecord = true; }
+    updateHud();
+
+    hintEl.textContent = '다시 하려면 시작 버튼을 누르세요.';
+    hintEl.style.display = '';
+    setBanner(
+      '🏁 종료 — 점수 ' + state.points + '점 (선점 ' + state.claims + ', 뺏김 ' + state.missed + ')' + (newRecord ? ' 🏆 신기록!' : ''),
+      newRecord ? 'lr-good' : ''
+    );
+    startBtn.textContent = '다시 시작';
+  }
+
+  // 페이지 로드 시 저장된 최고 기록을 바로 보여준다
+  document.getElementById('lr-best').textContent = loadBest();
+
+  startBtn.addEventListener('click', function () {
+    if (state && state.running) {
+      endGame();
+    } else {
+      startGame();
+    }
+  });
+})();
+</script>

@@ -1,23 +1,8 @@
----
-title: "부동산 첫 구매 시뮬레이터"
-excerpt: "지역 규제·생애최초 여부·연소득·공시가격을 입력하면 대출 가능액, 월 상환액, 총 필요 현금을 계산해주는 참고용 시뮬레이터."
-date: 2026-11-13
-last_modified_at: 2026-11-13
-tags:
-  - 시뮬레이터
-  - 부동산
-header:
-  teaser: /assets/img/thumbnail/playground-firsthome.svg
-links:
-  - label: "관련 글 보기"
-    url: /essay/learning/life/mortgage-consultation/
-toc: false
-author_profile: false
-classes: wide
----
-
-[`주택담보대출 은행 상담 비교`](/essay/learning/life/mortgage-consultation/) 글에서 정리한 구조를 바탕으로 만든 계산기다. **LTV와 DSR 중 더 낮은 쪽**이 실제 대출 한도를 정하고, 거기에 취득세·중개수수료 같은 부대비용을 더하면 "진짜 필요한 현금"이 나온다는 걸 숫자로 보여준다. 2025년 하반기에 나온 6·27 대책, 9·7 추가대책, 10·15 대책(토허제 확대, 가격 구간별 대출 상한), 스트레스 DSR 3단계와 2026년 8·13 금융 종합대책까지 반영해 지역 구분과 DSR 계산 방식을 업데이트했다.
-
+<!doctype html><html lang="ko"><head><meta charset="utf-8">
+<link rel="stylesheet" href="assets/css/main.css">
+<style>body{max-width:1000px;margin:2em auto;padding:0 1.5em;font-family:-apple-system,sans-serif;} .btn{display:inline-block;padding:.4em .9em;border-radius:6px;margin-right:.3em;cursor:pointer;text-decoration:none;border:none;}</style>
+</head><body class="page__content">
+<p><a href="/essay/learning/life/mortgage-consultation/"><code>주택담보대출 은행 상담 비교</code></a> 글에서 정리한 구조를 바탕으로 만든 계산기다. <strong>LTV와 DSR 중 더 낮은 쪽</strong>이 실제 대출 한도를 정하고, 거기에 취득세·중개수수료 같은 부대비용을 더하면 "진짜 필요한 현금"이 나온다는 걸 숫자로 보여준다. 2025년 하반기에 나온 6·27 대책, 9·7 추가대책, 10·15 대책(토허제 확대, 가격 구간별 대출 상한), 스트레스 DSR 3단계와 2026년 8·13 금융 종합대책까지 반영해 지역 구분과 DSR 계산 방식을 업데이트했다.</p>
 <div class="hb-notice">
   ⚠️ <strong>이 시뮬레이터의 수치는 <strong id="hb-asof">-</strong> 발표 기준으로 고정해 둔 값이다.</strong> 단순화해 넣었고, 규제지역 지정·LTV·토허제 구역은 수시로 바뀐다. 공시가격은 실제 LTV 산정 기준(시세·감정가)과 다를 수 있어 근사치로만 썼다. 실제 대출 가능액은 반드시 취급 은행과 금융위원회·국토교통부 공지로 재확인한다.<br>
   최종 업데이트: <strong>2026-11-13</strong> · 참고한 자료는 글 하단의 "참고 자료"를 확인한다.
@@ -82,7 +67,7 @@ classes: wide
   </div>
 
   <div class="hb-result" id="hb-result">
-    <p class="hb-placeholder">왼쪽 값을 입력하고 계산하기를 눌러보세요.</p>
+    <p class="hb-placeholder">값을 입력하고 계산하기를 눌러보세요.</p>
   </div>
 </div>
 
@@ -337,20 +322,19 @@ classes: wide
 })();
 </script>
 
-## 참고 자료
-
-2025년 6월부터 2026년 11월까지 나온 대출 규제 변경 내용을 반영하면서 참고한 자료다. 각 링크 앞에 그 글의 게시일자를 적었다. 날짜가 최신이라고 해서 항상 더 정확한 건 아니니(특히 블로그성 글은 수치가 서로 다르기도 했다), 실제 적용 전엔 공식 발표·취급 은행으로 재확인한다.
-
-- [2026-11-03 · SBS Biz — 김포·구리·하남·의정부 그린벨트 324㎢ 토지거래허가구역 해제](https://biz.sbs.co.kr/amp/article/20000344013)
-- [2026-08-13 · 더체크 — 2026년 가계대출 총량 목표 1.5%→3% 확대](https://thecheck.co.kr/2026-household-loan-growth-target-3-percent/)
-- [2026-06-30 · 아시아경제(영문) — 지방 주담대 2단계 스트레스 DSR 연말까지 유지](https://view.asiae.co.kr/en/article/2026063015591295914)
-- [2025-10-15 · 뉴시스 — "비쌀수록 주담대 조인다"…15억 넘으면 4억, 25억 넘으면 2억](https://www.newsis.com/view/NISX20251015_0003363513?pc_view=1)
-- [2025-10-15 · 데일리안 — 수도권 주담대 최대 6억원→2억원으로 줄인다 (10.15 부동산대책-금융)](https://www.dailian.co.kr/news/view/1559594)
-- [2025-10-15 · 머니투데이 — 서울 전체·분당 등 12곳 토허제 묶었다](https://www.mt.co.kr/estate/2025/10/15/2025101508131672772)
-- [2025-10-15 · 데일리안 — 서울 전역 및 경기 12개 지역, 규제지역으로 지정 (10.15 대책 Q&A)](https://www.dailian.co.kr/news/view/1559585/)
-- [2025-10 · 뱅크몰 — 2025년 생애최초 주택구입자금대출 조건·한도 사례](https://weolbu.com/community/3327392/2025-%EC%83%9D%EC%95%A0%EC%B5%9C%EC%B4%88%EC%A3%BC%ED%83%9D%EC%9E%90%EA%B8%88%EB%8C%80%EC%B6%9C-%EC%A1%B0%EA%B1%B4-%ED%95%9C%EB%8F%84-%EC%82%AC%EB%A1%80-%EC%9E%90%EA%B2%A9-%EC%B2%B4%ED%81%AC%EB%A6%AC%EC%8A%A4%ED%8A%B8%EA%B9%8C%EC%A7%80)
-- [2025-09-17 · 뉴시스 — 강남3구·용산구 토지거래허가구역 1년 3개월 재지정](https://mobile.newsis.com/view/NISX20250917_0003333383)
-- [2025-07-06 · 한국경제 — 수도권 6억 초과 주담대 금지](https://www.hankyung.com/article/2025070609611)
-- [2025-07-01(시행) · KB — 스트레스 DSR 3단계 시행, 대출 한도 얼만큼 줄었을까?](https://kbthink.com/loan/borrow-guide/stressdsr.html)
-- [2025-06-27 · KB — 6.27 가계부채 관리 방안 발표](https://kbthink.com/loan-guide/627-regulation.html)
-
+<h2>참고 자료</h2>
+<p>2025년 6월부터 2026년 11월까지 나온 대출 규제 변경 내용을 반영하면서 참고한 자료다. 각 링크 앞에 그 글의 게시일자를 적었다. 날짜가 최신이라고 해서 항상 더 정확한 건 아니니(특히 블로그성 글은 수치가 서로 다르기도 했다), 실제 적용 전엔 공식 발표·취급 은행으로 재확인한다.</p>
+<ul>
+<li><a href="https://biz.sbs.co.kr/amp/article/20000344013">2026-11-03 · SBS Biz — 김포·구리·하남·의정부 그린벨트 324㎢ 토지거래허가구역 해제</a></li>
+<li><a href="https://thecheck.co.kr/2026-household-loan-growth-target-3-percent/">2026-08-13 · 더체크 — 2026년 가계대출 총량 목표 1.5%→3% 확대</a></li>
+<li><a href="https://view.asiae.co.kr/en/article/2026063015591295914">2026-06-30 · 아시아경제(영문) — 지방 주담대 2단계 스트레스 DSR 연말까지 유지</a></li>
+<li><a href="https://www.newsis.com/view/NISX20251015_0003363513?pc_view=1">2025-10-15 · 뉴시스 — "비쌀수록 주담대 조인다"…15억 넘으면 4억, 25억 넘으면 2억</a></li>
+<li><a href="https://www.dailian.co.kr/news/view/1559594">2025-10-15 · 데일리안 — 수도권 주담대 최대 6억원→2억원으로 줄인다 (10.15 부동산대책-금융)</a></li>
+<li><a href="https://www.mt.co.kr/estate/2025/10/15/2025101508131672772">2025-10-15 · 머니투데이 — 서울 전체·분당 등 12곳 토허제 묶었다</a></li>
+<li><a href="https://www.dailian.co.kr/news/view/1559585/">2025-10-15 · 데일리안 — 서울 전역 및 경기 12개 지역, 규제지역으로 지정 (10.15 대책 Q&amp;A)</a></li>
+<li><a href="https://weolbu.com/community/3327392/2025-%EC%83%9D%EC%95%A0%EC%B5%9C%EC%B4%88%EC%A3%BC%ED%83%9D%EC%9E%90%EA%B8%88%EB%8C%80%EC%B6%9C-%EC%A1%B0%EA%B1%B4-%ED%95%9C%EB%8F%84-%EC%82%AC%EB%A1%80-%EC%9E%90%EA%B2%A9-%EC%B2%B4%ED%81%AC%EB%A6%AC%EC%8A%A4%ED%8A%B8%EA%B9%8C%EC%A7%80">2025-10 · 뱅크몰 — 2025년 생애최초 주택구입자금대출 조건·한도 사례</a></li>
+<li><a href="https://mobile.newsis.com/view/NISX20250917_0003333383">2025-09-17 · 뉴시스 — 강남3구·용산구 토지거래허가구역 1년 3개월 재지정</a></li>
+<li><a href="https://www.hankyung.com/article/2025070609611">2025-07-06 · 한국경제 — 수도권 6억 초과 주담대 금지</a></li>
+<li><a href="https://kbthink.com/loan/borrow-guide/stressdsr.html">2025-07-01(시행) · KB — 스트레스 DSR 3단계 시행, 대출 한도 얼만큼 줄었을까?</a></li>
+<li><a href="https://kbthink.com/loan-guide/627-regulation.html">2025-06-27 · KB — 6.27 가계부채 관리 방안 발표</a></li>
+</ul></body></html>
