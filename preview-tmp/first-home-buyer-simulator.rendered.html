@@ -1,6 +1,6 @@
-<p><a href="/essay/learning/life/mortgage-consultation/"><code>주택담보대출 은행 상담 비교</code></a> 글에서 정리한 구조를 바탕으로 만든 계산기다. <strong>LTV와 DSR 중 더 낮은 쪽</strong>이 실제 대출 한도를 정하고, 거기에 취득세·중개수수료 같은 부대비용을 더하면 "진짜 필요한 현금"이 나온다는 걸 숫자로 보여준다. 2025년 하반기에 나온 6·27 대책, 9·7 추가대책, 10·15 대책, 스트레스 DSR 3단계와 2026년 8·13 금융 종합대책까지 반영해 지역 구분과 DSR 계산 방식을 업데이트했다.</p>
+<p><a href="/essay/learning/life/mortgage-consultation/"><code>주택담보대출 은행 상담 비교</code></a> 글에서 정리한 구조를 바탕으로 만든 계산기다. <strong>LTV와 DSR 중 더 낮은 쪽</strong>이 실제 대출 한도를 정하고, 거기에 취득세·중개수수료 같은 부대비용을 더하면 "진짜 필요한 현금"이 나온다는 걸 숫자로 보여준다. 2025년 하반기에 나온 6·27 대책, 9·7 추가대책, 10·15 대책(토허제 확대, 가격 구간별 대출 상한), 스트레스 DSR 3단계와 2026년 8·13 금융 종합대책까지 반영해 지역 구분과 DSR 계산 방식을 업데이트했다.</p>
 <div class="hb-notice">
-  ⚠️ <strong>이 시뮬레이터는 참고용 스냅샷이다.</strong> 아래 수치는 <strong id="hb-asof">-</strong> 발표 기준으로 단순화해 넣었고, 규제지역 지정·LTV·토허제 구역은 수시로 바뀐다. 공시가격은 실제 LTV 산정 기준(시세·감정가)과 다를 수 있어 근사치로만 썼다. 실제 대출 가능액은 반드시 취급 은행과 금융위원회·국토교통부 공지로 재확인한다.<br>
+  ⚠️ <strong>이 시뮬레이터의 수치는 <strong id="hb-asof">-</strong> 발표 기준으로 고정해 둔 값이다.</strong> 단순화해 넣었고, 규제지역 지정·LTV·토허제 구역은 수시로 바뀐다. 공시가격은 실제 LTV 산정 기준(시세·감정가)과 다를 수 있어 근사치로만 썼다. 실제 대출 가능액은 반드시 취급 은행과 금융위원회·국토교통부 공지로 재확인한다.<br>
   최종 업데이트: <strong>2026-11-13</strong> · 참고한 자료는 글 하단의 "참고 자료"를 확인한다.
 </div>
 
@@ -18,8 +18,8 @@
     </label>
 
     <label>
-      <span class="hb-label-text">시/군/구 또는 동 (토허제 확인용·선택)<span class="hb-tip" tabindex="0" data-tip="토지거래허가제의 줄임말입니다. 지정된 구역에서 집을 사려면 구청장 허가가 필요하고, 허가를 받으면 보통 2년간 실거주해야 하며 그 전까지 전세를 주거나 되팔 수 없습니다.">?</span></span>
-      <input type="text" id="hb-dong" placeholder="예: 강남구, 가리봉동">
+      <span class="hb-label-text">시/군/구 또는 동 (토허제 확인용·선택)<span class="hb-tip" tabindex="0" data-tip="토지거래허가제의 줄임말입니다. 지정된 구역에서 집을 사려면 구청장 허가가 필요하고, 허가를 받으면 보통 2년간 실거주해야 하며 그 전까지 전세를 주거나 되팔 수 없습니다. 2025-10-15 대책으로 서울 25개 구 전역과 경기 12개 지역(과천·광명·분당·수지 등)이 지정됐습니다.">?</span></span>
+      <input type="text" id="hb-dong" placeholder="예: 강남구, 분당, 수지">
     </label>
     <div class="hb-hint-slot"><div class="hb-hint" id="hb-dong-result"></div></div>
 
@@ -129,15 +129,30 @@
     regulated:  { label: "규제지역",       ltv: 0.40, ltvFirst: 0.40, metroCap: true,  stressRate: 3.00 }
   };
   var LTV_ORDINARY_BUYER = 0.60; // 규제지역 + 생애최초 + 서민·실수요자 요건 충족 시
-  var METRO_LOAN_CAP = 60000;    // 수도권·규제지역 주담대 6억원 상한 (만원), 6·27 대책
+  // 수도권·규제지역 주담대는 6·27 대책의 6억원 상한이, 10·15 대책에서 가격 구간별로 더 세분화됐다.
+  // 시가(매매가) 15억원 이하 6억원, 15억 초과~25억 이하 4억원, 25억원 초과 2억원.
+  function metroLoanCap(priceManwon) {
+    if (priceManwon <= 150000) return 60000;
+    if (priceManwon <= 250000) return 40000;
+    return 20000;
+  }
   // 지방 주담대의 2단계 스트레스 금리(0.75%p) 적용은 2026.12.31까지 두 번째 연장됨(2026.6.18 금융위 발표).
 
-  // 토허제: 강남3구·용산구는 '구' 전역 아파트가 대상(2025.9.17 재지정, ~2026.12.31로 보도됨).
-  // 그 외 신속통합기획·공공재개발 후보지 일부(2025.9.30~2026.8.30)는 동 단위로 추가.
+  // 토허제: 2025.10.15 대책으로 서울 25개 구 전역 + 경기 12개 지역의 아파트(와 아파트 포함 단지의 연립·다세대)가
+  // 토지거래허가구역으로 지정됐다(지정일 2025.10.20, 기한 2026.12.31, 연장 여부는 2026.10월 기준 논의 중).
+  // 화성 동탄·용인 기흥구·구리는 별도 지정으로 기한이 2027.12.31까지다.
   // 반대로 2026.11.3부터 경기 김포·구리·하남·의정부 그린벨트 일부(324㎢, 신규 택지 후보지 제외분)는 해제됐다.
   // 토허제는 이렇게 양방향으로 수시 변경되니, 실제 전체 목록은 서울시·해당 시군구 고시로 확인한다.
-  var LAND_PERMIT_GU = ["강남구", "서초구", "송파구", "용산구"];
-  var LAND_PERMIT_EXTRA_DONG = ["가리봉동"]; // 공공재개발 후보지 1곳(구로구) 등 일부만 반영
+  var LAND_PERMIT_SEOUL_GU = [
+    "강남구", "강동구", "강북구", "강서구", "관악구", "광진구", "구로구", "금천구",
+    "노원구", "도봉구", "동대문구", "동작구", "마포구", "서대문구", "서초구", "성동구",
+    "성북구", "송파구", "양천구", "영등포구", "용산구", "은평구", "종로구", "중구", "중랑구"
+  ];
+  var LAND_PERMIT_GYEONGGI_2026 = [
+    "과천", "광명", "분당", "성남시 수정구", "성남시 중원구", "수원시 영통구",
+    "수원시 장안구", "수원시 팔달구", "안양시 동안구", "용인시 수지구", "의왕", "하남"
+  ]; // 기한 2026.12.31
+  var LAND_PERMIT_EXTENDED_2027 = ["동탄", "기흥", "구리"]; // 기한 2027.12.31
 
   var DSR_LIMIT = 0.40; // 은행권 일반 기준, 상품·규제에 따라 다름
   var ETC_COST_ESTIMATE = 300; // 이사·법무사 등 기타 부대비용 추정치 (만원)
@@ -187,14 +202,17 @@
     return Math.round(n).toLocaleString('ko-KR') + '만원';
   }
 
-  // null = 입력 없음, true/false = 토허제 목록(구 전역 또는 추가 동) 매치 여부
+  // null = 입력 없음. 매치되면 { hit: true, expiry: '...날짜' }, 아니면 { hit: false }.
   function checkLandPermitZone(input) {
     if (!input) return null;
     var trimmed = input.trim();
     if (!trimmed) return null;
-    var guHit = LAND_PERMIT_GU.some(function (gu) { return trimmed.indexOf(gu) !== -1; });
-    var dongHit = LAND_PERMIT_EXTRA_DONG.some(function (d) { return trimmed.indexOf(d) !== -1; });
-    return guHit || dongHit;
+    var seoulHit = LAND_PERMIT_SEOUL_GU.some(function (gu) { return trimmed.indexOf(gu) !== -1; });
+    var gg2026Hit = LAND_PERMIT_GYEONGGI_2026.some(function (d) { return trimmed.indexOf(d) !== -1; });
+    var gg2027Hit = LAND_PERMIT_EXTENDED_2027.some(function (d) { return trimmed.indexOf(d) !== -1; });
+    if (seoulHit || gg2026Hit) return { hit: true, expiry: '2026-12-31(연장 여부 논의 중)' };
+    if (gg2027Hit) return { hit: true, expiry: '2027-12-31' };
+    return { hit: false };
   }
 
   document.getElementById('hb-asof').textContent = SNAPSHOT_LABEL;
@@ -203,9 +221,9 @@
     var result = checkLandPermitZone(this.value);
     var el = document.getElementById('hb-dong-result');
     if (result === null) { el.textContent = ''; return; }
-    el.textContent = result
-      ? '⚠ 토허제 목록(스냅샷)에 걸리는 지역입니다.'
-      : '목록(스냅샷)에는 없습니다 — 신규 지정 여부는 별도 확인이 필요합니다.';
+    el.textContent = result.hit
+      ? '⚠ 2025-10-15 지정 목록 기준 토허제 구역입니다 (기한 ' + result.expiry + ').'
+      : '2025-10-15 지정 목록 기준으로는 해당 없음 — 그 이후 신규 지정 여부는 별도 확인이 필요합니다.';
   });
 
   document.getElementById('hb-calc').addEventListener('click', function () {
@@ -234,9 +252,10 @@
     }
 
     var ltvLimit = price * ltvRatio;
-    var metroCapApplied = region.metroCap && ltvLimit > METRO_LOAN_CAP;
+    var priceBandCap = metroLoanCap(price);
+    var metroCapApplied = region.metroCap && ltvLimit > priceBandCap;
     if (region.metroCap) {
-      ltvLimit = Math.min(ltvLimit, METRO_LOAN_CAP);
+      ltvLimit = Math.min(ltvLimit, priceBandCap);
     }
 
     // DSR 한도는 스트레스 금리(가산)를 더한 '심사용 금리'로 계산한다 (실제 상환액과는 다른 금리).
@@ -269,10 +288,10 @@
       html += '<div class="hb-warn">⚠ 수도권·규제지역에서 2주택 이상 보유자는 추가 주택구입 목적 주담대가 제한됩니다(LTV 0%, 6·27 대책).</div>';
     }
     if (metroCapApplied) {
-      html += '<div class="hb-row"><span>대출 상한(6억원) 적용</span><span>' + fmt(METRO_LOAN_CAP) + '</span></div>';
+      html += '<div class="hb-row"><span>가격 구간별 대출 상한 적용<span class="hb-tip" tabindex="0" data-tip="수도권·규제지역은 2025-10-15 대책으로 집값 구간마다 주담대 상한이 다릅니다. 시가 15억원 이하는 6억원, 15억원 초과 25억원 이하는 4억원, 25억원 초과는 2억원입니다. LTV·DSR로 계산한 금액이 이보다 크면 이 상한까지만 나옵니다.">?</span></span><span>' + fmt(priceBandCap) + '</span></div>';
     }
-    if (isLandPermitZone) {
-      html += '<div class="hb-warn">⚠ 입력한 지역은 토지거래허가구역 목록(스냅샷, 2025.9.17 재지정분, ~2026.12.31 등)에 걸립니다. 허가 후 2년 실거주 의무 등 추가 제약이 있어 별도 확인이 필요합니다.</div>';
+    if (isLandPermitZone && isLandPermitZone.hit) {
+      html += '<div class="hb-warn">⚠ 입력한 지역은 2025-10-15 지정 목록 기준 토지거래허가구역입니다(기한 ' + isLandPermitZone.expiry + '). 허가 후 2년 실거주 의무 등 추가 제약이 있어 별도 확인이 필요합니다.</div>';
     }
 
     html += '<h4>대출 가능액</h4>';
@@ -302,12 +321,16 @@
 <h2>참고 자료</h2>
 <p>2025년 6월부터 2026년 11월까지 나온 대출 규제 변경 내용을 반영하면서 참고한 자료다. 각 링크 앞에 그 글의 게시일자를 적었다. 날짜가 최신이라고 해서 항상 더 정확한 건 아니니(특히 블로그성 글은 수치가 서로 다르기도 했다), 실제 적용 전엔 공식 발표·취급 은행으로 재확인한다.</p>
 <ul>
-<li><a href="https://kbthink.com/loan-guide/627-regulation.html">2025-06-27 · KB — 6.27 가계부채 관리 방안 발표</a></li>
+<li><a href="https://biz.sbs.co.kr/amp/article/20000344013">2026-11-03 · SBS Biz — 김포·구리·하남·의정부 그린벨트 324㎢ 토지거래허가구역 해제</a></li>
+<li><a href="https://thecheck.co.kr/2026-household-loan-growth-target-3-percent/">2026-08-13 · 더체크 — 2026년 가계대출 총량 목표 1.5%→3% 확대</a></li>
+<li><a href="https://view.asiae.co.kr/en/article/2026063015591295914">2026-06-30 · 아시아경제(영문) — 지방 주담대 2단계 스트레스 DSR 연말까지 유지</a></li>
+<li><a href="https://www.newsis.com/view/NISX20251015_0003363513?pc_view=1">2025-10-15 · 뉴시스 — "비쌀수록 주담대 조인다"…15억 넘으면 4억, 25억 넘으면 2억</a></li>
+<li><a href="https://www.dailian.co.kr/news/view/1559594">2025-10-15 · 데일리안 — 수도권 주담대 최대 6억원→2억원으로 줄인다 (10.15 부동산대책-금융)</a></li>
+<li><a href="https://www.mt.co.kr/estate/2025/10/15/2025101508131672772">2025-10-15 · 머니투데이 — 서울 전체·분당 등 12곳 토허제 묶었다</a></li>
+<li><a href="https://www.dailian.co.kr/news/view/1559585/">2025-10-15 · 데일리안 — 서울 전역 및 경기 12개 지역, 규제지역으로 지정 (10.15 대책 Q&amp;A)</a></li>
+<li><a href="https://weolbu.com/community/3327392/2025-%EC%83%9D%EC%95%A0%EC%B5%9C%EC%B4%88%EC%A3%BC%ED%83%9D%EC%9E%90%EA%B8%88%EB%8C%80%EC%B6%9C-%EC%A1%B0%EA%B1%B4-%ED%95%9C%EB%8F%84-%EC%82%AC%EB%A1%80-%EC%9E%90%EA%B2%A9-%EC%B2%B4%ED%81%AC%EB%A6%AC%EC%8A%A4%ED%8A%B8%EA%B9%8C%EC%A7%80">2025-10 · 뱅크몰 — 2025년 생애최초 주택구입자금대출 조건·한도 사례</a></li>
+<li><a href="https://mobile.newsis.com/view/NISX20250917_0003333383">2025-09-17 · 뉴시스 — 강남3구·용산구 토지거래허가구역 1년 3개월 재지정</a></li>
 <li><a href="https://www.hankyung.com/article/2025070609611">2025-07-06 · 한국경제 — 수도권 6억 초과 주담대 금지</a></li>
 <li><a href="https://kbthink.com/loan/borrow-guide/stressdsr.html">2025-07-01(시행) · KB — 스트레스 DSR 3단계 시행, 대출 한도 얼만큼 줄었을까?</a></li>
-<li><a href="https://mobile.newsis.com/view/NISX20250917_0003333383">2025-09-17 · 뉴시스 — 강남3구·용산구 토지거래허가구역 1년 3개월 재지정</a></li>
-<li><a href="https://weolbu.com/community/3327392/2025-%EC%83%9D%EC%95%A0%EC%B5%9C%EC%B4%88%EC%A3%BC%ED%83%9D%EC%9E%90%EA%B8%88%EB%8C%80%EC%B6%9C-%EC%A1%B0%EA%B1%B4-%ED%95%9C%EB%8F%84-%EC%82%AC%EB%A1%80-%EC%9E%90%EA%B2%A9-%EC%B2%B4%ED%81%AC%EB%A6%AC%EC%8A%A4%ED%8A%B8%EA%B9%8C%EC%A7%80">2025-10 · 뱅크몰 — 2025년 생애최초 주택구입자금대출 조건·한도 사례</a></li>
-<li><a href="https://view.asiae.co.kr/en/article/2026063015591295914">2026-06-30 · 아시아경제(영문) — 지방 주담대 2단계 스트레스 DSR 연말까지 유지</a></li>
-<li><a href="https://thecheck.co.kr/2026-household-loan-growth-target-3-percent/">2026-08-13 · 더체크 — 2026년 가계대출 총량 목표 1.5%→3% 확대</a></li>
-<li><a href="https://biz.sbs.co.kr/amp/article/20000344013">2026-11-03 · SBS Biz — 김포·구리·하남·의정부 그린벨트 324㎢ 토지거래허가구역 해제</a></li>
+<li><a href="https://kbthink.com/loan-guide/627-regulation.html">2025-06-27 · KB — 6.27 가계부채 관리 방안 발표</a></li>
 </ul>
