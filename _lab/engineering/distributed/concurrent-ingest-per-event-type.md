@@ -1,5 +1,5 @@
 ---
-title: "[동시성·일관성] 락 목적의 구분"
+title: "[동시성] 락 목적의 구분"
 excerpt: "중복과 순서 뒤바뀜이 겹치는 Kafka 컨슈머에서 이벤트 종류별로 다른 락을 적용하는 과정."
 date: 2025-09-01
 published: true
@@ -67,7 +67,7 @@ func (c *Consumer) Handle(ctx, evt Event) error {
 
 **요청·결과 쌍 이벤트**(브리지): **DB의 advisory lock** 안에서 "**먼저 조회해서 있으면 UPDATE, 없으면 INSERT**"를 한다. 두 이벤트가 동시에 들어와도 락 안에서는 순서가 생기고, 먼저 들어온 쪽이 INSERT, 나중 들어온 쪽이 UPDATE가 된다.
 
-PostgreSQL의 `pg_advisory_xact_lock`은 트랜잭션 범위의 **애플리케이션 정의 락**이다. 트랜잭션이 끝나면 자동 해제된다.
+**advisory lock이란** PostgreSQL이 제공하는, **애플리케이션이 정의한 임의의 숫자 키**에 거는 락이다. `SELECT ... FOR UPDATE` 같은 일반적인 행 잠금은 실제로 존재하는 테이블 행에만 걸 수 있는데(그래서 시도 1이 실패했다 — 아직 없는 행은 못 잠근다), advisory lock은 **테이블·행과 무관하게** 애플리케이션이 정한 키 하나만으로 잠근다. 그래서 "아직 행이 생기기 전" 시점에도 잠글 수 있다. `pg_advisory_xact_lock`처럼 **트랜잭션 범위**(`_xact_`)로 걸면 커밋·롤백 시 자동 해제되어 별도의 해제 코드가 필요 없다.
 
 ```go
 func (c *BridgeConsumer) Handle(ctx, evt BridgeEvent) error {

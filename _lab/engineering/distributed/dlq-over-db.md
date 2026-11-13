@@ -1,5 +1,5 @@
 ---
-title: "[책임과 경계] DLQ: 비정상 이벤트의 처리 책임"
+title: "[책임] DLQ: 비정상 이벤트의 처리 책임"
 excerpt: "비정상 메시지를 DB에 저장해 숨기는 대신 DLQ로 보내는 선택을 다룬다."
 date: 2024-12-16
 published: true

@@ -1,5 +1,5 @@
 ---
-title: "[책임과 경계] gRPC: 응답 크기의 상한 설계"
+title: "[책임] gRPC: 응답 크기의 상한 설계"
 excerpt: "응답에 수만 건이 실리던 수신자 목록을 server-streaming RPC로 떼어 내는 과정."
 date: 2026-10-16
 published: true
