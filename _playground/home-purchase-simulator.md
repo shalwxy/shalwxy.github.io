@@ -1,8 +1,8 @@
 ---
 title: "부동산 매수 시뮬레이터"
-excerpt: "지역 규제·생애최초 여부·연소득·공시가격을 입력하면 대출 가능액, 월 상환액, 총 필요 현금을 계산해주는 참고용 시뮬레이터."
+excerpt: "지역 규제·생애최초 여부·연소득·공시가격과 실거래가를 입력하면 대출 가능액, 월 상환액, 총 필요 현금을 계산해주는 참고용 시뮬레이터."
 date: 2026-11-13
-last_modified_at: 2026-11-13
+last_modified_at: 2026-11-14
 tags:
   - 시뮬레이터
   - 부동산
@@ -16,7 +16,7 @@ author_profile: false
 classes: wide
 ---
 
-[`주택담보대출 은행 상담 비교`](/essay/learning/life/mortgage-consultation/) 글에서 정리한 구조를 바탕으로 만든 계산기다. **LTV와 DSR 중 더 낮은 쪽**이 실제 대출 한도를 정하고, 거기에 취득세·중개수수료 같은 부대비용을 더하면 "진짜 필요한 현금"이 나온다는 걸 숫자로 보여준다. 2025년 하반기에 나온 6·27 대책, 9·7 추가대책, 10·15 대책(토허제 확대, 가격 구간별 대출 상한), 스트레스 DSR 3단계와 2026년 8·13 금융 종합대책까지 반영해 지역 구분과 DSR 계산 방식을 업데이트했다.
+[`주택담보대출 은행 상담 비교`](/essay/learning/life/mortgage-consultation/) 글에서 정리한 구조를 바탕으로 만든 계산기다. **LTV와 DSR 중 더 낮은 쪽**이 실제 대출 한도를 정하고, 거기에 취득세·중개수수료 같은 부대비용을 더하면 "진짜 필요한 현금"이 나온다는 걸 숫자로 보여준다. **대출 한도(LTV)는 공시가격을 담보가치의 근사치로 써서 계산하지만, 취득세·중개수수료·자기자본 같은 "필요 현금" 쪽은 실거래가(매매가)를 입력하면 그 값을 기준으로 다시 계산한다** — 실제로 세금과 자기자본은 공시가격이 아니라 매매가를 기준으로 매겨지기 때문이다. 2025년 하반기에 나온 6·27 대책, 9·7 추가대책, 10·15 대책(토허제 확대, 가격 구간별 대출 상한), 스트레스 DSR 3단계와 2026년 8·13 금융 종합대책까지 반영해 지역 구분과 DSR 계산 방식을 업데이트했다.
 
 <div class="hb-notice">
   ⚠️ <strong>이 시뮬레이터의 수치는 <strong id="hb-asof">-</strong> 발표 기준으로 고정해 둔 값이다.</strong> 단순화해 넣었고, 규제지역 지정·LTV·토허제 구역은 수시로 바뀐다. 공시가격은 실제 LTV 산정 기준(시세·감정가)과 다를 수 있어 근사치로만 썼다. 실제 대출 가능액은 반드시 취급 은행과 금융위원회·국토교통부 공지로 재확인한다.<br>
@@ -58,7 +58,7 @@ classes: wide
       2주택 이상 보유 (다주택자)
     </label>
 
-    <label>연소득 (만원)
+    <label>연소득 (만원)<span class="hb-tip" tabindex="0" data-tip="세전(공제 전) 증빙소득 기준입니다. 근로자는 전년도 원천징수영수증의 '총급여', 또는 최근 1년 급여명세서를 연 환산한 금액을 씁니다. 부부 합산으로 대출받으면 두 사람의 세전 소득을 더합니다.">?</span>
       <input type="number" id="hb-income" value="6000">
     </label>
 
@@ -66,8 +66,12 @@ classes: wide
       <input type="number" id="hb-existing-pay" value="0">
     </label>
 
-    <label>구매 희망 부동산 공시가격 (만원)
+    <label>구매 희망 부동산 공시가격 (만원)<span class="hb-tip" tabindex="0" data-tip="국토교통부 부동산공시가격알리미(realtyprice.kr)에서 주소로 조회할 수 있습니다 — 아파트·오피스텔 등은 '공동주택 공시가격' 메뉴. 이 시뮬레이터는 공시가격을 담보가치(LTV 산정 기준)의 근사치로 씁니다. 실제로는 KB시세·한국부동산원 시세·매매가 중 낮은 값을 씁니다.">?</span>
       <input type="number" id="hb-price" value="80000">
+    </label>
+
+    <label>구매 희망 부동산 실거래가 (만원, 매매가)<span class="hb-tip" tabindex="0" data-tip="실제로 계약하는 매매가입니다. 입력하면 취득세·중개수수료·자기자본 등 '필요 현금' 계산에 이 값을 쓰고, 비워 두면 공시가격으로 대신 계산합니다. 대출 한도(LTV)는 이 값과 무관하게 공시가격 기준으로 계산됩니다.">?</span>
+      <input type="number" id="hb-actual-price" placeholder="비워 두면 공시가격으로 계산">
     </label>
 
     <label>신규 대출 금리 (연 %, 실제 계약 기준)
@@ -254,6 +258,8 @@ classes: wide
     var income = parseFloat(document.getElementById('hb-income').value) || 0;
     var existingPay = parseFloat(document.getElementById('hb-existing-pay').value) || 0;
     var price = parseFloat(document.getElementById('hb-price').value) || 0;
+    var actualPriceInput = parseFloat(document.getElementById('hb-actual-price').value) || 0;
+    var cashBasisPrice = actualPriceInput > 0 ? actualPriceInput : price;
     var rate = parseFloat(document.getElementById('hb-rate').value) || 0;
     var years = parseInt(document.getElementById('hb-years').value, 10) || 30;
     var etc = ETC_COST_ESTIMATE;
@@ -283,16 +289,17 @@ classes: wide
     var annualDsrAllowed = income * DSR_LIMIT - existingPay * 12;
     var dsrLimit = maxPrincipalFromMonthlyPayment(Math.max(annualDsrAllowed, 0) / 12, dsrCalcRate, years);
 
-    var finalLoan = Math.min(ltvLimit, dsrLimit, price);
+    var finalLoan = Math.min(ltvLimit, dsrLimit, price, cashBasisPrice);
     finalLoan = Math.max(finalLoan, 0);
     var bindingFactor = finalLoan === 0 ? '—'
       : (ltvLimit <= dsrLimit ? 'LTV' : 'DSR');
 
-    var equityNeeded = Math.max(price - finalLoan, 0);
-    var taxRate = acquisitionTaxRate(price);
-    var acquisitionTax = price * taxRate;
+    // 취득세·중개수수료·자기자본은 공시가격이 아니라 실제 매매가(cashBasisPrice) 기준으로 매겨진다.
+    var equityNeeded = Math.max(cashBasisPrice - finalLoan, 0);
+    var taxRate = acquisitionTaxRate(cashBasisPrice);
+    var acquisitionTax = cashBasisPrice * taxRate;
     var localEduTax = acquisitionTax * 0.1;
-    var broker = brokerFee(price);
+    var broker = brokerFee(cashBasisPrice);
     var extraCosts = acquisitionTax + localEduTax + broker + etc;
     var totalCashNeeded = equityNeeded + extraCosts;
     var monthlyPay = monthlyPayment(finalLoan, rate, years); // 실제 월 상환액은 계약금리 기준
@@ -319,13 +326,14 @@ classes: wide
     html += '<div class="hb-row hb-total"><span>최종 대출 가능액 (' + bindingFactor + ' 기준)</span><span>' + fmt(finalLoan) + '</span></div>';
 
     html += '<h4>부대비용</h4>';
+    html += '<p class="hb-note">아래 취득세·중개수수료·자기자본은 ' + (actualPriceInput > 0 ? '입력한 실거래가(' + fmt(cashBasisPrice) + ')' : '실거래가 미입력으로 공시가격(' + fmt(cashBasisPrice) + ')') + ' 기준으로 계산했습니다.</p>';
     html += '<div class="hb-row"><span>취득세 (' + (taxRate * 100).toFixed(1) + '%)</span><span>' + fmt(acquisitionTax) + '</span></div>';
     html += '<div class="hb-row"><span>지방교육세<span class="hb-tip" tabindex="0" data-tip="취득세를 낼 때 함께 부과되는 세금으로, 보통 취득세액의 10%입니다.">?</span></span><span>' + fmt(localEduTax) + '</span></div>';
     html += '<div class="hb-row"><span>중개수수료<span class="hb-tip" tabindex="0" data-tip="공인중개사에게 지급하는 수수료의 법정 최고 한도입니다. 실제 수수료는 이 범위 안에서 중개사와 협의해 정해집니다.">?</span></span><span>' + fmt(broker) + '</span></div>';
     html += '<div class="hb-row"><span>기타 부대비용 (추정)</span><span>' + fmt(etc) + '</span></div>';
 
     html += '<h4>필요 현금</h4>';
-    html += '<div class="hb-row"><span>자기자본 필요액 (공시가격 − 대출)</span><span>' + fmt(equityNeeded) + '</span></div>';
+    html += '<div class="hb-row"><span>자기자본 필요액 (' + (actualPriceInput > 0 ? '실거래가' : '공시가격') + ' − 대출)</span><span>' + fmt(equityNeeded) + '</span></div>';
     html += '<div class="hb-row hb-total"><span>총 필요 현금</span><span>' + fmt(totalCashNeeded) + '</span></div>';
 
     html += '<h4>월 상환액</h4>';

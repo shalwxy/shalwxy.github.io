@@ -2,6 +2,7 @@
 title: "분산 락 쟁탈전"
 excerpt: "나와 봇 노드들이 동시에 같은 락을 노린다. 먼저 잡는 쪽이 가져가고, 늦은 쪽은 에러 없이 그냥 튕겨 나간다 — 선점을 몸으로 느껴보는 반응 게임."
 date: 2026-11-13
+last_modified_at: 2026-11-14
 tags:
   - 게임
   - 동시성
@@ -15,9 +16,9 @@ author_profile: false
 classes: wide
 ---
 
-[`확인과 사용 간극의 제거`](/lab/engineering/distributed/preempt-over-check/) 글에서 다룬 분산 락 선점을 게임으로 만들었다. 화면에 🔒가 뜨면 나와 봇 노드 3개가 동시에 그 락을 노린다. **가장 먼저 잡는 쪽이 가져가고, 나머지는 전부 "이미 선점됨"으로 튕겨 나간다.** 봇마다 충전 바가 있어서 얼마나 빨리 선점을 시도할지 눈으로 보면서 타이밍을 잴 수 있다. **봇은 라운드 수가 아니라 경과 시간에 따라 점점 빨라진다** — 시작할 땐 여유롭다가 60초에 가까워질수록 충전 바가 훨씬 빨리 찬다.
+[`확인과 사용 간극의 제거`](/lab/engineering/distributed/preempt-over-check/) 글에서 다룬 분산 락 선점을 게임으로 만들었다. 화면에 🔒가 뜨면 나와 봇 노드 4개가 동시에 그 락을 노린다. **가장 먼저 잡는 쪽이 가져가고, 나머지는 전부 "이미 선점됨"으로 튕겨 나간다.** 봇은 자기 색 조준점으로 보드를 떠돌다가, 충전이 끝나갈 즈음 정확한 위치에 자리를 잡는다 — 조준점이 멈춰 서는 순간이 곧 그 봇이 선점을 시도하는 시점이라, 눈으로 보면서 타이밍을 잴 수 있다. **봇은 라운드 수가 아니라 경과 시간에 따라 점점 빨라진다** — 시작할 땐 여유롭다가 60초에 가까워질수록 조준이 훨씬 빨리 끝난다.
 
-가끔 다른 것도 섞여 나온다. 💣 가짜 락([`DLQ` 글](/lab/engineering/distributed/dlq-over-db/)에서 다룬 "비정상 메시지"와 같은 개념), 🔑 우선순위 토큰, 그리고 락이 한꺼번에 여러 개 뜨는 "샤딩 타임"까지. **봇도 나와 똑같은 조건으로 움직인다.** 봇이 가짜 락에 속으면 그 봇은 몇 라운드 동안 멈추고, 봇이 토큰을 채가면 바로 다음 락은 그 봇의 보상으로 돌아간다 — 나와 똑같은 보상·페널티를 봇도 받는다. 연속으로 성공하면 콤보 배율이 붙고, 최고 점수는 브라우저에 저장된다.
+가끔 다른 것도 섞여 나온다. 💣 가짜 락([`DLQ` 글](/lab/engineering/distributed/dlq-over-db/)에서 다룬 "비정상 메시지"와 같은 개념), 🔑 우선순위 토큰, 그리고 락이 한꺼번에 여러 개 뜨는 "샤딩 타임"까지. **봇도 나와 똑같은 조건으로 움직인다.** 🔑를 내가 잡으면 그 자리에서 보너스 점수를 받고, 이어지는 두 번의 락은 봇이 끼어들지 않아 거의 확정으로 가져간다 — 봇이 먼저 채가면 같은 보상(다음 두 락 확정)이 그 봇에게 돌아간다. 반대로 💣를 내가 클릭하면 콤보가 끊기고 점수도 깎이는 데다, 다음 락이 뜨기까지 눈에 보이는 페널티 시간이 꽤 길게 이어진다 — 봇이 속으면 그 봇은 몇 라운드 동안 그대로 멈춘다. 연속으로 성공하면 콤보 배율이 붙고, 최고 점수는 브라우저에 저장된다.
 
 <div class="lr-wrap">
   <div class="lr-hud">
@@ -31,13 +32,14 @@ classes: wide
     <div class="lr-bot" id="lr-bot-0"><span class="lr-bot-dot lr-bot-dot-0"></span>봇1</div>
     <div class="lr-bot" id="lr-bot-1"><span class="lr-bot-dot lr-bot-dot-1"></span>봇2</div>
     <div class="lr-bot" id="lr-bot-2"><span class="lr-bot-dot lr-bot-dot-2"></span>봇3</div>
+    <div class="lr-bot" id="lr-bot-3"><span class="lr-bot-dot lr-bot-dot-3"></span>봇4</div>
   </div>
 
   <div class="lr-board" id="lr-board">
     <p class="lr-board-hint" id="lr-board-hint">시작 버튼을 누르면 🔒가 나타납니다.</p>
   </div>
 
-  <div class="lr-banner" id="lr-banner">봇의 충전 바가 다 차기 전에 🔒를 클릭해보자. 60초 동안 겨뤄본다.</div>
+  <div class="lr-banner" id="lr-banner">봇의 조준점이 락 위에 자리를 잡기 전에 🔒를 클릭해보자. 60초 동안 4개의 봇과 겨뤄본다.</div>
 
   <div class="lr-controls">
     <button type="button" class="btn btn--primary" id="lr-start">시작</button>
@@ -69,9 +71,11 @@ classes: wide
 .lr-bot-dot-0.lr-dot-aiming { background: #d1483a; animation: lr-dot-pulse-0 0.6s ease-in-out infinite; }
 .lr-bot-dot-1.lr-dot-aiming { background: #3a7bd1; animation: lr-dot-pulse-1 0.6s ease-in-out infinite; }
 .lr-bot-dot-2.lr-dot-aiming { background: #3a9a5a; animation: lr-dot-pulse-2 0.6s ease-in-out infinite; }
+.lr-bot-dot-3.lr-dot-aiming { background: #8a4fd1; animation: lr-dot-pulse-3 0.6s ease-in-out infinite; }
 @keyframes lr-dot-pulse-0 { 0%, 100% { box-shadow: 0 0 0 0 rgba(209, 72, 58, 0.5); } 50% { box-shadow: 0 0 0 5px rgba(209, 72, 58, 0.12); } }
 @keyframes lr-dot-pulse-1 { 0%, 100% { box-shadow: 0 0 0 0 rgba(58, 123, 209, 0.5); } 50% { box-shadow: 0 0 0 5px rgba(58, 123, 209, 0.12); } }
 @keyframes lr-dot-pulse-2 { 0%, 100% { box-shadow: 0 0 0 0 rgba(58, 154, 90, 0.5); } 50% { box-shadow: 0 0 0 5px rgba(58, 154, 90, 0.12); } }
+@keyframes lr-dot-pulse-3 { 0%, 100% { box-shadow: 0 0 0 0 rgba(138, 79, 209, 0.5); } 50% { box-shadow: 0 0 0 5px rgba(138, 79, 209, 0.12); } }
 
 /* 봇의 조준 효과: 커서처럼 생긴 작은 조준점이 노리는 락 주변을 들썩이며 떠돌다가,
    충전이 끝나갈 즈음 정확히 락 위로 자리를 잡는다(JS가 위치를 흔들고, 여기 transition이 매끈하게 이어준다). */
@@ -93,6 +97,8 @@ classes: wide
 .lr-aim-1::before { background: #3a7bd1; }
 .lr-aim-2 { border-color: #3a9a5a; }
 .lr-aim-2::before { background: #3a9a5a; }
+.lr-aim-3 { border-color: #8a4fd1; }
+.lr-aim-3::before { background: #8a4fd1; }
 .lr-board {
   position: relative; height: 340px; background: #eef1f4;
   border: 1px solid #dadfe4; border-radius: 10px; overflow: hidden; margin-bottom: 1em;
@@ -167,8 +173,11 @@ classes: wide
 <script>
 (function () {
   var GAME_DURATION = 60;
-  var BOT_COUNT = 3;
+  var BOT_COUNT = 4;
   var ROUND_TIMEOUT = 3000;
+  var BOMB_PENALTY_POINTS = 3;
+  var KEY_BONUS_POINTS = 3;
+  var KEY_GUARANTEED_ROUNDS = 2;
   var BEST_KEY = 'lr-best-score';
 
   var board = document.getElementById('lr-board');
@@ -230,12 +239,11 @@ classes: wide
     }
   }
 
-  // 사람이 락을 보고 마우스를 옮겨 클릭하기까지의 시간까지 감안해 넉넉하게 잡았다.
-  // (난이도를 살짝 낮춰서 봇이 조금 더 느리게 움직인다)
+  // 사람이 락을 보고 마우스를 옮겨 클릭하기까지의 시간을 감안해 약간의 여유를 둔다.
   function botDelayRange(timeLeft) {
     var progress = 1 - timeLeft / GAME_DURATION; // 0(시작) -> 1(막판)
-    var maxDelay = 1800 - progress * 650;         // 1800ms -> 1150ms
-    var minDelay = 750 - progress * 250;          // 750ms -> 500ms
+    var maxDelay = 1500 - progress * 750;         // 1500ms -> 750ms
+    var minDelay = 600 - progress * 300;          // 600ms -> 300ms
     return [minDelay, maxDelay];
   }
 
@@ -383,9 +391,24 @@ classes: wide
     if (state.running) setTimeout(spawnRound, randRange(400, 800));
   }
 
+  // 폭탄의 디메리트: 다음 라운드까지 꽤 길게 묶어 두고, 그 시간을 배너로 눈에 보이게 흘려준다.
   function finishRoundAfterPenalty() {
     state.round = null;
-    if (state.running) setTimeout(spawnRound, randRange(900, 1400));
+    if (!state.running) return;
+    var waitMs = randRange(2600, 3400);
+    var remain = Math.ceil(waitMs / 1000);
+    var freezeTimer = setInterval(function () {
+      remain--;
+      if (remain > 0 && state && state.running) {
+        setBanner('💥 페널티 진행 중... 다음 락까지 ' + remain + '초', 'lr-bad');
+      } else {
+        clearInterval(freezeTimer);
+      }
+    }, 1000);
+    setTimeout(function () {
+      clearInterval(freezeTimer);
+      if (state && state.running) spawnRound();
+    }, waitMs);
   }
 
   function handleLockClick(lockObj) {
@@ -404,9 +427,10 @@ classes: wide
       resolveLockVisual(lockObj, LOCK_VARIANTS.boom);
       for (var fi = 0; fi < BOT_COUNT; fi++) clearBotAim(fi);
       state.combo = 0;
+      state.points = Math.max(0, state.points - BOMB_PENALTY_POINTS);
       shakeBoard();
       playTone(110, 0.3, 'square');
-      setBanner('💥 가짜 락이었습니다! 잠깐 멈칫...', 'lr-bad');
+      setBanner('💥 가짜 락이었습니다! -' + BOMB_PENALTY_POINTS + '점, 잠시 아무 락도 뜨지 않습니다...', 'lr-bad');
       clearPendingTimer();
       updateHud();
       finishRoundAfterPenalty();
@@ -415,10 +439,13 @@ classes: wide
     if (kind === 'powerup') {
       resolveLockVisual(lockObj, LOCK_VARIANTS.key);
       for (var pi = 0; pi < BOT_COUNT; pi++) clearBotAim(pi);
-      state.priorityToken = true;
+      state.points += KEY_BONUS_POINTS;
+      state.priorityCount = KEY_GUARANTEED_ROUNDS;
+      spawnParticles(px, py);
       playTone(1300, 0.15, 'triangle');
-      setBanner('🔑 우선순위 토큰 획득! 다음 락은 무조건 내가 먼저.', 'lr-info');
+      setBanner('🔑 우선순위 토큰 획득! +' + KEY_BONUS_POINTS + '점, 다음 ' + KEY_GUARANTEED_ROUNDS + '번의 락은 무조건 내가 먼저.', 'lr-info');
       clearPendingTimer();
+      updateHud();
       finishRoundNormalGap();
       return;
     }
@@ -493,9 +520,9 @@ classes: wide
     }
     if (kind === 'powerup') {
       resolveLockVisual(lockObj, LOCK_VARIANTS.key);
-      state.botPriority[botIndex] = true;
+      state.botPriority[botIndex] = KEY_GUARANTEED_ROUNDS;
       playTone(220, 0.15, 'triangle');
-      setBanner('🙅 ' + botName + '이(가) 우선순위 토큰을 채갔습니다. 다음 락은 그 봇이 가져갑니다.', 'lr-info');
+      setBanner('🙅 ' + botName + '이(가) 우선순위 토큰을 채갔습니다. 다음 ' + KEY_GUARANTEED_ROUNDS + '번의 락은 그 봇이 가져갑니다.', 'lr-info');
       clearPendingTimer();
       finishRoundNormalGap();
       return;
@@ -628,14 +655,14 @@ classes: wide
 
     var kind;
     var rewardBot = -1;
-    if (state.priorityToken) {
+    if (state.priorityCount > 0) {
       kind = 'normal-priority';
-      state.priorityToken = false;
+      state.priorityCount--;
     } else {
       rewardBot = findPendingBotPriority();
       if (rewardBot !== -1) {
         kind = 'normal-bot-priority';
-        state.botPriority[rewardBot] = false;
+        state.botPriority[rewardBot]--;
       } else {
         kind = pickRoundKind();
       }
@@ -651,12 +678,18 @@ classes: wide
     if (state.timeLeft <= 0) endGame();
   }
 
+  function zeroArray(len) {
+    var a = [];
+    for (var i = 0; i < len; i++) a.push(0);
+    return a;
+  }
+
   function startGame() {
     state = {
       running: true, points: 0, claims: 0, missed: 0, rounds: 0,
-      combo: 0, priorityToken: false, best: loadBest(),
-      botStun: [0, 0, 0], botPriority: [false, false, false],
-      botAimEls: [null, null, null], botAimTimers: [null, null, null],
+      combo: 0, priorityCount: 0, best: loadBest(),
+      botStun: zeroArray(BOT_COUNT), botPriority: zeroArray(BOT_COUNT),
+      botAimEls: new Array(BOT_COUNT).fill(null), botAimTimers: new Array(BOT_COUNT).fill(null),
       timeLeft: GAME_DURATION, round: null
     };
     updateHud();
