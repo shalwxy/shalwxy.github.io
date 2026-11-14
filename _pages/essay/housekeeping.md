@@ -1,9 +1,9 @@
 ---
-title: "생활"
+title: "살림"
 layout: folder
-permalink: /essay/learning/life/
+permalink: /essay/housekeeping/
 collection: essay
-folder: _essay/learning/life/
+folder: _essay/housekeeping/
 entries_layout: list
 author_profile: false
 sidebar:

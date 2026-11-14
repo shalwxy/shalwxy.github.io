@@ -52,9 +52,11 @@
     title="{{ site.data.ui-text[site.locale].copy_link_label | default: 'Copy Link' }}">
     <i class="fas fa-fw fa-link" aria-hidden="true"></i><span> {{ site.data.ui-text[site.locale].copy_link_label | default: "Copy Link" }}</span>
   </button>
+  <div class="copy-toast" id="copy-toast" role="status" aria-live="polite"></div>
   <script>
     (function () {
       var btn = document.getElementById("copy-link-btn");
+      var toast = document.getElementById("copy-toast");
       if (!btn) return;
 
       function copyText(text) {
@@ -78,14 +80,19 @@
         });
       }
 
+      function showToast(message) {
+        if (!toast) return;
+        toast.textContent = message;
+        toast.classList.add("is-visible");
+        clearTimeout(toast._hideTimer);
+        toast._hideTimer = setTimeout(function () {
+          toast.classList.remove("is-visible");
+        }, 1500);
+      }
+
       btn.addEventListener("click", function () {
         copyText(btn.dataset.url).then(function () {
-          var span = btn.querySelector("span");
-          var original = span.textContent;
-          span.textContent = " " + btn.dataset.copiedLabel;
-          setTimeout(function () {
-            span.textContent = original;
-          }, 1500);
+          showToast(btn.dataset.copiedLabel);
         });
       });
     })();

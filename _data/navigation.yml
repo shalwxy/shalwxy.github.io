@@ -37,11 +37,15 @@ essay:
     children:
       - title: "독서"
         url: /essay/review/reading/
-  - title: "배움"
-    url: /essay/learning/
+  - title: "살림"
+    url: /essay/housekeeping/
     children:
-      - title: "생활"
-        url: /essay/learning/life/
+      - title: "건강"
+        url: /essay/housekeeping/health/
+      - title: "요리"
+        url: /essay/housekeeping/cooking/
+      - title: "자산"
+        url: /essay/housekeeping/assets/
 
 playground:
   - title: "Playground"

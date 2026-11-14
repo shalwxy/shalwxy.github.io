@@ -1,9 +1,9 @@
 ---
-title: "배움"
+title: "자산"
 layout: folder
-permalink: /essay/learning/
+permalink: /essay/housekeeping/assets/
 collection: essay
-folder: _essay/learning/
+folder: _essay/housekeeping/assets/
 entries_layout: list
 author_profile: false
 sidebar:
