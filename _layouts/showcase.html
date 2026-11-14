@@ -46,9 +46,17 @@ layout: archive
             {% endif %}
             <p class="showcase__actions">
               <a href="{{ project.url | relative_url }}" class="btn btn--primary">자세히 보기</a>
-              {% for link in project.links %}
-                <a href="{{ link.url }}" class="btn btn--inverse" target="_blank" rel="noopener">{{ link.label }}</a>
-              {% endfor %}
+              {% if project.links.size > 0 %}
+                {% for link in project.links %}
+                  <a href="{{ link.url }}" class="btn btn--inverse" target="_blank" rel="noopener">{{ link.label }}</a>
+                {% endfor %}
+              {% else %}
+                {%- comment -%}
+                  links가 없는 카드도 버튼 자리는 차지하게 비워둔다 — 카드마다 버튼 줄
+                  높이·정렬이 들쭉날쭉해 보이지 않도록(visibility:hidden이라 자리만 차지).
+                {%- endcomment -%}
+                <span class="btn btn--inverse showcase__action-placeholder" aria-hidden="true">관련 글 보기</span>
+              {% endif %}
             </p>
           </div>
         </article>

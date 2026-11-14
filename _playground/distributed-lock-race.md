@@ -20,6 +20,8 @@ classes: wide
 
 가끔 다른 것도 섞여 나온다. 💣 가짜 락([`DLQ` 글](/lab/engineering/distributed/dlq-over-db/)에서 다룬 "비정상 메시지"와 같은 개념), 🔑 우선순위 토큰, 그리고 락이 한꺼번에 여러 개 뜨는 "샤딩 타임"까지. **봇도 나와 똑같은 조건으로 움직인다.** 🔑를 내가 잡으면 그 자리에서 보너스 점수를 받고, 이어지는 두 번의 락은 봇이 끼어들지 않아 거의 확정으로 가져간다 — 반대로 봇이 먼저 채가면 몇 초 동안 그 봇만 움직여서 뜨는 건 뭐든(락이든 가짜 락이든 토큰이든) 가져가고, 나를 포함한 나머지 셋은 그 사이 전부 손을 놓는다. 반대로 💣를 내가 클릭하면 콤보가 끊기고 점수도 깎이는 데다, 몇 초 동안 내 클릭이 먹히지 않는 페널티가 눈에 보이게 이어진다 — 그 와중에도 락은 계속 뜨고 봇은 평소처럼 노려서 가져가니 방심하면 안 된다. 봇이 속으면 그 봇은 몇 라운드 동안 그대로 멈춘다. 연속으로 성공하면 콤보 배율이 붙고, 최고 점수는 브라우저에 저장된다.
 
+<div id="lr-shared-banner"></div>
+
 <div class="lr-wrap">
   <div class="lr-hud">
     <div class="lr-stat"><span>남은 시간</span><strong id="lr-time">60</strong></div>
@@ -45,6 +47,15 @@ classes: wide
   <div class="lr-controls">
     <button type="button" class="btn btn--primary" id="lr-start">시작</button>
     <button type="button" class="btn btn--warning" id="lr-stop" disabled>정지</button>
+  </div>
+
+  <div class="result-share">
+    <button type="button" class="btn btn--kakao" id="lr-share-kakao">
+      <i class="fas fa-fw fa-comment" aria-hidden="true"></i><span> 결과 공유</span>
+    </button>
+    <button type="button" class="btn btn--inverse" id="lr-share-link">
+      <i class="fas fa-fw fa-link" aria-hidden="true"></i><span> 결과 링크</span>
+    </button>
   </div>
 </div>
 
@@ -180,7 +191,7 @@ classes: wide
 .lr-banner.lr-good { background: #e5f0e6; color: #335c38; }
 .lr-banner.lr-bad { background: #fbe4e1; color: #a9342a; }
 .lr-banner.lr-info { background: #eaf1fb; color: #2a5a8a; }
-.lr-controls { display: flex; gap: 0.6em; }
+.lr-controls { display: flex; justify-content: flex-end; gap: 0.6em; }
 </style>
 
 <script>
@@ -213,6 +224,7 @@ classes: wide
   var state = null;
   var countdownTimer = null;
   var audioCtx = null;
+  var lastResult = null; // 가장 최근 게임 종료 기록 — 공유 버튼이 여기서 읽는다
 
   function randRange(a, b) { return a + Math.random() * (b - a); }
 
@@ -781,6 +793,8 @@ classes: wide
     if (state.points > state.best) { state.best = state.points; saveBest(state.best); newRecord = true; }
     updateHud();
 
+    lastResult = { points: state.points, claims: state.claims, missed: state.missed };
+
     hintEl.textContent = '다시 하려면 시작 버튼을 누르세요.';
     hintEl.style.display = '';
     setBanner(
@@ -797,5 +811,69 @@ classes: wide
 
   startBtn.addEventListener('click', startGame);
   stopBtn.addEventListener('click', endGame);
+
+  // 결과 공유: 60초짜리 실시간 플레이는 그대로 재현할 수 없으니 최종 점수/기록만 공유한다.
+  function buildResultShareUrl(payload) {
+    var url = new URL(location.origin + location.pathname);
+    var b64 = btoa(unescape(encodeURIComponent(JSON.stringify(payload))))
+      .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    url.searchParams.set('share', b64);
+    return url.toString();
+  }
+  function decodeResultShare() {
+    var raw = new URLSearchParams(location.search).get('share');
+    if (!raw) return null;
+    var s = raw.replace(/-/g, '+').replace(/_/g, '/');
+    while (s.length % 4) s += '=';
+    try { return JSON.parse(decodeURIComponent(escape(atob(s)))); } catch (e) { return null; }
+  }
+  function showShareToast(message) {
+    var toast = document.getElementById('copy-toast');
+    if (!toast) return;
+    toast.textContent = message;
+    toast.classList.add('is-visible');
+    clearTimeout(toast._hideTimer);
+    toast._hideTimer = setTimeout(function () { toast.classList.remove('is-visible'); }, 1500);
+  }
+  function copyResultLink(url) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(url);
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement('textarea');
+      ta.value = url; ta.style.position = 'fixed'; ta.style.left = '-9999px';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy') ? resolve() : reject(); } catch (e) { reject(e); }
+      finally { document.body.removeChild(ta); }
+    });
+  }
+
+  document.getElementById('lr-share-kakao').addEventListener('click', function () {
+    if (!lastResult) { showShareToast('게임을 먼저 끝내 주세요.'); return; }
+    var url = buildResultShareUrl(lastResult);
+    if (!window.Kakao) return;
+    if (!Kakao.isInitialized()) Kakao.init('{{ site.kakao.js_key }}');
+    Kakao.Share.sendDefault({
+      objectType: 'feed',
+      content: {
+        title: '분산 락 쟁탈전',
+        description: '점수 ' + lastResult.points + '점 (선점 ' + lastResult.claims + ', 뺏김 ' + lastResult.missed + ')',
+        imageUrl: '{{ page.header.teaser | absolute_url }}',
+        link: { mobileWebUrl: url, webUrl: url }
+      }
+    });
+  });
+
+  document.getElementById('lr-share-link').addEventListener('click', function () {
+    if (!lastResult) { showShareToast('게임을 먼저 끝내 주세요.'); return; }
+    copyResultLink(buildResultShareUrl(lastResult)).then(function () { showShareToast('복사됨!'); });
+  });
+
+  var shared = decodeResultShare();
+  if (shared && typeof shared.points === 'number') {
+    var sharedBanner = document.getElementById('lr-shared-banner');
+    if (sharedBanner) {
+      sharedBanner.innerHTML = '<div class="lr-banner lr-info">🔗 공유된 기록 — 점수 ' + shared.points +
+        '점 (선점 ' + shared.claims + ', 뺏김 ' + shared.missed + '). 시작 버튼을 눌러 직접 도전해보자.</div>';
+    }
+  }
 })();
 </script>

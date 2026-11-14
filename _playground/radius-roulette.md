@@ -33,6 +33,15 @@ classes: wide
     <div class="rr-stat"><span>반경</span><strong id="rr-radius-label">1km</strong></div>
     <div class="rr-stat rr-stat-wide"><span>중심에서 뽑힌 곳까지</span><strong id="rr-dist">-</strong></div>
   </div>
+
+  <div class="result-share">
+    <button type="button" class="btn btn--kakao" id="rr-share-kakao">
+      <i class="fas fa-fw fa-comment" aria-hidden="true"></i><span> 결과 공유</span>
+    </button>
+    <button type="button" class="btn btn--inverse" id="rr-share-link">
+      <i class="fas fa-fw fa-link" aria-hidden="true"></i><span> 결과 링크</span>
+    </button>
+  </div>
 </div>
 
 ## 왜 그냥 "반지름 × 난수"로는 안 되는가
@@ -76,6 +85,7 @@ classes: wide
   var circleLayer = null;
   var winnerMarker = null;
   var radius = 1000;      // m
+  var lastResult = null;  // 가장 최근 뽑기 결과 — 공유 버튼이 여기서 읽는다
 
   var banner = document.getElementById('rr-banner');
   var radiusLabel = document.getElementById('rr-radius-label');
@@ -165,10 +175,13 @@ classes: wide
     distEl.textContent = fmtDistance(dist);
     setBanner('🎯 여기로 가보세요! 중심에서 ' + fmtDistance(dist) + ' 떨어진 곳입니다.', 'rr-good');
     map.panTo([picked.lat, picked.lng]);
+
+    lastResult = { lat: center.lat, lng: center.lng, radius: radius, plat: picked.lat, plng: picked.lng, dist: dist };
   }
 
   function resetAll() {
     center = null;
+    lastResult = null;
     if (centerMarker) { map.removeLayer(centerMarker); centerMarker = null; }
     if (circleLayer) { map.removeLayer(circleLayer); circleLayer = null; }
     clearWinner();
@@ -191,5 +204,79 @@ classes: wide
   resetBtn.addEventListener('click', resetAll);
 
   radiusLabel.textContent = fmtRadiusLabel(radius);
+
+  // 결과 공유: 현재 상태(중심·반경·뽑힌 좌표)를 ?share= 쿼리에 base64url로 담은 링크를 만든다.
+  function buildResultShareUrl(payload) {
+    var url = new URL(location.origin + location.pathname);
+    var b64 = btoa(unescape(encodeURIComponent(JSON.stringify(payload))))
+      .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    url.searchParams.set('share', b64);
+    return url.toString();
+  }
+  function decodeResultShare() {
+    var raw = new URLSearchParams(location.search).get('share');
+    if (!raw) return null;
+    var s = raw.replace(/-/g, '+').replace(/_/g, '/');
+    while (s.length % 4) s += '=';
+    try { return JSON.parse(decodeURIComponent(escape(atob(s)))); } catch (e) { return null; }
+  }
+  function showShareToast(message) {
+    var toast = document.getElementById('copy-toast');
+    if (!toast) return;
+    toast.textContent = message;
+    toast.classList.add('is-visible');
+    clearTimeout(toast._hideTimer);
+    toast._hideTimer = setTimeout(function () { toast.classList.remove('is-visible'); }, 1500);
+  }
+  function copyResultLink(url) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(url);
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement('textarea');
+      ta.value = url; ta.style.position = 'fixed'; ta.style.left = '-9999px';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy') ? resolve() : reject(); } catch (e) { reject(e); }
+      finally { document.body.removeChild(ta); }
+    });
+  }
+
+  document.getElementById('rr-share-kakao').addEventListener('click', function () {
+    if (!lastResult) { showShareToast('먼저 지도를 클릭하고 뽑기를 눌러주세요.'); return; }
+    var url = buildResultShareUrl(lastResult);
+    if (!window.Kakao) return;
+    if (!Kakao.isInitialized()) Kakao.init('{{ site.kakao.js_key }}');
+    Kakao.Share.sendDefault({
+      objectType: 'feed',
+      content: {
+        title: '우연의 장소',
+        description: '중심에서 ' + fmtDistance(lastResult.dist) + ' 떨어진 곳이 뽑혔습니다. 반경 ' + fmtRadiusLabel(lastResult.radius) + ' 안에서 무작위로 골랐어요.',
+        imageUrl: '{{ page.header.teaser | absolute_url }}',
+        link: { mobileWebUrl: url, webUrl: url }
+      }
+    });
+  });
+
+  document.getElementById('rr-share-link').addEventListener('click', function () {
+    if (!lastResult) { showShareToast('먼저 지도를 클릭하고 뽑기를 눌러주세요.'); return; }
+    copyResultLink(buildResultShareUrl(lastResult)).then(function () { showShareToast('복사됨!'); });
+  });
+
+  // 공유 링크로 들어온 경우: 재굴림 없이 그 결과를 그대로 보여준다.
+  var shared = decodeResultShare();
+  if (shared && typeof shared.lat === 'number' && typeof shared.plat === 'number') {
+    setCenter({ lat: shared.lat, lng: shared.lng });
+    radius = shared.radius;
+    radiusInput.value = radius;
+    radiusLabel.textContent = fmtRadiusLabel(radius);
+    drawCircle();
+    winnerMarker = L.circleMarker([shared.plat, shared.plng], {
+      radius: 9, color: '#fff', weight: 2, fillColor: '#4f7a55', fillOpacity: 1
+    }).addTo(map).bindPopup(
+      '<div class="rr-popup">공유된 결과<br>' + shared.plat.toFixed(6) + ', ' + shared.plng.toFixed(6) + '</div>'
+    ).openPopup();
+    distEl.textContent = fmtDistance(shared.dist);
+    setBanner('🔗 공유된 결과입니다 — 중심에서 ' + fmtDistance(shared.dist) + ' 떨어진 곳. 지도를 클릭하면 나도 새로 뽑을 수 있다.', 'rr-good');
+    lastResult = shared;
+    map.setView([shared.lat, shared.lng], map.getZoom());
+  }
 })();
 </script>

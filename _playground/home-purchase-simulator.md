@@ -93,6 +93,15 @@ classes: wide
   </div>
 </div>
 
+<div class="result-share">
+  <button type="button" class="btn btn--kakao" id="hb-share-kakao">
+    <i class="fas fa-fw fa-comment" aria-hidden="true"></i><span> 결과 공유</span>
+  </button>
+  <button type="button" class="btn btn--inverse" id="hb-share-link">
+    <i class="fas fa-fw fa-link" aria-hidden="true"></i><span> 결과 링크</span>
+  </button>
+</div>
+
 <style>
 .hb-notice {
   max-width: 900px; margin: 1.2em auto 1.6em;
@@ -145,6 +154,8 @@ classes: wide
 <script>
 (function () {
   var SNAPSHOT_LABEL = "2025.6.27~2026.8.13 발표 누적(2026년 11월 확인)";
+  var lastOutput = null;   // 가장 최근 계산 결과 요약 — 공유 카드 설명에 쓴다
+  var calculated = false;  // 계산을 한 번이라도 실행했는지 — 공유 버튼이 이걸로 판단한다
 
   // 2025.6.27 대책 + 2025.9.7 추가대책 + 2025.10.15 대책 + 2026.8.13 금융 종합대책 반영 (단순화).
   // 2026.8.13 대책은 가계대출 총량 목표만 조정했고, 개인별 LTV·DSR 한도 자체는 그대로 유지된다고 밝혔다.
@@ -252,7 +263,7 @@ classes: wide
       : '2025-10-15 지정 목록 기준으로는 해당 없음 — 그 이후 신규 지정 여부는 별도 확인이 필요합니다.';
   });
 
-  document.getElementById('hb-calc').addEventListener('click', function () {
+  function calculate() {
     var regionKey = document.getElementById('hb-region').value;
     var region = REGION_TIERS[regionKey];
     var firstTime = document.getElementById('hb-first-time').checked;
@@ -343,8 +354,104 @@ classes: wide
     html += '<div class="hb-row hb-total"><span>원리금균등 월 상환액<span class="hb-tip" tabindex="0" data-tip="매달 갚는 금액(원금+이자)이 상환 기간 내내 똑같은 방식입니다. 초반엔 이자 비중이 크고 후반으로 갈수록 원금 비중이 커집니다.">?</span></span><span>' + fmt(monthlyPay) + '</span></div>';
     html += '<p class="hb-note">월 상환액은 입력한 실제 계약금리(연 ' + rate + '%) 기준이고, DSR 한도 계산에만 스트레스 금리를 가산했습니다. 기존 대출 월 상환액(' + fmt(existingPay) + ')은 포함하지 않은 신규 대출분만의 금액입니다.</p>';
 
+    lastOutput = { finalLoan: finalLoan, totalCashNeeded: totalCashNeeded, monthlyPay: monthlyPay };
+    calculated = true;
     document.getElementById('hb-result').innerHTML = html;
+  }
+
+  document.getElementById('hb-calc').addEventListener('click', calculate);
+
+  // 결과 공유: 계산을 돌린 입력값만 담는다. 계산식은 규제가 바뀔 때마다 갱신되므로,
+  // 숫자를 그대로 저장하는 대신 공유 링크를 열 때 같은 입력으로 다시 계산한다.
+  function buildResultShareUrl(payload) {
+    var url = new URL(location.origin + location.pathname);
+    var b64 = btoa(unescape(encodeURIComponent(JSON.stringify(payload))))
+      .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    url.searchParams.set('share', b64);
+    return url.toString();
+  }
+  function decodeResultShare() {
+    var raw = new URLSearchParams(location.search).get('share');
+    if (!raw) return null;
+    var s = raw.replace(/-/g, '+').replace(/_/g, '/');
+    while (s.length % 4) s += '=';
+    try { return JSON.parse(decodeURIComponent(escape(atob(s)))); } catch (e) { return null; }
+  }
+  function showShareToast(message) {
+    var toast = document.getElementById('copy-toast');
+    if (!toast) return;
+    toast.textContent = message;
+    toast.classList.add('is-visible');
+    clearTimeout(toast._hideTimer);
+    toast._hideTimer = setTimeout(function () { toast.classList.remove('is-visible'); }, 1500);
+  }
+  function copyResultLink(url) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(url);
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement('textarea');
+      ta.value = url; ta.style.position = 'fixed'; ta.style.left = '-9999px';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy') ? resolve() : reject(); } catch (e) { reject(e); }
+      finally { document.body.removeChild(ta); }
+    });
+  }
+  function getSharePayload() {
+    if (!calculated) return null;
+    return {
+      region: document.getElementById('hb-region').value,
+      dong: document.getElementById('hb-dong').value,
+      firstTime: document.getElementById('hb-first-time').checked,
+      ordinary: document.getElementById('hb-ordinary').checked,
+      multiHome: document.getElementById('hb-multi-home').checked,
+      income: document.getElementById('hb-income').value,
+      existingPay: document.getElementById('hb-existing-pay').value,
+      price: document.getElementById('hb-price').value,
+      actualPrice: document.getElementById('hb-actual-price').value,
+      rate: document.getElementById('hb-rate').value,
+      years: document.getElementById('hb-years').value
+    };
+  }
+  function applySharedPayload(p) {
+    document.getElementById('hb-region').value = p.region;
+    document.getElementById('hb-dong').value = p.dong || '';
+    document.getElementById('hb-first-time').checked = !!p.firstTime;
+    document.getElementById('hb-ordinary').checked = !!p.ordinary;
+    document.getElementById('hb-multi-home').checked = !!p.multiHome;
+    document.getElementById('hb-income').value = p.income;
+    document.getElementById('hb-existing-pay').value = p.existingPay;
+    document.getElementById('hb-price').value = p.price;
+    document.getElementById('hb-actual-price').value = p.actualPrice || '';
+    document.getElementById('hb-rate').value = p.rate;
+    document.getElementById('hb-years').value = p.years;
+    document.getElementById('hb-dong').dispatchEvent(new Event('input'));
+    calculate();
+  }
+
+  document.getElementById('hb-share-kakao').addEventListener('click', function () {
+    var payload = getSharePayload();
+    if (!payload) { showShareToast('계산하기를 먼저 눌러주세요.'); return; }
+    var url = buildResultShareUrl(payload);
+    if (!window.Kakao) return;
+    if (!Kakao.isInitialized()) Kakao.init('{{ site.kakao.js_key }}');
+    Kakao.Share.sendDefault({
+      objectType: 'feed',
+      content: {
+        title: '부동산 매수 시뮬레이터',
+        description: '대출 가능액 ' + fmt(lastOutput.finalLoan) + ', 총 필요 현금 ' + fmt(lastOutput.totalCashNeeded) + ', 월 상환액 ' + fmt(lastOutput.monthlyPay),
+        imageUrl: '{{ page.header.teaser | absolute_url }}',
+        link: { mobileWebUrl: url, webUrl: url }
+      }
+    });
   });
+
+  document.getElementById('hb-share-link').addEventListener('click', function () {
+    var payload = getSharePayload();
+    if (!payload) { showShareToast('계산하기를 먼저 눌러주세요.'); return; }
+    copyResultLink(buildResultShareUrl(payload)).then(function () { showShareToast('복사됨!'); });
+  });
+
+  var shared = decodeResultShare();
+  if (shared) applySharedPayload(shared);
 })();
 </script>
 

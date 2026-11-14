@@ -31,6 +31,15 @@ classes: wide
     <button type="button" class="btn btn--info" id="mc-undo">마지막 점 취소</button>
     <button type="button" class="btn btn--primary" id="mc-reset">초기화</button>
   </div>
+
+  <div class="result-share">
+    <button type="button" class="btn btn--kakao" id="mc-share-kakao">
+      <i class="fas fa-fw fa-comment" aria-hidden="true"></i><span> 결과 공유</span>
+    </button>
+    <button type="button" class="btn btn--inverse" id="mc-share-link">
+      <i class="fas fa-fw fa-link" aria-hidden="true"></i><span> 결과 링크</span>
+    </button>
+  </div>
 </div>
 
 ## 왜 이 지점이 "공평"한가
@@ -61,7 +70,7 @@ classes: wide
 }
 .mc-banner.mc-good { background: #e5f0e6; color: #335c38; }
 .mc-banner.mc-bad { background: #fbe4e1; color: #a9342a; }
-.mc-controls { display: flex; justify-content: space-between; gap: 0.6em; flex-wrap: wrap; }
+.mc-controls { display: flex; justify-content: flex-end; gap: 0.6em; flex-wrap: wrap; }
 .mc-popup { font-size: 0.85em; }
 </style>
 
@@ -237,5 +246,73 @@ classes: wide
   map.on('click', function (e) { addPoint(e.latlng); });
   document.getElementById('mc-undo').addEventListener('click', removeLastPoint);
   document.getElementById('mc-reset').addEventListener('click', resetAll);
+
+  // 결과 공유: 찍은 출발점들만 담으면 되고, 공평한 지점은 불러올 때 같은 로직으로 다시 계산한다.
+  function buildResultShareUrl(payload) {
+    var url = new URL(location.origin + location.pathname);
+    var b64 = btoa(unescape(encodeURIComponent(JSON.stringify(payload))))
+      .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    url.searchParams.set('share', b64);
+    return url.toString();
+  }
+  function decodeResultShare() {
+    var raw = new URLSearchParams(location.search).get('share');
+    if (!raw) return null;
+    var s = raw.replace(/-/g, '+').replace(/_/g, '/');
+    while (s.length % 4) s += '=';
+    try { return JSON.parse(decodeURIComponent(escape(atob(s)))); } catch (e) { return null; }
+  }
+  function showShareToast(message) {
+    var toast = document.getElementById('copy-toast');
+    if (!toast) return;
+    toast.textContent = message;
+    toast.classList.add('is-visible');
+    clearTimeout(toast._hideTimer);
+    toast._hideTimer = setTimeout(function () { toast.classList.remove('is-visible'); }, 1500);
+  }
+  function copyResultLink(url) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(url);
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement('textarea');
+      ta.value = url; ta.style.position = 'fixed'; ta.style.left = '-9999px';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy') ? resolve() : reject(); } catch (e) { reject(e); }
+      finally { document.body.removeChild(ta); }
+    });
+  }
+  function getSharePayload() {
+    return points.length >= 2 ? points.map(function (p) { return [p.lat, p.lng]; }) : null;
+  }
+
+  document.getElementById('mc-share-kakao').addEventListener('click', function () {
+    var payload = getSharePayload();
+    if (!payload) { showShareToast('출발점을 두 개 이상 찍어주세요.'); return; }
+    var url = buildResultShareUrl(payload);
+    if (!window.Kakao) return;
+    if (!Kakao.isInitialized()) Kakao.init('{{ site.kakao.js_key }}');
+    Kakao.Share.sendDefault({
+      objectType: 'feed',
+      content: {
+        title: '공평한 약속 장소 찾기',
+        description: '가장 멀리 가는 사람도 ' + radiusEl.textContent + '만 이동하면 되는 약속 장소를 찾았습니다.',
+        imageUrl: '{{ page.header.teaser | absolute_url }}',
+        link: { mobileWebUrl: url, webUrl: url }
+      }
+    });
+  });
+
+  document.getElementById('mc-share-link').addEventListener('click', function () {
+    var payload = getSharePayload();
+    if (!payload) { showShareToast('출발점을 두 개 이상 찍어주세요.'); return; }
+    copyResultLink(buildResultShareUrl(payload)).then(function () { showShareToast('복사됨!'); });
+  });
+
+  // 공유 링크로 들어온 경우: 찍힌 점들을 그대로 다시 찍어서 같은 결과를 재현한다.
+  var shared = decodeResultShare();
+  if (shared && Array.isArray(shared) && shared.length >= 2) {
+    shared.forEach(function (pt) { addPoint({ lat: pt[0], lng: pt[1] }); });
+    map.fitBounds(points.map(function (p) { return [p.lat, p.lng]; }), { padding: [30, 30] });
+    setBanner('🔗 공유된 결과 — 가장 멀리 가는 사람도 ' + radiusEl.textContent + '만 이동하면 됩니다. 지도를 클릭해 내 출발점도 더해볼 수 있다.', 'mc-good');
+  }
 })();
 </script>

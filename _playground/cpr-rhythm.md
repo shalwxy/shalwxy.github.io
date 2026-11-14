@@ -20,6 +20,8 @@ classes: wide
 
 실제 흐름처럼 **압박 30회 + 인공호흡 2회**를 한 세트로 묶었고, AED가 리듬을 다시 분석하는 주기인 **5세트(약 2분)**를 한 판으로 삼았다.
 
+<div id="cr-shared-banner"></div>
+
 <div class="cr-wrap">
   <div class="cr-hud">
     <div class="cr-stat"><span>세트</span><strong id="cr-set">0</strong> / 5</div>
@@ -42,6 +44,15 @@ classes: wide
       <button type="button" class="btn btn--warning" id="cr-stop" disabled>정지</button>
       <button type="button" class="btn btn--info" id="cr-reset">초기화</button>
     </div>
+  </div>
+
+  <div class="result-share">
+    <button type="button" class="btn btn--kakao" id="cr-share-kakao">
+      <i class="fas fa-fw fa-comment" aria-hidden="true"></i><span> 결과 공유</span>
+    </button>
+    <button type="button" class="btn btn--inverse" id="cr-share-link">
+      <i class="fas fa-fw fa-link" aria-hidden="true"></i><span> 결과 링크</span>
+    </button>
   </div>
 </div>
 
@@ -119,6 +130,7 @@ classes: wide
   var countdownTimer = null;
 
   var state = null;
+  var lastResult = null; // 가장 최근 플레이 결과 — 공유 버튼이 여기서 읽는다
 
   function haltTimers() {
     if (countdownTimer) { clearInterval(countdownTimer); countdownTimer = null; }
@@ -248,6 +260,7 @@ classes: wide
     pad.className = 'cr-pad';
     var acc = state.judged > 0 ? Math.round((state.good / state.judged) * 100) : 0;
     setBanner('🫀 AED가 심장 리듬을 다시 분석합니다. 5세트 완료 — 정확도 ' + acc + '% (정확 ' + state.good + ' / 판정 ' + state.judged + ')', acc >= 70 ? 'cr-good' : 'cr-bad');
+    lastResult = { accuracy: acc, good: state.good, judged: state.judged };
     startBtn.disabled = false;
     startBtn.textContent = '다시 하기';
     stopBtn.disabled = true;
@@ -316,5 +329,69 @@ classes: wide
   startBtn.addEventListener('click', startGame);
   stopBtn.addEventListener('click', stopGame);
   resetBtn.addEventListener('click', resetGame);
+
+  // 결과 공유: 리듬 게임도 실시간 반응속도가 핵심이라 재현 대신 최종 정확도만 공유한다.
+  function buildResultShareUrl(payload) {
+    var url = new URL(location.origin + location.pathname);
+    var b64 = btoa(unescape(encodeURIComponent(JSON.stringify(payload))))
+      .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    url.searchParams.set('share', b64);
+    return url.toString();
+  }
+  function decodeResultShare() {
+    var raw = new URLSearchParams(location.search).get('share');
+    if (!raw) return null;
+    var s = raw.replace(/-/g, '+').replace(/_/g, '/');
+    while (s.length % 4) s += '=';
+    try { return JSON.parse(decodeURIComponent(escape(atob(s)))); } catch (e) { return null; }
+  }
+  function showShareToast(message) {
+    var toast = document.getElementById('copy-toast');
+    if (!toast) return;
+    toast.textContent = message;
+    toast.classList.add('is-visible');
+    clearTimeout(toast._hideTimer);
+    toast._hideTimer = setTimeout(function () { toast.classList.remove('is-visible'); }, 1500);
+  }
+  function copyResultLink(url) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(url);
+    return new Promise(function (resolve, reject) {
+      var ta = document.createElement('textarea');
+      ta.value = url; ta.style.position = 'fixed'; ta.style.left = '-9999px';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy') ? resolve() : reject(); } catch (e) { reject(e); }
+      finally { document.body.removeChild(ta); }
+    });
+  }
+
+  document.getElementById('cr-share-kakao').addEventListener('click', function () {
+    if (!lastResult) { showShareToast('5세트를 먼저 끝내 주세요.'); return; }
+    var url = buildResultShareUrl(lastResult);
+    if (!window.Kakao) return;
+    if (!Kakao.isInitialized()) Kakao.init('{{ site.kakao.js_key }}');
+    Kakao.Share.sendDefault({
+      objectType: 'feed',
+      content: {
+        title: '심폐소생술 속도 감각 익히기',
+        description: '정확도 ' + lastResult.accuracy + '% (' + lastResult.good + '/' + lastResult.judged + ')로 5세트를 마쳤습니다.',
+        imageUrl: '{{ page.header.teaser | absolute_url }}',
+        link: { mobileWebUrl: url, webUrl: url }
+      }
+    });
+  });
+
+  document.getElementById('cr-share-link').addEventListener('click', function () {
+    if (!lastResult) { showShareToast('5세트를 먼저 끝내 주세요.'); return; }
+    copyResultLink(buildResultShareUrl(lastResult)).then(function () { showShareToast('복사됨!'); });
+  });
+
+  var shared = decodeResultShare();
+  if (shared && typeof shared.accuracy === 'number') {
+    var sharedBanner = document.getElementById('cr-shared-banner');
+    if (sharedBanner) {
+      sharedBanner.innerHTML = '<div class="cr-banner cr-good">🔗 공유된 기록 — 정확도 ' + shared.accuracy +
+        '% (' + shared.good + '/' + shared.judged + '). 시작 버튼을 눌러 직접 도전해보자.</div>';
+    }
+  }
 })();
 </script>
