@@ -24,7 +24,7 @@ classes: wide
   <div class="cr-hud">
     <div class="cr-stat"><span>세트</span><strong id="cr-set">0</strong> / 5</div>
     <div class="cr-stat"><span>압박</span><strong id="cr-count">0</strong> / 30</div>
-    <div class="cr-stat cr-stat-wide"><span>현재 속도</span><strong id="cr-bpm">-</strong></div>
+    <div class="cr-stat"><span>현재 속도</span><strong id="cr-bpm">-</strong></div>
     <div class="cr-stat"><span>정확도</span><strong id="cr-accuracy">-</strong></div>
   </div>
 
@@ -47,12 +47,14 @@ classes: wide
 
 <style>
 .cr-wrap { margin: 2em 0; }
-.cr-hud { display: flex; gap: 1em; margin-bottom: 1em; flex-wrap: wrap; }
+.cr-hud { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1em; margin-bottom: 1em; }
 .cr-stat {
-  flex: 1 1 110px; background: #f7f7f8; border-radius: 8px;
+  background: #f7f7f8; border-radius: 8px;
   padding: 0.7em 0.8em; text-align: center;
 }
-.cr-stat-wide { flex: 1.6 1 150px; }
+@media (min-width: 544px) {
+  .cr-hud { grid-template-columns: repeat(4, 1fr); }
+}
 .cr-stat span { display: block; font-size: 0.75em; color: #6b6b6b; margin-bottom: 0.2em; }
 .cr-stat strong { font-size: 1.3em; font-weight: 700; }
 .cr-stage {

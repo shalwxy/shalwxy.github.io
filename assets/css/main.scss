@@ -276,14 +276,18 @@ footer.page__meta .back-to-top {
 }
 
 /* 글 목록 하단의 "맨 위로 이동": 테마 기본값(font-size: 0.6em, margin-top 없음)이라
-   모바일에서는 너무 작고 바로 위 글 카드에 그대로 붙어 보인다. 모바일에서만 더 크게 키우고
-   위쪽 여백을 넉넉히 둔다. 두 군데 모두 커버해야 한다 —
-   folder.html/showcase.html(.page__content 바로 아래)과 태그 아카이브 페이지
-   (lab|essay|playground)/tags.md(.taxonomy__section 안, 태그마다 한 번씩). */
+   바로 위 글 카드에 그대로 붙어 보인다. 위쪽 여백은 화면 폭과 무관하게 항상 필요해서
+   공통으로 적용하고, 글자 크기만 좁은 화면(모바일)에서 더 크게 키운다. 두 군데 모두
+   커버해야 한다 — folder.html/showcase.html(.page__content 바로 아래)과 태그 아카이브
+   페이지(lab|essay|playground)/tags.md(.taxonomy__section 안, 태그마다 한 번씩). */
+.page__content > .back-to-top,
+.page__content .taxonomy__section > .back-to-top {
+  margin-top: 2.5em;
+}
+
 @media (max-width: $small) {
   .page__content > .back-to-top,
   .page__content .taxonomy__section > .back-to-top {
-    margin-top: 2.5em;
     font-size: 1em;
   }
 }
