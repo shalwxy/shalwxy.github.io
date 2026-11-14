@@ -58,7 +58,8 @@ classes: wide
       2주택 이상 보유 (다주택자)
     </label>
 
-    <label>연소득 (만원)<span class="hb-tip" tabindex="0" data-tip="세전(공제 전) 증빙소득 기준입니다. 근로자는 전년도 원천징수영수증의 '총급여', 또는 최근 1년 급여명세서를 연 환산한 금액을 씁니다. 부부 합산으로 대출받으면 두 사람의 세전 소득을 더합니다.">?</span>
+    <label>
+      <span class="hb-label-text">연소득 (만원)<span class="hb-tip" tabindex="0" data-tip="세전(공제 전) 증빙소득 기준입니다. 근로자는 전년도 원천징수영수증의 '총급여', 또는 최근 1년 급여명세서를 연 환산한 금액을 씁니다. 부부 합산으로 대출받으면 두 사람의 세전 소득을 더합니다.">?</span></span>
       <input type="number" id="hb-income" value="6000">
     </label>
 
@@ -66,11 +67,13 @@ classes: wide
       <input type="number" id="hb-existing-pay" value="0">
     </label>
 
-    <label>구매 희망 부동산 공시가격 (만원)<span class="hb-tip" tabindex="0" data-tip="국토교통부 부동산공시가격알리미(realtyprice.kr)에서 주소로 조회할 수 있습니다 — 아파트·오피스텔 등은 '공동주택 공시가격' 메뉴. 이 시뮬레이터는 공시가격을 담보가치(LTV 산정 기준)의 근사치로 씁니다. 실제로는 KB시세·한국부동산원 시세·매매가 중 낮은 값을 씁니다.">?</span>
+    <label>
+      <span class="hb-label-text">구매 희망 부동산 공시가격 (만원)<span class="hb-tip" tabindex="0" data-tip="국토교통부 부동산공시가격알리미(realtyprice.kr)에서 주소로 조회할 수 있습니다 — 아파트·오피스텔 등은 '공동주택 공시가격' 메뉴. 이 시뮬레이터는 공시가격을 담보가치(LTV 산정 기준)의 근사치로 씁니다. 실제로는 KB시세·한국부동산원 시세·매매가 중 낮은 값을 씁니다.">?</span></span>
       <input type="number" id="hb-price" value="80000">
     </label>
 
-    <label>구매 희망 부동산 실거래가 (만원, 매매가)<span class="hb-tip" tabindex="0" data-tip="실제로 계약하는 매매가입니다. 입력하면 취득세·중개수수료·자기자본 등 '필요 현금' 계산에 이 값을 쓰고, 비워 두면 공시가격으로 대신 계산합니다. 대출 한도(LTV)는 이 값과 무관하게 공시가격 기준으로 계산됩니다.">?</span>
+    <label>
+      <span class="hb-label-text">구매 희망 부동산 실거래가 (만원, 매매가)<span class="hb-tip" tabindex="0" data-tip="실제로 계약하는 매매가입니다. 입력하면 취득세·중개수수료·자기자본 등 '필요 현금' 계산에 이 값을 쓰고, 비워 두면 공시가격으로 대신 계산합니다. 대출 한도(LTV)는 이 값과 무관하게 공시가격 기준으로 계산됩니다.">?</span></span>
       <input type="number" id="hb-actual-price" placeholder="비워 두면 공시가격으로 계산">
     </label>
 

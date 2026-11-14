@@ -223,6 +223,19 @@ footer.page__meta .back-to-top {
   font-size: 0.8em;
 }
 
+/* 글 목록 하단의 "맨 위로 이동": 테마 기본값(font-size: 0.6em, margin-top 없음)이라
+   모바일에서는 너무 작고 바로 위 글 카드에 그대로 붙어 보인다. 모바일에서만 더 크게 키우고
+   위쪽 여백을 넉넉히 둔다. 두 군데 모두 커버해야 한다 —
+   folder.html/showcase.html(.page__content 바로 아래)과 태그 아카이브 페이지
+   (lab|essay|playground)/tags.md(.taxonomy__section 안, 태그마다 한 번씩). */
+@media (max-width: $small) {
+  .page__content > .back-to-top,
+  .page__content .taxonomy__section > .back-to-top {
+    margin-top: 2.5em;
+    font-size: 1em;
+  }
+}
+
 /* 태그 아카이브: 주소에 #태그 가 있으면 해당 태그 섹션만 표시 */
 .layout--archive:has(.taxonomy__section:target) .taxonomy__section:not(:target) {
   display: none;
@@ -275,8 +288,9 @@ footer.page__meta .back-to-top {
 
 /* 글 하단 "같은 카테고리의 다른 글" 목록: 기본은 1페이지만 보이고,
    페이지 번호를 누르면(#category-list-page-N) 그 페이지만 보이게 전환 — JS 없이 :target으로 처리.
-   바로 위 "목록" 버튼(.pagination)이 float: left이기 때문에 clear로 줄바꿈을 보장하고,
-   테마가 .page__related에 쓰는 것과 같은 상단 구분선 스타일로 붙어 보이지 않게 한다. */
+   위치는 single.html에서 댓글(comments.html) 바로 다음이다. clear는 그 앞에 뜰 수 있는
+   요소(예: .pagination의 float: left)를 대비한 안전장치이고, 테마가 .page__related에 쓰는
+   것과 같은 상단 구분선 스타일로 붙어 보이지 않게 한다. */
 .category-list {
   clear: both;
   margin-top: 2em;
