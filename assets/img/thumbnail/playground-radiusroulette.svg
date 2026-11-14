@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="원 안에서 무작위로 뽑힌 한 점 — 반경 룰렛 일러스트">
+  <defs>
+    <linearGradient id="rr-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#eef4fb"/>
+      <stop offset="100%" stop-color="#dce8f5"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="800" fill="url(#rr-bg)"/>
+
+  <!-- radius boundary -->
+  <circle cx="600" cy="400" r="230" fill="none" stroke="#2a5a8a" stroke-width="6" stroke-dasharray="4 10"/>
+
+  <!-- faint candidate points: anywhere inside could have been picked -->
+  <g fill="#bcd3e0">
+    <circle cx="520" cy="520" r="11"/>
+    <circle cx="470" cy="330" r="11"/>
+    <circle cx="660" cy="540" r="11"/>
+    <circle cx="700" cy="250" r="11"/>
+    <circle cx="420" cy="430" r="11"/>
+  </g>
+
+  <!-- line from center to the picked point -->
+  <line x1="600" y1="400" x2="760" y2="300" stroke="#7b8fa6" stroke-width="4" stroke-dasharray="2 10" stroke-linecap="round"/>
+
+  <!-- center point -->
+  <circle cx="600" cy="400" r="16" fill="#d1483a" stroke="#fdfdfe" stroke-width="4"/>
+
+  <!-- picked point -->
+  <circle cx="760" cy="300" r="18" fill="#4f7a55" stroke="#fdfdfe" stroke-width="4"/>
+</svg>

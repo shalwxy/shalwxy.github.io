@@ -26,6 +26,40 @@
   margin-left: auto;
 }
 
+/* 공유하기 영역: 제목과 버튼들을 모두 가운데 정렬 (테마 기본은 왼쪽 정렬) */
+.page__share {
+  text-align: center;
+}
+
+/* 글 하단 뒤로/목록 버튼: 테마 기본은 50%씩 폭을 나눠 가지는 큰 페이저 바라 글자가
+   과도하게 커 보인다. 폭을 내용만큼만 차지하는 작은 버튼 두 개로 바꿔 가운데 정렬하고,
+   바로 아래 반응(giscus)/댓글 영역과 너무 붙어 보이지 않게 아래 여백도 둔다. */
+.pagination {
+  display: flex;
+  float: none;
+  justify-content: center;
+  margin-bottom: 1.5em;
+
+  &--pager {
+    display: inline-block;
+    float: none;
+    flex: none;
+    width: auto;
+    padding: 0.5em 1.5em;
+    font-size: $type-size-6;
+
+    &:first-child,
+    &:last-child {
+      margin-left: 0;
+      border-radius: $border-radius;
+    }
+
+    + .pagination--pager {
+      margin-left: 0.5em;
+    }
+  }
+}
+
 /* 카카오톡 공유 버튼: 테마의 $buttoncolors 맵에는 없는 브랜드 컬러라 직접 추가 */
 .btn--kakao {
   background-color: #fee500;
