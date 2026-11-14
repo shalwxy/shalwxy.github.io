@@ -13,7 +13,7 @@ author_profile: false
 classes: wide
 ---
 
-지도에 **중심점을 찍고 반경을 정하면**, 그 원 안에서 무작위 좌표 하나를 똑같은 확률로 뽑아 보여준다. 어디로 갈지 못 정했을 때, 동네 산책이든 드라이브든 일단 방향 하나를 정해주는 룰렛이다.
+지도에 **중심점을 찍고 반경을 정하면**, 그 원 안에서 무작위 좌표 하나를 똑같은 확률로 뽑아 보여준다. 어디로 갈지 조사하고 따져보는 대신, 우연에 맡기면 동네 산책도 모험이 된다.
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 
