@@ -1,0 +1,40 @@
+{%- comment -%}
+  글 하단에 같은 카테고리의 다른 글 목록을 보여준다. category_url 계산은 category_url.html에
+  있다(post_pagination.html의 목록 버튼과 공유). 목록이 길면 한 번에 다 보여주지 않고
+  페이지당 5개씩 끊어서, :target CSS만으로(JS 없이) 페이지 번호를 눌러 전환한다 -
+  main.scss의 태그 아카이브 :target 패턴과 동일한 방식.
+{%- endcomment -%}
+{%- if page.collection == 'lab' or page.collection == 'essay' or page.collection == 'playground' -%}
+  {% include category_url.html %}
+
+  {%- assign siblings = site[page.collection] | where_exp: "doc", "doc.url != page.url" -%}
+  {%- assign siblings = siblings | where_exp: "doc", "doc.url contains category_url" -%}
+  {%- assign siblings = siblings | sort: "date" | reverse -%}
+
+  {%- if siblings.size > 0 -%}
+    {%- assign per_page = 5 -%}
+    {%- assign total_pages = siblings.size | plus: per_page | minus: 1 | divided_by: per_page -%}
+    <section class="category-list">
+      <h4 class="category-list__title">{{ site.data.ui-text[site.locale].category_list_title | default: "More in this category" }}</h4>
+      <div class="category-list__pages">
+        {%- for p in (1..total_pages) -%}
+          {%- assign offset = p | minus: 1 | times: per_page -%}
+          <div class="category-list__page" id="category-list-page-{{ p }}">
+            <div class="entries-list">
+              {%- for post in siblings offset: offset limit: per_page -%}
+                {% include archive-single.html %}
+              {%- endfor -%}
+            </div>
+          </div>
+        {%- endfor -%}
+      </div>
+      {%- if total_pages > 1 -%}
+        <nav class="category-list__pager">
+          {%- for p in (1..total_pages) -%}
+            <a href="#category-list-page-{{ p }}" class="btn btn--small btn--inverse category-list__pager-link">{{ p }}</a>
+          {%- endfor -%}
+        </nav>
+      {%- endif -%}
+    </section>
+  {%- endif -%}
+{%- endif -%}

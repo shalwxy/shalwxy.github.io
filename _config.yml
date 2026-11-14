@@ -10,14 +10,27 @@ baseurl: ""
 repository: "shalwxy/shalwxy.github.io"
 search: true
 naver_site_verification: "1d5f7499820718cfe546c2225dca7a86244bcfc8"
+# header.teaser/overlay_image가 없는 글(공유 카드, 카카오톡 공유용 이미지 등)을 위한 사이트 기본 이미지.
+og_image: "/assets/img/thumbnail/hub-peach.jpg"
+
+# lab/essay/playground 메인·카테고리 목록의 무한 스크롤 배치 크기(_layouts/folder.html, showcase.html).
+infinite_scroll:
+  per_batch: 10
+
+kakao:
+  # Kakao Developers(https://developers.kakao.com) 앱의 JavaScript 키.
+  # 비어 있으면 글 하단 공유 버튼에서 카카오톡 버튼이 보이지 않는다.
+  js_key: "0741f58360b683e2e40c852dbbf5970b"
 
 atom_feed:
   path: "/rss.xml"
   hide: true
 
+# path는 없다 — 태그 아카이브는 /lab/tags/, /essay/tags/, /playground/tags/로 서브 블로그별로
+# 분리되어 있고 전역 /tags/ 페이지는 없다(_includes/tag-list.html 참고). type만 쓰여서
+# 태그 링크가 #태그-슬러그 앵커를 쓰도록 한다.
 tag_archive:
   type: liquid
-  path: /tags/
 
 author:
   name: "shalwxy"

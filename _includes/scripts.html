@@ -1,0 +1,38 @@
+{%- comment -%}
+  remote_theme(mmistakes/minimal-mistakes@4.26.2)의 _includes/scripts.html을 통째로 복사해서
+  lunr 검색 include만 include_cached에서 include로 바꾼 파일(아래 주석 참고).
+  remote_theme 버전을 올릴 때는 업스트림의 같은 파일과 다시 비교해서 변경分이 있으면 반영해야 한다.
+{%- endcomment -%}
+{% if site.footer_scripts %}
+  {% for script in site.footer_scripts %}
+    <script src="{{ script | relative_url }}"></script>
+  {% endfor %}
+{% else %}
+  <script src="{{ '/assets/js/main.min.js' | relative_url }}"></script>
+{% endif %}
+
+{% if site.search == true or page.layout == "search" %}
+  {%- assign search_provider = site.search_provider | default: "lunr" -%}
+  {%- comment -%}
+    서브 블로그별 검색 분리를 위해 search/lunr-search-scripts.html은 page.url을 읽어야 한다.
+    include_cached를 쓰면 처음 렌더링된 페이지의 출력이 다른 모든 페이지에 그대로 재사용되어
+    섹션 분기가 무시되므로, 여기서는 캐시 없는 include를 쓴다.
+  {%- endcomment -%}
+  {%- case search_provider -%}
+    {%- when "lunr" -%}
+      {% include search/lunr-search-scripts.html %}
+    {%- when "google" -%}
+      {% include_cached search/google-search-scripts.html %}
+    {%- when "algolia" -%}
+      {% include_cached search/algolia-search-scripts.html %}
+  {%- endcase -%}
+{% endif %}
+
+{% include analytics.html %}
+{% include /comments-providers/scripts.html %}
+
+{% if site.after_footer_scripts %}
+  {% for script in site.after_footer_scripts %}
+    <script src="{{ script | relative_url }}"></script>
+  {% endfor %}
+{% endif %}

@@ -14,34 +14,54 @@ layout: archive
 {% if entries.size == 0 %}
   <p class="notice">아직 전시된 프로젝트가 없습니다.</p>
 {% endif %}
+
+{%- comment -%}
+  무한 스크롤: folder.html과 동일한 방식. .showcase는 CSS grid라 배치 래퍼(.infinite-scroll__batch)를
+  display: contents로 투명하게 만들어 카드가 그대로 grid item이 되도록 한다(main.scss).
+{%- endcomment -%}
+{%- assign per_batch = site.infinite_scroll.per_batch | default: 10 -%}
+{%- assign total_batches = entries.size | plus: per_batch | minus: 1 | divided_by: per_batch -%}
 <div class="showcase">
-  {% for project in entries %}
-    <article class="showcase__card">
-      <a href="{{ project.url | relative_url }}" class="showcase__image">
-        {% if project.header.teaser %}
-          <img src="{{ project.header.teaser | relative_url }}" alt="{{ project.title }}">
-        {% else %}
-          <span class="showcase__image--placeholder">{{ project.title | slice: 0 }}</span>
-        {% endif %}
-      </a>
-      <div class="showcase__body">
-        <h2 class="showcase__title"><a href="{{ project.url | relative_url }}">{{ project.title }}</a></h2>
-        {% if project.excerpt %}
-          <div class="showcase__excerpt">{{ project.excerpt | markdownify }}</div>
-        {% endif %}
-        {% if project.tags.size > 0 %}
-          <p class="showcase__tags">
-            {% for tag in project.tags %}<span class="showcase__tag">#{{ tag }}</span>{% endfor %}
-          </p>
-        {% endif %}
-        <p class="showcase__actions">
-          <a href="{{ project.url | relative_url }}" class="btn btn--primary">자세히 보기</a>
-          {% for link in project.links %}
-            <a href="{{ link.url }}" class="btn btn--inverse" target="_blank" rel="noopener">{{ link.label }}</a>
-          {% endfor %}
-        </p>
-      </div>
-    </article>
-  {% endfor %}
+  {%- for b in (1..total_batches) -%}
+    {%- assign offset = b | minus: 1 | times: per_batch -%}
+    <div class="infinite-scroll__batch"{% unless forloop.first %} hidden{% endunless %}>
+      {%- for project in entries offset: offset limit: per_batch -%}
+        <article class="showcase__card">
+          <a href="{{ project.url | relative_url }}" class="showcase__image">
+            {% if project.header.teaser %}
+              <img src="{{ project.header.teaser | relative_url }}" alt="{{ project.title }}">
+            {% else %}
+              <span class="showcase__image--placeholder">{{ project.title | slice: 0 }}</span>
+            {% endif %}
+          </a>
+          <div class="showcase__body">
+            <h2 class="showcase__title"><a href="{{ project.url | relative_url }}">{{ project.title }}</a></h2>
+            {% if project.excerpt %}
+              <div class="showcase__excerpt">{{ project.excerpt | markdownify }}</div>
+            {% endif %}
+            {% if project.tags.size > 0 %}
+              <p class="showcase__tags">
+                {% for tag in project.tags %}<span class="showcase__tag">#{{ tag }}</span>{% endfor %}
+              </p>
+            {% endif %}
+            <p class="showcase__actions">
+              <a href="{{ project.url | relative_url }}" class="btn btn--primary">자세히 보기</a>
+              {% for link in project.links %}
+                <a href="{{ link.url }}" class="btn btn--inverse" target="_blank" rel="noopener">{{ link.label }}</a>
+              {% endfor %}
+            </p>
+          </div>
+        </article>
+      {%- endfor -%}
+    </div>
+  {%- endfor -%}
 </div>
+{%- if total_batches > 1 -%}
+  <div class="infinite-scroll__sentinel"></div>
+  <button type="button" class="btn btn--inverse infinite-scroll__more">{{ site.data.ui-text[site.locale].more_label | default: "Load more" }}</button>
+  {% include infinite_scroll_script.html %}
+{%- endif -%}
+{%- if entries.size > 0 -%}
+  <a href="#page-title" class="back-to-top">{{ site.data.ui-text[site.locale].back_to_top | default: 'Back to Top' }} &uarr;</a>
+{%- endif -%}
 </div>

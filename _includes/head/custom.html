@@ -21,11 +21,20 @@
   보이도록 persica-nav--sub 클래스를 붙이고 CSS(main.scss)에서 분기한다.
   메인 블로그(루트)에는 이미 Lab/Essay/Playground 허브 카드가 있어서 삼선 메뉴 자체가
   중복이므로 아예 띄우지 않는다.
+
+  검색 버튼도 같은 이유로 루트에서는 숨긴다. masthead.html은 include_cached로 캐시되어
+  Liquid로 분기해도 무시되므로, 여기서 JS로 지운다. 서브 블로그 안에서는 검색 버튼을 그대로
+  두고, 검색 결과 자체를 그 서브 블로그 글로만 좁히는 건 search/lunr-search-scripts.html이
+  page.url 기준으로 다른 검색 인덱스(lunr-store-lab.js 등)를 불러오는 방식으로 처리한다.
 {%- endcomment -%}
 {%- assign is_root = false -%}
 {%- if page.url == '/' -%}
   {%- assign is_root = true -%}
 {%- endif -%}
+{%- comment -%}
+  url_section 계산은 tag-list.html, search/lunr-search-scripts.html에도 똑같이 있다.
+  "lab/essay/playground" 목록을 바꿀 땐 이 세 곳을 같이 확인할 것.
+{%- endcomment -%}
 {%- assign url_section = page.url | split: '/' | where_exp: "s", "s != ''" | first -%}
 {%- assign nav_items = nil -%}
 {%- assign in_sub_blog = false -%}
@@ -73,6 +82,12 @@
     if (logo) logo.setAttribute('href', homeHref);
   }
 
+  function setupSearchToggle() {
+    if (!{{ is_root }}) return;
+    var toggle = document.querySelector('.search__toggle');
+    if (toggle) toggle.style.display = 'none';
+  }
+
   function setupMenu() {
     if ({{ is_root }}) return;
 
@@ -107,6 +122,7 @@
 
   function init() {
     setupHomeLink();
+    setupSearchToggle();
     setupMenu();
   }
 

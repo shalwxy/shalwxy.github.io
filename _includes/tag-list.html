@@ -1,0 +1,39 @@
+{%- comment -%}
+  remote_theme(mmistakes/minimal-mistakes@4.26.2)의 _includes/tag-list.html을 통째로 복사해서
+  태그 링크가 서브 블로그별 태그 아카이브(/lab/tags/ 등)를 가리키도록 바꾼 파일.
+  remote_theme 버전을 올릴 때는 업스트림의 같은 파일과 다시 비교해서 변경分이 있으면 반영해야 한다.
+{%- endcomment -%}
+{% case site.tag_archive.type %}
+  {% when "liquid" %}
+    {% assign path_type = "#" %}
+  {% when "jekyll-archives" %}
+    {% assign path_type = nil %}
+{% endcase %}
+
+{%- comment -%}
+  태그는 서브 블로그(lab/essay/playground)별로 분리된 태그 아카이브(/lab/tags/ 등)만 있고
+  전역 /tags/ 페이지는 없다. 그래서 서브 블로그 밖에서는 tag_archive_path를 nil로 둬서
+  (site.tag_archive.path 같은 존재하지 않는 경로로 폴백하지 않고) 태그 링크 자체를 생략한다.
+{%- endcomment -%}
+{%- comment -%}
+  url_section 계산은 head/custom.html, search/lunr-search-scripts.html에도 똑같이 있다.
+  "lab/essay/playground" 목록을 바꿀 땐 이 세 곳을 같이 확인할 것.
+{%- endcomment -%}
+{%- assign url_section = page.url | split: '/' | where_exp: "s", "s != ''" | first -%}
+{%- assign tag_archive_path = nil -%}
+{%- if url_section == 'lab' or url_section == 'essay' or url_section == 'playground' -%}
+  {%- assign tag_archive_path = '/' | append: url_section | append: '/tags/' -%}
+{%- endif -%}
+
+{% if tag_archive_path %}
+  {% assign tags_sorted = page.tags | sort_natural %}
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> {{ site.data.ui-text[site.locale].tags_label | default: "Tags:" }} </strong>
+    <span itemprop="keywords">
+    {% for tag_word in tags_sorted %}
+      <a href="{{ tag_word | slugify | prepend: path_type | prepend: tag_archive_path | relative_url }}" class="page__taxonomy-item p-category" rel="tag">{{ tag_word }}</a>{% unless forloop.last %}<span class="sep">, </span>{% endunless %}
+    {% endfor %}
+    </span>
+  </p>
+{% endif %}

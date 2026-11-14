@@ -1,0 +1,15 @@
+{%- comment -%}
+  page.url에서 마지막 경로 조각을 뗀 카테고리 URL을 category_url에 assign한다.
+  permalink가 :collection/:path/ 라서 폴더 구조가 그대로 URL이 되기 때문에 가능한 계산.
+  예) /lab/engineering/distributed/foo/ -> /lab/engineering/distributed/
+
+  post_pagination.html(목록 버튼)과 category_list.html(같은 카테고리의 다른 글)이 같이 쓴다.
+  둘 다 lab/essay/playground 글에서만 쓰이므로, 이 include를 쓰는 쪽에서 미리
+  page.collection 체크를 하고 나서 불러야 한다.
+{%- endcomment -%}
+{%- assign url_parts = page.url | split: '/' | where_exp: "s", "s != ''" -%}
+{%- assign url_parts = url_parts | pop -%}
+{%- assign category_url = '/' -%}
+{%- if url_parts.size > 0 -%}
+  {%- assign category_url = url_parts | join: '/' | prepend: '/' | append: '/' -%}
+{%- endif -%}

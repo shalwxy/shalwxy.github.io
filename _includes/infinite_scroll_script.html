@@ -1,0 +1,50 @@
+<script>
+(function () {
+  var batches = Array.prototype.slice.call(document.querySelectorAll(".infinite-scroll__batch"));
+  var sentinel = document.querySelector(".infinite-scroll__sentinel");
+  var moreBtn = document.querySelector(".infinite-scroll__more");
+  if (!batches.length || !sentinel) return;
+
+  function cleanup() {
+    observer.disconnect();
+    if (sentinel) sentinel.remove();
+    if (moreBtn) moreBtn.remove();
+  }
+
+  function revealNext() {
+    var next = null;
+    for (var i = 0; i < batches.length; i++) {
+      if (batches[i].hidden) {
+        next = batches[i];
+        break;
+      }
+    }
+    if (!next) {
+      cleanup();
+      return;
+    }
+    next.hidden = false;
+
+    var stillHidden = false;
+    for (var j = 0; j < batches.length; j++) {
+      if (batches[j].hidden) {
+        stillHidden = true;
+        break;
+      }
+    }
+    if (!stillHidden) cleanup();
+  }
+
+  var observer = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) revealNext();
+    });
+  }, { rootMargin: "600px 0px" });
+
+  observer.observe(sentinel);
+
+  if (moreBtn) {
+    moreBtn.addEventListener("click", revealNext);
+  }
+})();
+</script>

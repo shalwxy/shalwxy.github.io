@@ -1,0 +1,12 @@
+{%- comment -%}
+  테마 기본은 "이전/다음" 글 버튼인데, 여기서는 글이 속한 카테고리 목록 페이지로 가는
+  "목록" 버튼 하나로 바꾼다. category_url 계산은 category_url.html에 있다
+  (category_list.html과 공유).
+{%- endcomment -%}
+{%- if page.collection == 'lab' or page.collection == 'essay' or page.collection == 'playground' -%}
+  {% include category_url.html %}
+  <nav class="pagination">
+    <a href="#" class="pagination--pager" onclick="history.back(); return false;">{{ site.data.ui-text[site.locale].back_label | default: "Back" }}</a>
+    <a href="{{ category_url | relative_url }}" class="pagination--pager">{{ site.data.ui-text[site.locale].list_label | default: "List" }}</a>
+  </nav>
+{%- endif -%}
