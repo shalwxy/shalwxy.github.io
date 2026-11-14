@@ -18,10 +18,9 @@ classes: wide
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 
 <div class="rr-wrap">
-  <div class="rr-hud">
-    <div class="rr-stat"><span>반경</span><strong id="rr-radius-label">1km</strong></div>
-    <div class="rr-stat rr-stat-wide"><span>중심에서 뽑힌 곳까지</span><strong id="rr-dist">-</strong></div>
-  </div>
+  <div class="rr-banner" id="rr-banner">지도를 클릭해서 중심점을 찍어보세요.</div>
+
+  <div id="rr-map"></div>
 
   <div class="rr-controls">
     <label for="rr-radius">반경</label>
@@ -30,9 +29,10 @@ classes: wide
     <button type="button" class="btn btn--info" id="rr-reset">초기화</button>
   </div>
 
-  <div id="rr-map"></div>
-
-  <div class="rr-banner" id="rr-banner">지도를 클릭해서 중심점을 찍어보세요.</div>
+  <div class="rr-hud">
+    <div class="rr-stat"><span>반경</span><strong id="rr-radius-label">1km</strong></div>
+    <div class="rr-stat rr-stat-wide"><span>중심에서 뽑힌 곳까지</span><strong id="rr-dist">-</strong></div>
+  </div>
 </div>
 
 ## 왜 그냥 "반지름 × 난수"로는 안 되는가
@@ -143,7 +143,7 @@ classes: wide
     clearWinner();
     drawCircle();
     rollBtn.disabled = false;
-    setBanner('', '');
+    setBanner('반경을 정하고 "뽑기"를 눌러보세요.', '');
   }
 
   // 거리는 r * sqrt(random)으로 뽑아야 원 전체에서 면적 기준 균등 분포가 된다
@@ -173,6 +173,9 @@ classes: wide
     if (circleLayer) { map.removeLayer(circleLayer); circleLayer = null; }
     clearWinner();
     rollBtn.disabled = true;
+    radius = 1000;
+    radiusInput.value = radius;
+    radiusLabel.textContent = fmtRadiusLabel(radius);
     setBanner('지도를 클릭해서 중심점을 찍어보세요.', '');
   }
 

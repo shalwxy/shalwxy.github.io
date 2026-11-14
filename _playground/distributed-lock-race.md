@@ -18,7 +18,7 @@ classes: wide
 
 [`확인과 사용 간극의 제거`](/lab/engineering/distributed/preempt-over-check/) 글에서 다룬 분산 락 선점을 게임으로 만들었다. 화면에 🔒가 뜨면 나와 봇 노드 4개가 동시에 그 락을 노린다. **가장 먼저 잡는 쪽이 가져가고, 나머지는 전부 "이미 선점됨"으로 튕겨 나간다.** 봇은 자기 색 조준점으로 보드를 떠돌다가, 충전이 끝나갈 즈음 정확한 위치에 자리를 잡는다 — 조준점이 멈춰 서는 순간이 곧 그 봇이 선점을 시도하는 시점이라, 눈으로 보면서 타이밍을 잴 수 있다. **봇은 라운드 수가 아니라 경과 시간에 따라 점점 빨라진다** — 시작할 땐 여유롭다가 60초에 가까워질수록 조준이 훨씬 빨리 끝난다.
 
-가끔 다른 것도 섞여 나온다. 💣 가짜 락([`DLQ` 글](/lab/engineering/distributed/dlq-over-db/)에서 다룬 "비정상 메시지"와 같은 개념), 🔑 우선순위 토큰, 그리고 락이 한꺼번에 여러 개 뜨는 "샤딩 타임"까지. **봇도 나와 똑같은 조건으로 움직인다.** 🔑를 내가 잡으면 그 자리에서 보너스 점수를 받고, 이어지는 두 번의 락은 봇이 끼어들지 않아 거의 확정으로 가져간다 — 봇이 먼저 채가면 같은 보상(다음 두 락 확정)이 그 봇에게 돌아간다. 반대로 💣를 내가 클릭하면 콤보가 끊기고 점수도 깎이는 데다, 다음 락이 뜨기까지 눈에 보이는 페널티 시간이 꽤 길게 이어진다 — 봇이 속으면 그 봇은 몇 라운드 동안 그대로 멈춘다. 연속으로 성공하면 콤보 배율이 붙고, 최고 점수는 브라우저에 저장된다.
+가끔 다른 것도 섞여 나온다. 💣 가짜 락([`DLQ` 글](/lab/engineering/distributed/dlq-over-db/)에서 다룬 "비정상 메시지"와 같은 개념), 🔑 우선순위 토큰, 그리고 락이 한꺼번에 여러 개 뜨는 "샤딩 타임"까지. **봇도 나와 똑같은 조건으로 움직인다.** 🔑를 내가 잡으면 그 자리에서 보너스 점수를 받고, 이어지는 두 번의 락은 봇이 끼어들지 않아 거의 확정으로 가져간다 — 반대로 봇이 먼저 채가면 몇 초 동안 그 봇만 움직여서 뜨는 건 뭐든(락이든 가짜 락이든 토큰이든) 가져가고, 나를 포함한 나머지 셋은 그 사이 전부 손을 놓는다. 반대로 💣를 내가 클릭하면 콤보가 끊기고 점수도 깎이는 데다, 몇 초 동안 내 클릭이 먹히지 않는 페널티가 눈에 보이게 이어진다 — 그 와중에도 락은 계속 뜨고 봇은 평소처럼 노려서 가져가니 방심하면 안 된다. 봇이 속으면 그 봇은 몇 라운드 동안 그대로 멈춘다. 연속으로 성공하면 콤보 배율이 붙고, 최고 점수는 브라우저에 저장된다.
 
 <div class="lr-wrap">
   <div class="lr-hud">
@@ -37,6 +37,7 @@ classes: wide
 
   <div class="lr-board" id="lr-board">
     <p class="lr-board-hint" id="lr-board-hint">시작 버튼을 누르면 🔒가 나타납니다.</p>
+    <div class="lr-lockout" id="lr-lockout"></div>
   </div>
 
   <div class="lr-banner" id="lr-banner">봇의 조준점이 락 위에 자리를 잡기 전에 🔒를 클릭해보자. 60초 동안 4개의 봇과 겨뤄본다.</div>
@@ -67,6 +68,7 @@ classes: wide
   transition: background 0.15s ease;
 }
 .lr-bot.lr-bot-stunned { opacity: 0.35; filter: grayscale(1); }
+.lr-bot.lr-bot-suppressed { opacity: 0.35; filter: grayscale(1); }
 /* 봇이 락을 조준 중일 때: 자신의 식별 색으로 깜빡이는 점으로 표시 (프로그레스바 대신) */
 .lr-bot-dot-0.lr-dot-aiming { background: #d1483a; animation: lr-dot-pulse-0 0.6s ease-in-out infinite; }
 .lr-bot-dot-1.lr-dot-aiming { background: #3a7bd1; animation: lr-dot-pulse-1 0.6s ease-in-out infinite; }
@@ -115,6 +117,17 @@ classes: wide
   position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
   color: #999; font-size: 0.9em; width: 80%; text-align: center;
 }
+/* 폭탄 페널티 동안에도 락은 계속 뜨고 봇도 그대로 움직인다 — 오직 내 클릭만 막힌다는 걸
+   보여주는 배지. 메인 배너는 라운드 결과로 계속 갈아치워지므로, 독립된 자리에 띄운다. */
+.lr-lockout {
+  position: absolute; top: 10px; right: 10px; z-index: 5;
+  background: #a9342a; color: #fff; font-size: 0.78em; font-weight: 700;
+  padding: 0.35em 0.7em; border-radius: 999px; box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  opacity: 0; transform: translateY(-6px); pointer-events: none;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+.lr-lockout.lr-show { opacity: 1; transform: translateY(0); }
+.lr-board.lr-player-locked .lr-lock { cursor: not-allowed; filter: grayscale(0.35) brightness(0.92); }
 .lr-lock {
   position: absolute; width: 56px; height: 56px; border-radius: 50%;
   background: #4a5a68; color: #fdd79a; font-size: 1.6em; line-height: 56px;
@@ -178,11 +191,16 @@ classes: wide
   var BOMB_PENALTY_POINTS = 3;
   var KEY_BONUS_POINTS = 3;
   var KEY_GUARANTEED_ROUNDS = 2;
+  var PLAYER_LOCKOUT_MIN = 2600;
+  var PLAYER_LOCKOUT_MAX = 3400;
+  var BOT_EXCLUSIVE_MIN = 2600;
+  var BOT_EXCLUSIVE_MAX = 3400;
   var BEST_KEY = 'lr-best-score';
 
   var board = document.getElementById('lr-board');
   var hintEl = document.getElementById('lr-board-hint');
   var banner = document.getElementById('lr-banner');
+  var lockoutBadge = document.getElementById('lr-lockout');
   var startBtn = document.getElementById('lr-start');
   var stopBtn = document.getElementById('lr-stop');
 
@@ -391,29 +409,85 @@ classes: wide
     if (state.running) setTimeout(spawnRound, randRange(400, 800));
   }
 
-  // 폭탄의 디메리트: 다음 라운드까지 꽤 길게 묶어 두고, 그 시간을 배너로 눈에 보이게 흘려준다.
-  function finishRoundAfterPenalty() {
-    state.round = null;
-    if (!state.running) return;
-    var waitMs = randRange(2600, 3400);
+  function setLockoutBadge(text) {
+    lockoutBadge.textContent = text || '';
+    lockoutBadge.classList.toggle('lr-show', !!text);
+  }
+
+  function clearPlayerLockout() {
+    if (!state) return;
+    clearInterval(state.lockoutBannerTimer);
+    clearTimeout(state.lockoutTimer);
+    state.lockoutBannerTimer = null;
+    state.lockoutTimer = null;
+    state.playerLocked = false;
+    board.classList.remove('lr-player-locked');
+    setLockoutBadge('');
+  }
+
+  // 라운드/봇은 평소처럼 계속 돌아가고, 오직 내 클릭만 몇 초간 먹히지 않는다.
+  // waitMs를 명시하면 그 시간만큼, 아니면 폭탄 페널티 기본 범위를 쓴다. icon은 배지에 붙는 이유 표시.
+  function applyPlayerLockout(waitMs, icon) {
+    clearPlayerLockout();
+    state.playerLocked = true;
+    board.classList.add('lr-player-locked');
+    if (!waitMs) waitMs = randRange(PLAYER_LOCKOUT_MIN, PLAYER_LOCKOUT_MAX);
+    icon = icon || '🚫';
     var remain = Math.ceil(waitMs / 1000);
-    var freezeTimer = setInterval(function () {
+    setLockoutBadge(icon + ' ' + remain + '초');
+    state.lockoutBannerTimer = setInterval(function () {
       remain--;
-      if (remain > 0 && state && state.running) {
-        setBanner('💥 페널티 진행 중... 다음 락까지 ' + remain + '초', 'lr-bad');
+      if (remain > 0 && state && state.running && state.playerLocked) {
+        setLockoutBadge(icon + ' ' + remain + '초');
       } else {
-        clearInterval(freezeTimer);
+        clearInterval(state.lockoutBannerTimer);
       }
     }, 1000);
-    setTimeout(function () {
-      clearInterval(freezeTimer);
-      if (state && state.running) spawnRound();
+    state.lockoutTimer = setTimeout(function () {
+      if (state && state.running) clearPlayerLockout();
+    }, waitMs);
+    return waitMs;
+  }
+
+  function updateBotExclusiveVisuals() {
+    for (var i = 0; i < BOT_COUNT; i++) {
+      var container = document.getElementById('lr-bot-' + i);
+      if (!container) continue;
+      var suppressed = state.exclusiveBot !== -1 && state.exclusiveBot !== i;
+      container.classList.toggle('lr-bot-suppressed', suppressed);
+    }
+  }
+
+  function clearBotExclusive() {
+    if (!state) return;
+    clearTimeout(state.exclusiveBotTimer);
+    state.exclusiveBotTimer = null;
+    state.exclusiveBot = -1;
+    updateBotExclusiveVisuals();
+  }
+
+  // 봇이 열쇠를 가져가면, 몇 초간 그 봇만 아무 종류의 락이든 획득할 수 있고
+  // 나(클릭 봉인)와 나머지 봇(조준 자체를 안 함)은 전부 손을 놓는다.
+  function applyBotExclusive(botIndex) {
+    clearBotExclusive();
+    state.exclusiveBot = botIndex;
+    updateBotExclusiveVisuals();
+    var waitMs = randRange(BOT_EXCLUSIVE_MIN, BOT_EXCLUSIVE_MAX);
+    applyPlayerLockout(waitMs, '🤖');
+    state.exclusiveBotTimer = setTimeout(function () {
+      if (state && state.running) clearBotExclusive();
     }, waitMs);
   }
 
   function handleLockClick(lockObj) {
     if (!state || !state.running || !state.round || lockObj.claimed) return;
     if (state.round.locks.indexOf(lockObj) === -1) return;
+    if (state.playerLocked) {
+      // 페널티 중에는 클릭 자체가 무시된다 — 락은 그대로 두어 봇이 가져갈 수 있게 한다.
+      shakeBoard();
+      playTone(140, 0.12, 'square');
+      return;
+    }
     lockObj.claimed = true;
 
     var rect = lockObj.el.getBoundingClientRect();
@@ -430,10 +504,11 @@ classes: wide
       state.points = Math.max(0, state.points - BOMB_PENALTY_POINTS);
       shakeBoard();
       playTone(110, 0.3, 'square');
-      setBanner('💥 가짜 락이었습니다! -' + BOMB_PENALTY_POINTS + '점, 잠시 아무 락도 뜨지 않습니다...', 'lr-bad');
+      setBanner('💥 가짜 락이었습니다! -' + BOMB_PENALTY_POINTS + '점, 잠시 클릭이 막힙니다...', 'lr-bad');
       clearPendingTimer();
       updateHud();
-      finishRoundAfterPenalty();
+      applyPlayerLockout();
+      finishRoundNormalGap();
       return;
     }
     if (kind === 'powerup') {
@@ -520,9 +595,9 @@ classes: wide
     }
     if (kind === 'powerup') {
       resolveLockVisual(lockObj, LOCK_VARIANTS.key);
-      state.botPriority[botIndex] = KEY_GUARANTEED_ROUNDS;
       playTone(220, 0.15, 'triangle');
-      setBanner('🙅 ' + botName + '이(가) 우선순위 토큰을 채갔습니다. 다음 ' + KEY_GUARANTEED_ROUNDS + '번의 락은 그 봇이 가져갑니다.', 'lr-info');
+      applyBotExclusive(botIndex);
+      setBanner('🙅 ' + botName + '이(가) 우선순위 토큰을 채갔습니다. 잠시 ' + botName + '만 움직이고 나머지는 전부 손을 놓습니다.', 'lr-info');
       clearPendingTimer();
       finishRoundNormalGap();
       return;
@@ -560,7 +635,7 @@ classes: wide
     if (state.running) setTimeout(spawnRound, randRange(400, 800));
   }
 
-  function spawnSingle(kind, rewardBot) {
+  function spawnSingle(kind) {
     var el = makeLockElement(kind);
     var pos = randomPos();
     el.style.left = pos.x + 'px';
@@ -571,15 +646,11 @@ classes: wide
     el.addEventListener('click', function () { handleLockClick(lockObj); });
 
     var botTimers = [];
-    if (kind === 'normal-bot-priority') {
-      setBanner('⚙ 봇' + (rewardBot + 1) + '이(가) 토큰 보상으로 이 락을 가져갑니다.', 'lr-info');
-      armBotAim(rewardBot, lockObj, 200);
-      botTimers[rewardBot] = setTimeout(function () { handleBotFire(lockObj, rewardBot); }, 200);
-      for (var r = 0; r < BOT_COUNT; r++) { if (r !== rewardBot) clearBotAim(r); }
-    } else if (kind === 'normal' || kind === 'fake' || kind === 'powerup') {
+    if (kind === 'normal' || kind === 'fake' || kind === 'powerup') {
       var range = botDelayRange(state.timeLeft);
       for (var i = 0; i < BOT_COUNT; i++) {
-        if (state.botStun[i] > 0) { clearBotAim(i); continue; }
+        // 스턴당한 봇, 그리고 다른 봇이 우선권 독점 중이라 손을 놓은 봇은 조준에서 제외한다
+        if (state.botStun[i] > 0 || (state.exclusiveBot !== -1 && state.exclusiveBot !== i)) { clearBotAim(i); continue; }
         (function (botIndex) {
           var delay = randRange(range[0], range[1]);
           armBotAim(botIndex, lockObj, delay);
@@ -617,7 +688,7 @@ classes: wide
     var botTimers = [];
     var botTargets = [];
     for (var i = 0; i < BOT_COUNT; i++) {
-      if (state.botStun[i] > 0) { clearBotAim(i); continue; }
+      if (state.botStun[i] > 0 || (state.exclusiveBot !== -1 && state.exclusiveBot !== i)) { clearBotAim(i); continue; }
       (function (botIndex) {
         var target = locks[Math.floor(Math.random() * locks.length)];
         botTargets[botIndex] = target;
@@ -629,13 +700,6 @@ classes: wide
 
     var timer = setTimeout(function () { expireRound(locks, 'shard'); }, ROUND_TIMEOUT + 800);
     state.round = { kind: 'shard', locks: locks, timer: timer, botTimers: botTimers, botTargets: botTargets };
-  }
-
-  function findPendingBotPriority() {
-    for (var i = 0; i < BOT_COUNT; i++) {
-      if (state.botPriority[i] && state.botStun[i] === 0) return i;
-    }
-    return -1;
   }
 
   function updateBotStunVisuals() {
@@ -654,22 +718,15 @@ classes: wide
     updateBotStunVisuals();
 
     var kind;
-    var rewardBot = -1;
     if (state.priorityCount > 0) {
       kind = 'normal-priority';
       state.priorityCount--;
     } else {
-      rewardBot = findPendingBotPriority();
-      if (rewardBot !== -1) {
-        kind = 'normal-bot-priority';
-        state.botPriority[rewardBot]--;
-      } else {
-        kind = pickRoundKind();
-      }
+      kind = pickRoundKind();
     }
 
     if (kind === 'shard') { spawnShardRound(); return; }
-    spawnSingle(kind, rewardBot);
+    spawnSingle(kind);
   }
 
   function tick() {
@@ -688,12 +745,17 @@ classes: wide
     state = {
       running: true, points: 0, claims: 0, missed: 0, rounds: 0,
       combo: 0, priorityCount: 0, best: loadBest(),
-      botStun: zeroArray(BOT_COUNT), botPriority: zeroArray(BOT_COUNT),
+      botStun: zeroArray(BOT_COUNT),
       botAimEls: new Array(BOT_COUNT).fill(null), botAimTimers: new Array(BOT_COUNT).fill(null),
+      playerLocked: false, lockoutBannerTimer: null, lockoutTimer: null,
+      exclusiveBot: -1, exclusiveBotTimer: null,
       timeLeft: GAME_DURATION, round: null
     };
+    board.classList.remove('lr-player-locked');
+    setLockoutBadge('');
     updateHud();
     updateBotStunVisuals();
+    updateBotExclusiveVisuals();
     hintEl.style.display = 'none';
     startBtn.disabled = true;
     stopBtn.disabled = false;
@@ -712,6 +774,8 @@ classes: wide
       state.round.locks.forEach(function (l) { if (l.el) l.el.remove(); });
     }
     for (var i = 0; i < BOT_COUNT; i++) clearBotAim(i);
+    clearPlayerLockout();
+    clearBotExclusive();
 
     var newRecord = false;
     if (state.points > state.best) { state.best = state.points; saveBest(state.best); newRecord = true; }
