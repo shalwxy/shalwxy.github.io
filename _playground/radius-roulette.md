@@ -2,18 +2,23 @@
 title: "우연의 장소"
 excerpt: "지도에 중심점을 찍고 반경을 정하면, 그 원 안에서 무작위 좌표 하나를 똑같은 확률로 뽑아 보여준다."
 date: 2026-11-14
-last_modified_at: 2026-11-14
+last_modified_at: 2026-11-15
 tags:
   - 시각화
   - 확률
 header:
   teaser: /assets/img/thumbnail/playground-radiusroulette.svg
+links:
+  - label: "관련 글 보기"
+    url: /essay/review/reading/attention-and-observation/
 toc: false
 author_profile: false
 classes: wide
 ---
 
 지도에 **중심점을 찍고 반경을 정하면**, 그 원 안에서 무작위 좌표 하나를 똑같은 확률로 뽑아 보여준다. 어디로 갈지 조사하고 따져보는 대신, 우연에 맡기면 동네 산책도 모험이 된다.
+
+[`주의를 기울이는 법 (롭 워커), 관찰 연습 (니콜라 노바)`](/essay/review/reading/attention-and-observation/) 글에서 읽은 ‘반경 안에서 무작위로 고른 목적지로 이동한다’는 아이디어를 직접 써볼 수 있게 만들었다.
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 

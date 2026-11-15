@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 750" width="1200" height="750" role="img" aria-label="종이를 세 칸으로 나눈 메모 템플릿 — 사실, 생각, 인용">
+  <defs>
+    <linearGradient id="mt-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f3f1ec"/>
+      <stop offset="100%" stop-color="#e7e3da"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="750" fill="url(#mt-bg)"/>
+
+  <!-- page -->
+  <rect x="60" y="50" width="1080" height="650" rx="6" fill="#ffffff" stroke="#d6d2c8" stroke-width="2"/>
+
+  <!-- column header tints -->
+  <rect x="62" y="52" width="356" height="148" fill="#dfebf9"/>
+  <rect x="422" y="52" width="356" height="148" fill="#d9ecd9"/>
+  <rect x="782" y="52" width="356" height="148" fill="#fcebf1"/>
+
+  <!-- column accent bars -->
+  <rect x="60" y="50" width="360" height="10" fill="#2a78d6"/>
+  <rect x="420" y="50" width="360" height="10" fill="#008300"/>
+  <rect x="780" y="50" width="360" height="10" fill="#e87ba4"/>
+
+  <!-- column dividers (full page height) -->
+  <line x1="420" y1="50" x2="420" y2="700" stroke="#d6d2c8" stroke-width="2"/>
+  <line x1="780" y1="50" x2="780" y2="700" stroke="#d6d2c8" stroke-width="2"/>
+
+  <!-- column titles -->
+  <g font-family="'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif" text-anchor="middle">
+    <text x="240" y="118" font-size="34" font-weight="700" fill="#242321">사실</text>
+    <text x="240" y="156" font-size="19" fill="#6b685f">무엇을 봤는지</text>
+
+    <text x="600" y="118" font-size="34" font-weight="700" fill="#242321">생각</text>
+    <text x="600" y="156" font-size="19" fill="#6b685f">그때 든 생각</text>
+
+    <text x="960" y="118" font-size="34" font-weight="700" fill="#242321">인용</text>
+    <text x="960" y="156" font-size="19" fill="#6b685f">책에서 가져온 문장</text>
+  </g>
+
+  <!-- ruled lines + handwriting-style fill, per column -->
+  <g stroke="#e3e0d8" stroke-width="2">
+    <!-- col 1 -->
+    <line x1="84" y1="230" x2="396" y2="230"/>
+    <line x1="84" y1="270" x2="396" y2="270"/>
+    <line x1="84" y1="310" x2="396" y2="310"/>
+    <line x1="84" y1="350" x2="396" y2="350"/>
+    <line x1="84" y1="390" x2="396" y2="390"/>
+    <line x1="84" y1="430" x2="396" y2="430"/>
+    <line x1="84" y1="470" x2="396" y2="470"/>
+    <line x1="84" y1="510" x2="396" y2="510"/>
+    <line x1="84" y1="550" x2="396" y2="550"/>
+    <line x1="84" y1="590" x2="396" y2="590"/>
+    <line x1="84" y1="630" x2="396" y2="630"/>
+    <line x1="84" y1="670" x2="396" y2="670"/>
+
+    <!-- col 2 -->
+    <line x1="444" y1="230" x2="756" y2="230"/>
+    <line x1="444" y1="270" x2="756" y2="270"/>
+    <line x1="444" y1="310" x2="756" y2="310"/>
+    <line x1="444" y1="350" x2="756" y2="350"/>
+    <line x1="444" y1="390" x2="756" y2="390"/>
+    <line x1="444" y1="430" x2="756" y2="430"/>
+    <line x1="444" y1="470" x2="756" y2="470"/>
+    <line x1="444" y1="510" x2="756" y2="510"/>
+    <line x1="444" y1="550" x2="756" y2="550"/>
+    <line x1="444" y1="590" x2="756" y2="590"/>
+    <line x1="444" y1="630" x2="756" y2="630"/>
+    <line x1="444" y1="670" x2="756" y2="670"/>
+
+    <!-- col 3 -->
+    <line x1="804" y1="230" x2="1116" y2="230"/>
+    <line x1="804" y1="270" x2="1116" y2="270"/>
+    <line x1="804" y1="310" x2="1116" y2="310"/>
+    <line x1="804" y1="350" x2="1116" y2="350"/>
+    <line x1="804" y1="390" x2="1116" y2="390"/>
+    <line x1="804" y1="430" x2="1116" y2="430"/>
+    <line x1="804" y1="470" x2="1116" y2="470"/>
+    <line x1="804" y1="510" x2="1116" y2="510"/>
+    <line x1="804" y1="550" x2="1116" y2="550"/>
+    <line x1="804" y1="590" x2="1116" y2="590"/>
+    <line x1="804" y1="630" x2="1116" y2="630"/>
+    <line x1="804" y1="670" x2="1116" y2="670"/>
+  </g>
+
+  <!-- abstract handwriting strokes (not real text) to suggest notes already written -->
+  <g stroke="#9a968b" stroke-width="7" stroke-linecap="round">
+    <!-- col 1: fact — short, steady fragments -->
+    <line x1="84" y1="218" x2="300" y2="218"/>
+    <line x1="84" y1="258" x2="360" y2="258"/>
+    <line x1="84" y1="298" x2="220" y2="298"/>
+    <line x1="84" y1="338" x2="330" y2="338"/>
+    <line x1="84" y1="378" x2="260" y2="378"/>
+
+    <!-- col 2: thought — slightly longer, denser -->
+    <line x1="444" y1="218" x2="700" y2="218"/>
+    <line x1="444" y1="258" x2="650" y2="258"/>
+    <line x1="444" y1="298" x2="730" y2="298"/>
+    <line x1="444" y1="338" x2="560" y2="338"/>
+    <line x1="444" y1="378" x2="690" y2="378"/>
+    <line x1="444" y1="418" x2="600" y2="418"/>
+
+    <!-- col 3: quote — one longer block, like a single copied sentence -->
+    <line x1="804" y1="218" x2="1080" y2="218"/>
+    <line x1="804" y1="258" x2="1050" y2="258"/>
+    <line x1="804" y1="298" x2="940" y2="298"/>
+  </g>
+</svg>

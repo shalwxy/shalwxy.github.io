@@ -2,18 +2,23 @@
 title: "공평한 약속 장소 찾기"
 excerpt: "지도에 각자의 출발점을 찍으면, 가장 멀리 가야 하는 사람의 이동 거리가 최소가 되는 약속 장소를 찾아준다."
 date: 2026-11-13
-last_modified_at: 2026-11-13
+last_modified_at: 2026-11-15
 tags:
   - 시각화
   - 기하학
 header:
   teaser: /assets/img/thumbnail/playground-fairmeet.svg
+links:
+  - label: "관련 글 보기"
+    url: /essay/review/reading/attention-and-observation/
 toc: false
 author_profile: false
 classes: wide
 ---
 
 지도에 사람들의 **출발점을 2개 이상** 찍으면, "가장 멀리 가야 하는 사람의 이동 거리"가 최소가 되는 약속 장소를 찾아준다.
+
+[`주의를 기울이는 법 (롭 워커), 관찰 연습 (니콜라 노바)`](/essay/review/reading/attention-and-observation/) 글에서 읽은 ‘중간에서 만나기’에 대해, 3명 이상인 경우에도 약속 장소를 정해보고자 만들었다.
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 

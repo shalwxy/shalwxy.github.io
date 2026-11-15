@@ -28,19 +28,19 @@ classes: wide
     <h3>입력</h3>
 
     <label>
-      <span class="hb-label-text">지역 구분<span class="hb-tip" tabindex="0" data-tip="투기과열지구·조정대상지역은 정부가 집값 과열을 막기 위해 지정하는 규제지역입니다. 두 지정이 겹치는 곳(강남3구·용산 등)이 가장 강한 규제(LTV 40%, 6억원 상한 등)를 받습니다.">?</span></span>
+      <span class="hb-label-text">시/군/구 또는 동<span class="hb-tip" tabindex="0" data-tip="입력한 지역명으로 아래 '지역 구분'과 토지거래허가구역 여부를 자동으로 추정합니다. '중구'·'서구'처럼 같은 이름의 구가 서울·인천·부산 등 여러 도시에 있는 경우 다른 도시를 가리켜도 매칭될 수 있으니, 추정이 틀리거나 애매하면 '지역 구분'을 직접 선택해 덮어쓰세요.">?</span></span>
+      <input type="text" id="hb-dong" placeholder="예: 강남구, 분당, 수지">
+    </label>
+    <div class="hb-hint-slot"><div class="hb-hint" id="hb-dong-result"></div></div>
+
+    <label>
+      <span class="hb-label-text">지역 구분<span class="hb-tip" tabindex="0" data-tip="투기과열지구·조정대상지역은 정부가 집값 과열을 막기 위해 지정하는 규제지역입니다. 두 지정이 겹치는 곳(강남3구·용산 등)이 가장 강한 규제(LTV 40%, 6억원 상한 등)를 받습니다. 위 지역명 입력으로 자동 채워지며, 직접 바꿀 수도 있습니다.">?</span></span>
       <select id="hb-region">
         <option value="local">지방 (비수도권)</option>
         <option value="metro">수도권 (비규제지역)</option>
         <option value="regulated">규제지역 (강남3구·용산 등)</option>
       </select>
     </label>
-
-    <label>
-      <span class="hb-label-text">시/군/구 또는 동 (토허제 확인용·선택)<span class="hb-tip" tabindex="0" data-tip="토지거래허가제의 줄임말입니다. 지정된 구역에서 집을 사려면 구청장 허가가 필요하고, 허가를 받으면 보통 2년간 실거주해야 하며 그 전까지 전세를 주거나 되팔 수 없습니다. 2025-10-15 대책으로 서울 25개 구 전역과 경기 12개 지역(과천·광명·분당·수지 등)이 지정됐습니다.">?</span></span>
-      <input type="text" id="hb-dong" placeholder="예: 강남구, 분당, 수지">
-    </label>
-    <div class="hb-hint-slot"><div class="hb-hint" id="hb-dong-result"></div></div>
 
     <label class="hb-checkbox">
       <input type="checkbox" id="hb-first-time" checked>
@@ -118,8 +118,8 @@ classes: wide
 .hb-checkbox { flex-direction: row !important; align-items: center; gap: 0.5em !important; }
 .hb-checkbox input { width: auto; }
 .hb-label-text { display: inline-flex; align-items: center; }
-.hb-hint-slot { position: relative; height: 3.2em; }
-.hb-hint { position: absolute; top: 0; left: 0; right: 0; font-size: 0.78em; color: #a9342a; line-height: 1.3em; }
+.hb-hint-slot { min-height: 1.3em; }
+.hb-hint { font-size: 0.78em; color: #a9342a; line-height: 1.3em; }
 .hb-result {
   flex: 1 1 380px; background: #f7f7f8; border-radius: 10px; padding: 1.2em 1.4em;
   font-size: 0.92em; line-height: 1.7;
@@ -191,6 +191,30 @@ classes: wide
   ]; // 기한 2026.12.31
   var LAND_PERMIT_EXTENDED_2027 = ["동탄", "기흥", "구리"]; // 기한 2027.12.31
 
+  // 지역 구분 자동 추정용 목록. 토허제 지정 구역과 달리 수도권(서울·인천·경기)과
+  // 투기과열지구+조정대상지역 동시지정(강남3구·용산)은 수시로 바뀌는 지정이 아니라
+  // 고정된 행정구역 기준이라 이름으로 추정해도 비교적 안정적이다.
+  // 단, "중구"처럼 여러 도시에 겹치는 지명은 다른 도시를 가리켜도 매칭될 수 있어
+  // 추정이 틀리면 '지역 구분'을 직접 선택해 덮어써야 한다.
+  var REGULATED_DISTRICTS = ["강남구", "서초구", "송파구", "용산구"];
+  var METRO_GYEONGGI_INCHEON = [
+    "인천",
+    "수원", "성남", "분당", "고양", "용인", "수지", "기흥", "처인구", "부천", "안산",
+    "안양", "동안구", "만안구", "남양주", "화성", "동탄", "평택", "의정부", "시흥", "파주",
+    "김포", "광명", "광주시", "군포", "이천", "양주", "오산", "구리", "안성", "포천",
+    "의왕", "하남", "여주", "양평", "동두천", "과천", "가평", "연천"
+  ];
+
+  // null = 추정 불가(지방일 수도, 매칭 안 된 입력일 수도 있어 드롭다운을 바꾸지 않음).
+  function detectRegionTier(trimmed) {
+    if (!trimmed) return null;
+    if (REGULATED_DISTRICTS.some(function (d) { return trimmed.indexOf(d) !== -1; })) return 'regulated';
+    var metroHit = LAND_PERMIT_SEOUL_GU.some(function (d) { return trimmed.indexOf(d) !== -1; }) ||
+      METRO_GYEONGGI_INCHEON.some(function (d) { return trimmed.indexOf(d) !== -1; });
+    if (metroHit) return 'metro';
+    return null;
+  }
+
   var DSR_LIMIT = 0.40; // 은행권 일반 기준, 상품·규제에 따라 다름
   var ETC_COST_ESTIMATE = 300; // 이사·법무사 등 기타 부대비용 추정치 (만원)
 
@@ -255,12 +279,23 @@ classes: wide
   document.getElementById('hb-asof').textContent = SNAPSHOT_LABEL;
 
   document.getElementById('hb-dong').addEventListener('input', function () {
-    var result = checkLandPermitZone(this.value);
+    var trimmed = this.value.trim();
+    var landResult = checkLandPermitZone(this.value);
+    var regionTier = detectRegionTier(trimmed);
     var el = document.getElementById('hb-dong-result');
-    if (result === null) { el.textContent = ''; return; }
-    el.textContent = result.hit
-      ? '⚠ 2025-10-15 지정 목록 기준 토허제 구역입니다 (기한 ' + result.expiry + ').'
-      : '2025-10-15 지정 목록 기준으로는 해당 없음 — 그 이후 신규 지정 여부는 별도 확인이 필요합니다.';
+    var lines = [];
+    // 토허제 여부와 지역 구분은 서로 무관하게, 같은 입력값을 각자 다른 기준으로 독립 추정한 것이다.
+    // 둘을 인과관계처럼 보이지 않게 각각 완결된 문장으로 나란히 보여준다.
+    if (regionTier) {
+      document.getElementById('hb-region').value = regionTier;
+      lines.push('지역 구분: "' + REGION_TIERS[regionTier].label + '"으로 자동 설정했습니다. 다르면 직접 선택해 바꿀 수 있습니다.');
+    }
+    if (landResult !== null) {
+      lines.push(landResult.hit
+        ? '토허제: ⚠ 2025-10-15 지정 목록 기준 토허제 구역입니다 (기한 ' + landResult.expiry + ').'
+        : '토허제: 2025-10-15 지정 목록 기준으로는 해당 없음 — 그 이후 신규 지정 여부는 별도 확인이 필요합니다.');
+    }
+    el.innerHTML = lines.join('<br>');
   });
 
   function calculate() {
@@ -424,6 +459,7 @@ classes: wide
     document.getElementById('hb-rate').value = p.rate;
     document.getElementById('hb-years').value = p.years;
     document.getElementById('hb-dong').dispatchEvent(new Event('input'));
+    document.getElementById('hb-region').value = p.region; // dong input의 자동 지역 추정이 공유된 값을 덮어쓰지 않도록 복원
     calculate();
   }
 

@@ -240,6 +240,31 @@
   }
 }
 
+/* 비교 표(라벨 열 + 비교 대상 두 열): 두 비교 대상 열의 폭을 항상 같게 고정한다.
+   콘텐츠 길이가 서로 달라도 brower 기본(table-layout: auto)은 긴 쪽 열을 더 넓게
+   그리기 때문에, 이 클래스를 준 표에서만 table-layout: fixed로 폭을 강제한다.
+   작은 화면에서는 테마가 표를 display: block으로 바꿔 가로 스크롤시키는데,
+   그 상태에서는 table-layout이 적용되지 않아 폭 고정도 자연히 해제된다. */
+.page__content .compare-table table {
+  table-layout: fixed;
+
+  // 이 표의 첫 열은 "산만함도 주의력의 일부"처럼 긴 구절이라, 테마 기본값인
+  // nowrap을 유지하면 고정 폭(18%)을 넘는 글자가 줄바꿈되지 못하고 옆 열과
+  // 겹쳐 보인다. 줄바꿈을 허용해 폭 안에 들어오게 한다.
+  th:first-child,
+  td:first-child {
+    width: 18%;
+    white-space: normal;
+  }
+
+  th:nth-child(2),
+  td:nth-child(2),
+  th:nth-child(3),
+  td:nth-child(3) {
+    width: 41%;
+  }
+}
+
 /* 본문 그림 캡션: 테마 기본(세리프·왼쪽 정렬) 대신 본문 글꼴로 가운데 정렬 */
 .page__content figure {
   flex-direction: column;
