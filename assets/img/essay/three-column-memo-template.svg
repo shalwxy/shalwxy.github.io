@@ -28,10 +28,10 @@
   <!-- column titles -->
   <g font-family="'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif" text-anchor="middle">
     <text x="240" y="118" font-size="34" font-weight="700" fill="#242321">사실</text>
-    <text x="240" y="156" font-size="19" fill="#6b685f">무엇을 봤는지</text>
+    <text x="240" y="156" font-size="19" fill="#6b685f">무엇을 보고 들었는지</text>
 
     <text x="600" y="118" font-size="34" font-weight="700" fill="#242321">생각</text>
-    <text x="600" y="156" font-size="19" fill="#6b685f">그때 든 생각</text>
+    <text x="600" y="156" font-size="19" fill="#6b685f">그때 든 생각 또는 느낌</text>
 
     <text x="960" y="118" font-size="34" font-weight="700" fill="#242321">인용</text>
     <text x="960" y="156" font-size="19" fill="#6b685f">책에서 가져온 문장</text>
