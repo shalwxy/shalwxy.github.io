@@ -118,8 +118,8 @@ classes: wide
 .hb-checkbox { flex-direction: row !important; align-items: center; gap: 0.5em !important; }
 .hb-checkbox input { width: auto; }
 .hb-label-text { display: inline-flex; align-items: center; }
-.hb-hint-slot { min-height: 1.3em; }
-.hb-hint { font-size: 0.78em; color: #a9342a; line-height: 1.3em; }
+.hb-hint-slot { position: relative; height: 5.2em; }
+.hb-hint { position: absolute; top: 0; left: 0; right: 0; font-size: 0.78em; color: #a9342a; line-height: 1.3em; }
 .hb-result {
   flex: 1 1 380px; background: #f7f7f8; border-radius: 10px; padding: 1.2em 1.4em;
   font-size: 0.92em; line-height: 1.7;
