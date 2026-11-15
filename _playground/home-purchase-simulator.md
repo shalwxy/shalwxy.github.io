@@ -93,6 +93,7 @@ classes: wide
   </div>
 </div>
 
+<div class="hb-warn" style="max-width: 900px; margin: 0.6em auto;">⚠ 결과를 공유하면 연소득·공시가격·실거래가 등 입력한 값이 모두 링크에 담겨 전달됩니다. 공개된 곳에 공유하기 전에 확인하세요.</div>
 <div class="result-share">
   <button type="button" class="btn btn--kakao" id="hb-share-kakao">
     <i class="fas fa-fw fa-comment" aria-hidden="true"></i><span> 결과 공유</span>
