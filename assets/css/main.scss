@@ -304,6 +304,77 @@
   font-family: $global-font-family;
 }
 
+/* 직접 인용 출처: 책에서 그대로 따온 문장 끝 "(책 이름, p쪽)"을 본문보다 연한 색으로 */
+.citation-source {
+  color: $muted-text-color;
+  opacity: 0.65;
+}
+
+/* 간접 인용(저자가 책 내용을 풀어 설명한 문장) 출처: 문장 끝에 작은 아이콘만 두고,
+   출처는 말풍선으로 감춰둔다. 데스크톱은 마우스를 올리면, 모바일은 아이콘을 탭하면
+   뜬다 — 모바일에는 hover가 없어서 CSS만으로는 처리할 수 없으므로 head/custom.html의
+   스크립트가 .is-open 클래스를 토글한다. */
+.citation-note {
+  position: relative;
+  margin-left: 0.15em;
+
+  &__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5em;
+    height: 1.5em;
+    padding: 0;
+    border: none;
+    background: none;
+    color: $muted-text-color;
+    font-size: 0.85em;
+    line-height: 1;
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+      color: $primary-color;
+    }
+  }
+
+  &__tooltip {
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 0.4em);
+    transform: translate(-50%, 0.3em);
+    padding: 0.65em 0.8em;
+    border-radius: $border-radius;
+    background: rgba(0, 0, 0, 0.85);
+    color: #fff;
+    font-size: 0.85em;
+    font-weight: normal;
+    line-height: 1.4;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    z-index: 10;
+  }
+
+  // 데스크톱(마우스 있는 기기): hover/키보드 포커스 시 노출
+  @media (hover: hover) and (pointer: fine) {
+    &:hover &__tooltip,
+    &__icon:focus-visible + &__tooltip {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translate(-50%, 0);
+    }
+  }
+
+  // 모바일: JS가 붙이는 is-open 클래스로 노출
+  &.is-open &__tooltip {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translate(-50%, 0);
+  }
+}
+
 /* 본문 콜아웃(Q&A 등): 연한 배경 + 왼쪽 세로선. 글자는 본문보다 한두 포인트 작게 */
 .page__content .callout {
   margin: 1.5em 0;

@@ -120,10 +120,40 @@
     });
   }
 
+  function setupCitationNotes() {
+    document.addEventListener('click', function(e) {
+      var icon = e.target.closest('.citation-note__icon');
+      var openNotes = document.querySelectorAll('.citation-note.is-open');
+
+      if (!icon) {
+        openNotes.forEach(function(note) {
+          note.classList.remove('is-open');
+          note.querySelector('.citation-note__icon').setAttribute('aria-expanded', 'false');
+        });
+        return;
+      }
+
+      e.stopPropagation();
+      var note = icon.closest('.citation-note');
+      var wasOpen = note.classList.contains('is-open');
+
+      openNotes.forEach(function(other) {
+        other.classList.remove('is-open');
+        other.querySelector('.citation-note__icon').setAttribute('aria-expanded', 'false');
+      });
+
+      if (!wasOpen) {
+        note.classList.add('is-open');
+        icon.setAttribute('aria-expanded', 'true');
+      }
+    });
+  }
+
   function init() {
     setupHomeLink();
     setupSearchToggle();
     setupMenu();
+    setupCitationNotes();
   }
 
   if (document.readyState === 'loading') {
