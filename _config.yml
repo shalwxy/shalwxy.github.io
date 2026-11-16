@@ -10,8 +10,6 @@ baseurl: ""
 repository: "shalwxy/shalwxy.github.io"
 search: true
 naver_site_verification: "1d5f7499820718cfe546c2225dca7a86244bcfc8"
-# header.teaser/overlay_image가 없는 글(공유 카드, 카카오톡 공유용 이미지 등)을 위한 사이트 기본 이미지.
-og_image: "/assets/img/thumbnail/hub-peach.jpg"
 
 # lab/essay/playground 메인·카테고리 목록의 무한 스크롤 배치 크기(_layouts/folder.html, showcase.html).
 infinite_scroll:

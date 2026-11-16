@@ -15,7 +15,7 @@
   <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ page.url | absolute_url }}" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="{{ site.data.ui-text[site.locale].share_on_label | default: 'Share on' }} LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
 
   {%- if site.kakao.js_key and site.kakao.js_key != "" -%}
-    {%- assign share_image = page.header.teaser | default: page.header.overlay_image | default: site.og_image -%}
+    {%- assign share_image = page.header.teaser | default: page.header.overlay_image -%}
     <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.4/kakao.min.js"></script>
     <button type="button" class="btn btn--kakao" id="kakao-share-btn"
       data-title="{{ page.title | markdownify | strip_html | strip_newlines | escape }}"

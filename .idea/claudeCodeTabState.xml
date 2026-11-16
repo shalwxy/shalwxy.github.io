@@ -39,9 +39,21 @@
             </TabSessionState>
           </value>
         </entry>
+        <entry key="3">
+          <value>
+            <TabSessionState>
+              <option name="projectPath" value="$PROJECT_DIR$" />
+              <option name="provider" value="claude" />
+              <option name="sessionId" value="dfe05767-5f02-47f4-b971-6c61635f056c" />
+              <option name="cwd" value="$PROJECT_DIR$" />
+              <option name="model" value="claude-sonnet-5[1m]" />
+              <option name="permissionMode" value="default" />
+            </TabSessionState>
+          </value>
+        </entry>
       </map>
     </option>
-    <option name="tabCount" value="3" />
-    <option name="selectedTabIndex" value="2" />
+    <option name="tabCount" value="4" />
+    <option name="selectedTabIndex" value="3" />
   </component>
 </project>
