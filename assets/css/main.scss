@@ -636,7 +636,21 @@ footer.page__meta .back-to-top {
 }
 
 .showcase__title {
-  margin: 0 0 0.5em;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  // box-sizing: border-box(전역 리셋)에서는 min-height 안에 padding/border까지
+  // 포함돼서, 2줄 텍스트가 들어갈 때 padding/border만큼 박스가 더 늘어나
+  // 1줄 카드와 높이가 어긋난다. content-box로 고정해 min-height이 순수
+  // 텍스트 영역(2줄)만 보장하도록 한다.
+  box-sizing: content-box;
+  // line-height(1.25em) * 2줄 분량을 항상 확보해서, 제목이 1줄이든 2줄이든
+  // 바로 아래 border-bottom(구분선)의 위치가 카드마다 같아지도록 한다.
+  min-height: 2.5em;
+  margin: 0 0 0.75em;
+  padding-bottom: 0.75em;
+  border-bottom: 1px solid $border-color;
   font-size: $type-size-3;
   line-height: 1.25;
 
@@ -647,6 +661,16 @@ footer.page__meta .back-to-top {
     &:hover {
       color: $primary-color;
     }
+  }
+}
+
+.showcase__date {
+  margin: 0 0 0.75em;
+  font-size: $type-size-6;
+  color: $muted-text-color;
+
+  i {
+    margin-right: 0.25em;
   }
 }
 

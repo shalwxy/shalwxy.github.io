@@ -36,6 +36,12 @@ layout: archive
           </a>
           <div class="showcase__body">
             <h2 class="showcase__title"><a href="{{ project.url | relative_url }}">{{ project.title }}</a></h2>
+            {% if project.date %}
+              <p class="showcase__date">
+                <i class="far fa-calendar-alt" aria-hidden="true"></i>
+                <time datetime="{{ project.date | date_to_xmlschema }}">{{ project.date | date: site.date_format | default: "%B %-d, %Y" }}</time>
+              </p>
+            {% endif %}
             {% if project.excerpt %}
               <div class="showcase__excerpt">{{ project.excerpt | markdownify }}</div>
             {% endif %}

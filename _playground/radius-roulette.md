@@ -73,7 +73,28 @@ classes: wide
 .rr-banner.rr-good { background: #e5f0e6; color: #335c38; }
 .rr-controls { display: flex; align-items: center; gap: 0.8em; margin-bottom: 1em; flex-wrap: wrap; }
 .rr-controls label { font-weight: 600; font-size: 0.9em; flex: 0 0 auto; margin-bottom: 0; }
-.rr-controls input[type="range"] { flex: 1 1 auto; width: auto; min-width: 120px; margin-bottom: 0; }
+.rr-controls input[type="range"] {
+  flex: 1 1 auto; width: auto; min-width: 120px; margin-bottom: 0;
+  -webkit-appearance: none; appearance: none;
+  height: 6px; border-radius: 999px; background: #dadfe4; outline: none;
+}
+.rr-controls input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: #6f777d; border: none; cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+.rr-controls input[type="range"]::-moz-range-thumb {
+  width: 18px; height: 18px; border-radius: 50%;
+  background: #6f777d; border: none; cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+.rr-controls input[type="range"]::-moz-range-track {
+  height: 6px; border-radius: 999px; background: #dadfe4; border: none;
+}
+.rr-controls input[type="range"]:focus-visible {
+  box-shadow: 0 0 0 3px rgba(111, 119, 125, 0.35);
+}
 .rr-controls .btn { flex: 0 0 auto; }
 .rr-popup { font-size: 0.85em; }
 </style>
