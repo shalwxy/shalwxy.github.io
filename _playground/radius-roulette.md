@@ -16,7 +16,7 @@ author_profile: false
 classes: wide
 ---
 
-지도에 **중심점을 찍고 반경을 정하면**, 그 원 안에서 무작위 좌표 하나를 똑같은 확률로 뽑아 보여준다. 어디로 갈지 조사하고 따져보는 대신, 우연에 맡기면 동네 산책도 모험이 된다. 자세한 배경은 [`주의를 기울이는 법 (롭 워커), 관찰 연습 (니콜라 노바)`](/essay/review/reading/attention-and-observation/#우연의-장소)에서 확인할 수 있다.
+지도에 **중심점을 찍고 반경을 정하면**, 그 원 안에서 무작위 좌표 하나를 똑같은 확률로 뽑아 보여준다. 어디로 갈지 조사하고 따져보는 대신, 우연에 맡기면 동네 산책도 모험이 된다. 아이디어는 [`주의를 기울이는 법 (롭 워커), 관찰 연습 (니콜라 노바)`](/essay/review/reading/attention-and-observation/#우연의-장소)에서 확인할 수 있다.
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 
