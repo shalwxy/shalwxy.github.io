@@ -46,21 +46,21 @@ tags:
 
 <div class="compare-table" markdown="1">
 
-| 테마 | 주의를 기울이는 법 | 관찰 연습 |
-|---|---|---|
+| 테마 | 주의를 기울이는 법 | 관찰 연습                                                                                                               |
+|---|---|---------------------------------------------------------------------------------------------------------------------|
 | 보통 이하의 것들 | 페렉이 ‘비범한’ 사건·사물의 반대편을 가리키는 ‘보통 이하의 것들(infra-ordinaire)’이라는 용어를 만든 배경을 소개한다{% include citation-note.html text="p28" %} | 가방이나 호주머니 속 물건의 출처와 용도를 하나하나 짚어보라고 제안하며, 평소 관심 밖에 두는 것들을 눈여겨보자고 말한다{% include citation-note.html text="p44, p79" %} |
-| 장소를 소진시키기 | 조르주 페렉이 파리의 한 광장에서 사흘을 보내며 눈에 들어오는 모든 것을 기록한 일화를 소개한다{% include citation-note.html text="p29" %} | 같은 일화를 “날씨, 사람, 자동차, 구름 말고는 아무 일도 일어나지 않을 때 벌어지는 일”을 기록하려는 시도로 설명한다{% include citation-note.html text="p36" %} |
-| 사물의 목록 | 사진작가 파울라 주코티의 프로젝트 〈우리가 만지는 모든 것〉을 소개하며, 목록을 만드는 일이 습관적으로 지나치던 것에 주의를 집중하는 가장 쉬운 방법이라 말한다{% include citation-note.html text="p55" %} | 디자이너 얀 칩체이스가 제안한 ‘내가 손대는 모든 것’ — 하루 동안 손댄 모든 것을 사진으로 남기는 방법을 소개한다{% include citation-note.html text="p148" %} |
-| 산만함도 주의력의 일부 | 산만함을 주의가 다른 대상으로 옮겨간 상태로 재정의하며, 그 자체도 또 다른 형태의 주의라고 말한다{% include citation-note.html text="p64" %} | 깊은 집중을 강조하는 다른 연습들과 달리, 주의를 유연하게 흘려보내는 관찰 방식도 있다고 말한다{% include citation-note.html text="p90" %} |
-| 스케치 메모 | 그림을 그려 봄으로써 비로소 대상을 제대로 보게 된다고 말한다{% include citation-note.html text="p144" %} | 짧고 투박한 선으로 동작과 자세의 특징만 재빨리 잡아내는 스케치 방법을 소개한다{% include citation-note.html text="p68" %} |
-| 인공물 | 인공물에는 자연물보다 의문을 덜 품는다는 점을 지적하며, 도로 표지판의 변 개수가 위험도를 나타낸다는 사실을 예로 든다{% include citation-note.html text="p148-149" %} | 다섯 대륙 도시의 표지판을 사진으로 모아 분류하고 알파벳순으로 정리한 프로젝트를 소개한다{% include citation-note.html text="p170" %} |
-| 줌인 줌아웃 | 10초마다 관찰 거리가 10배씩 멀어지는 영상 〈10의 제곱수〉를 소개한다. 10미터에서 시작해 100미터, 1000미터로 계속 멀어진다{% include citation-note.html text="p178" %} | 10센티미터, 1미터, 3~4미터, 그보다 먼 거리까지 단계를 나누어 같은 대상을 관찰하는 방법을 제안한다{% include citation-note.html text="p150" %} |
-| 소리 산책 | 풍경이 아니라 소리를 따라가는 도보 탐방인 ‘사운드 워크’를 소개한다{% include citation-note.html text="p189" %} | 레이먼드 머리 셰이퍼가 제안한 ‘사운드워크’ 개념을 가져와, 둘러싼 모든 소리에 귀를 열어둔 채 거니는 행위로 설명한다{% include citation-note.html text="p56" %} |
-| 냄새 목록 | 암스테르담에서 현지인들과 함께 산책하며 도시를 대표하는 냄새 열한 가지를 정하고 지도에 표시한 프로젝트를 소개한다{% include citation-note.html text="p195" %} | 한 시간 동안 거닐며 마주치는 모든 냄새를 목록으로 적어보라고 제안한다{% include citation-note.html text="p57" %} |
-| 우연을 따라서 | 정해둔 목적 없이 걸으며 풍경이 이끄는 대로, 우연한 만남에 몸을 맡기는 ‘표류’를 소개한다{% include citation-note.html text="p216" %} | 미리 정하지 않은 경로를 걸으며 주의력을 계속 새롭게 가다듬는 작업으로 설명한다{% include citation-note.html text="p51" %} |
-| 주석 달기 | 공공 기념물에 누군가 메모를 덧붙여 역사를 보충한 사례와, 개인적 사건이 벌어졌던 장소마다 저마다의 역사가 새겨진다는 이야기를 다룬다{% include citation-note.html text="p218, p221-222" %} | 걸어온 경로와 인상, 눈에 띈 것들을 재구성해 도면을 그리고 거기에 주를 달아보라고 제안한다{% include citation-note.html text="p131" %} |
-| 낯선 사람 | 길을 묻고 싶어 하는 사람에게 먼저 다가가 보거나, 동네에서 마주치는 모든 사람과 대화하는 상상을 해보라고 권한다{% include citation-note.html text="p270, p298" %} | 관찰이 조용히 물러선 자세에서만 이루어지는 것은 아니며, 직접 묻고 끼어드는 것도 관찰의 방법이라 말한다{% include citation-note.html text="p109" %} |
-| 따라가기 | 예술가 비토 아콘치가 매일 무작위로 한 사람을 골라 뒤따라 다닌 1969년 퍼포먼스 〈뒤따라가기〉를 소개한다{% include citation-note.html text="p277" %} | 누군가의 허락을 구해 한두 시간 그의 일상을 따라가 보라고 제안한다{% include citation-note.html text="p135" %} |
+| 장소를 소진시키기 | 조르주 페렉이 파리의 한 광장에서 사흘을 보내며 눈에 들어오는 모든 것을 기록한 일화를 소개한다{% include citation-note.html text="p29" %} | 같은 일화를 “날씨, 사람, 자동차, 구름 말고는 아무 일도 일어나지 않을 때 벌어지는 일”을 기록하려는 시도로 설명한다{% include citation-note.html text="p36" %}      |
+| 사물의 목록 | 사진작가 파울라 주코티의 프로젝트 〈우리가 만지는 모든 것〉을 소개하며, 목록을 만드는 일이 습관적으로 지나치던 것에 주의를 집중하는 가장 쉬운 방법이라 말한다{% include citation-note.html text="p55" %} | 디자이너 얀 칩체이스가 제안한 ‘내가 손대는 모든 것’ — 하루 동안 손댄 모든 것을 사진으로 남기는 방법을 소개한다{% include citation-note.html text="p148" %}       |
+| 산만함도 주의력의 일부 | 산만함을 주의가 다른 대상으로 옮겨간 상태로 재정의하며, 그 자체도 또 다른 형태의 주의라고 말한다{% include citation-note.html text="p64" %} | 깊은 집중을 강조하는 다른 연습들과 달리, 주의를 유연하게 흘려보내는 관찰 방식도 있다고 말한다{% include citation-note.html text="p90" %}                    |
+| 스케치 메모 | 그림을 그려 봄으로써 비로소 대상을 제대로 보게 된다고 말한다{% include citation-note.html text="p144" %} | 짧고 투박한 선으로 동작과 자세의 특징만 재빨리 잡아내는 스케치 방법을 소개한다{% include citation-note.html text="p68" %}                             |
+| 인공물 | 인공물에는 자연물보다 의문을 덜 품는다는 점을 지적하며, 도로 표지판의 변 개수가 위험도를 나타낸다는 사실을 예로 든다{% include citation-note.html text="p148-149" %} | 다섯 대륙 도시의 표지판을 사진으로 모아 분류하고 알파벳순으로 정리한 프로젝트를 소개한다{% include citation-note.html text="p170" %}                       |
+| 줌인 줌아웃 | 10초마다 관찰 거리가 10배씩 멀어지는 영상 〈10의 제곱수〉를 소개한다. 10미터에서 시작해 100미터, 1000미터로 계속 멀어진다{% include citation-note.html text="p178" %} | 10센티미터, 1미터, 3~4미터, 그보다 먼 거리까지 단계를 나누어 같은 대상을 관찰하는 방법을 제안한다{% include citation-note.html text="p150" %}             |
+| 소리 산책 | 풍경이 아니라 소리를 따라가는 도보 탐방인 ‘사운드 워크’를 소개한다{% include citation-note.html text="p189" %} | 레이먼드 머리 셰이퍼가 제안한 ‘사운드 워크’ 개념을 가져와, 둘러싼 모든 소리에 귀를 열어둔 채 거니는 행위로 설명한다{% include citation-note.html text="p56" %}      |
+| 냄새 목록 | 암스테르담에서 현지인들과 함께 산책하며 도시를 대표하는 냄새 열한 가지를 정하고 지도에 표시한 프로젝트를 소개한다{% include citation-note.html text="p195" %} | 한 시간 동안 거닐며 마주치는 모든 냄새를 목록으로 적어보라고 제안한다{% include citation-note.html text="p57" %}                                  |
+| 우연을 따라서 | 정해둔 목적 없이 걸으며 풍경이 이끄는 대로, 우연한 만남에 몸을 맡기는 ‘표류’를 소개한다{% include citation-note.html text="p216" %} | 미리 정하지 않은 경로를 걸으며 주의력을 계속 새롭게 가다듬는 작업으로 설명한다{% include citation-note.html text="p51" %}                             |
+| 주석 달기 | 공공 기념물에 누군가 메모를 덧붙여 역사를 보충한 사례와, 개인적 사건이 벌어졌던 장소마다 저마다의 역사가 새겨진다는 이야기를 다룬다{% include citation-note.html text="p218, p221-222" %} | 걸어온 경로와 인상, 눈에 띈 것들을 재구성해 도면을 그리고 거기에 주를 달아보라고 제안한다{% include citation-note.html text="p131" %}                     |
+| 낯선 사람 | 길을 묻고 싶어 하는 사람에게 먼저 다가가 보거나, 동네에서 마주치는 모든 사람과 대화하는 상상을 해보라고 권한다{% include citation-note.html text="p270, p298" %} | 관찰이 조용히 물러선 자세에서만 이루어지는 것은 아니며, 직접 묻고 끼어드는 것도 관찰의 방법이라 말한다{% include citation-note.html text="p109" %}              |
+| 따라가기 | 예술가 비토 아콘치가 매일 무작위로 한 사람을 골라 뒤따라 다닌 1969년 퍼포먼스 〈뒤따라가기〉를 소개한다{% include citation-note.html text="p277" %} | 누군가의 허락을 구해 한두 시간 그의 일상을 따라가 보라고 제안한다{% include citation-note.html text="p135" %}                                   |
 
 </div>
 
