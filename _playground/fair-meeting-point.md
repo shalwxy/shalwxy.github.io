@@ -35,6 +35,8 @@ classes: wide
     <button type="button" class="btn btn--primary" id="mc-reset">초기화</button>
   </div>
 
+  <div class="mc-warn">⚠ 결과를 공유하면 찍은 출발점들의 위치가 모두 링크에 담겨 전달됩니다. 공개된 곳에 공유하기 전에 확인하세요.</div>
+
   <div class="result-share">
     <button type="button" class="btn btn--kakao" id="mc-share-kakao">
       <i class="fas fa-fw fa-comment" aria-hidden="true"></i><span> 결과 공유</span>
@@ -74,6 +76,7 @@ classes: wide
 .mc-banner.mc-good { background: #e5f0e6; color: #335c38; }
 .mc-banner.mc-bad { background: #fbe4e1; color: #a9342a; }
 .mc-controls { display: flex; justify-content: flex-end; gap: 0.6em; flex-wrap: wrap; }
+.mc-warn { background: #fbe4e1; color: #a9342a; border-radius: 6px; padding: 0.6em 0.8em; margin: 0.6em 0; font-size: 0.85em; }
 .mc-popup { font-size: 0.85em; }
 </style>
 

@@ -37,6 +37,8 @@ classes: wide
     <div class="rr-stat rr-stat-wide"><span>중심에서 뽑힌 곳까지</span><strong id="rr-dist">-</strong></div>
   </div>
 
+  <div class="rr-warn">⚠ 결과를 공유하면 찍은 중심점과 뽑힌 장소의 위치가 모두 링크에 담겨 전달됩니다. 공개된 곳에 공유하기 전에 확인하세요.</div>
+
   <div class="result-share">
     <button type="button" class="btn btn--kakao" id="rr-share-kakao">
       <i class="fas fa-fw fa-comment" aria-hidden="true"></i><span> 결과 공유</span>
@@ -71,6 +73,7 @@ classes: wide
   font-weight: 600; margin-bottom: 1em; min-height: 1.4em; font-size: 0.92em;
 }
 .rr-banner.rr-good { background: #e5f0e6; color: #335c38; }
+.rr-warn { background: #fbe4e1; color: #a9342a; border-radius: 6px; padding: 0.6em 0.8em; margin: 0.6em 0; font-size: 0.85em; }
 .rr-controls { display: flex; align-items: center; gap: 0.8em; margin-bottom: 1em; flex-wrap: wrap; }
 .rr-controls label { font-weight: 600; font-size: 0.9em; flex: 0 0 auto; margin-bottom: 0; }
 .rr-controls input[type="range"] {
