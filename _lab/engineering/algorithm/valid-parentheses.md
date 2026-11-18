@@ -55,8 +55,7 @@ public static String isValidParentheses(String s) {
     for (char x : s.toCharArray()) {
         if (x == '(') {
             stack.push(x);
-        }
-        if (x == ')') {
+        } else if (x == ')') {
             if (stack.isEmpty()) return "NO";
             stack.pop();
         }
@@ -85,8 +84,9 @@ public static String isValidParentheses(String s) {
 public static String isValidParentheses(String s) {
     int depth = 0;
     for (char x : s.toCharArray()) {
-        if (x == '(') depth++;
-        if (x == ')') {
+        if (x == '(') {
+            depth++;
+        } else if (x == ')') {
             depth--;
             if (depth < 0) return "NO";
         }
