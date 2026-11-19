@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="지도 위 한 지점에 남긴 메모와 그 밑에 달린 답글 — 다녀간 자리 일러스트">
+  <defs>
+    <linearGradient id="bh-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#eef4fb"/>
+      <stop offset="100%" stop-color="#dce8f5"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="800" fill="url(#bh-bg)"/>
+
+  <!-- 다른 사람들이 이미 남기고 간 자리들 -->
+  <g fill="#bcd3e0">
+    <circle cx="260" cy="560" r="12"/>
+    <circle cx="340" cy="260" r="12"/>
+    <circle cx="880" cy="200" r="12"/>
+    <circle cx="950" cy="520" r="12"/>
+    <circle cx="760" cy="640" r="12"/>
+    <circle cx="190" cy="360" r="12"/>
+  </g>
+
+  <!-- 답글 말풍선 (뒤쪽, 더 작고 연하게) -->
+  <g transform="translate(700,320)">
+    <rect x="-10" y="-10" width="150" height="66" rx="18" fill="#d7e3ee" stroke="#9fb6c8" stroke-width="3"/>
+    <line x1="12" y1="14" x2="112" y2="14" stroke="#9fb6c8" stroke-width="6" stroke-linecap="round"/>
+    <line x1="12" y1="34" x2="78" y2="34" stroke="#9fb6c8" stroke-width="6" stroke-linecap="round"/>
+  </g>
+
+  <!-- 원글 말풍선 -->
+  <g transform="translate(500,240)">
+    <path d="M0 0 h220 a18 18 0 0 1 18 18 v84 a18 18 0 0 1 -18 18 h-150 l-28 34 v-34 h-42 a18 18 0 0 1 -18 -18 v-84 a18 18 0 0 1 18 -18 Z" fill="#fdfdfe" stroke="#2a5a8a" stroke-width="5"/>
+    <line x1="24" y1="36" x2="208" y2="36" stroke="#2a5a8a" stroke-width="7" stroke-linecap="round"/>
+    <line x1="24" y1="62" x2="170" y2="62" stroke="#2a5a8a" stroke-width="7" stroke-linecap="round"/>
+    <line x1="24" y1="88" x2="130" y2="88" stroke="#2a5a8a" stroke-width="7" stroke-linecap="round"/>
+  </g>
+
+  <!-- 지금 서 있는 자리 -->
+  <circle cx="586" cy="470" r="20" fill="#d1483a" stroke="#fdfdfe" stroke-width="5"/>
+  <circle cx="586" cy="470" r="38" fill="none" stroke="#d1483a" stroke-width="3" stroke-dasharray="3 8" opacity="0.6"/>
+</svg>
