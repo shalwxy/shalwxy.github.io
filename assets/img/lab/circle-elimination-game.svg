@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  <rect x="0" y="0" width="300" height="300" fill="#ffffff"/>
+
+  <g font-size="16" font-family="'Pretendard', -apple-system, sans-serif" text-anchor="middle">
+    <circle cx="150" cy="40"  r="18" fill="none" stroke="#2b2b2b" stroke-width="2"/>
+    <text   x="150" y="46" fill="#2b2b2b">1</text>
+
+    <circle cx="221" cy="66"  r="18" fill="none" stroke="#2b2b2b" stroke-width="2"/>
+    <text   x="221" y="72" fill="#2b2b2b">2</text>
+
+    <circle cx="258" cy="131" r="18" fill="none" stroke="#2b2b2b" stroke-width="2"/>
+    <text   x="258" y="137" fill="#2b2b2b">3</text>
+
+    <circle cx="245" cy="205" r="18" fill="none" stroke="#2b2b2b" stroke-width="2"/>
+    <text   x="245" y="211" fill="#2b2b2b">4</text>
+
+    <circle cx="188" cy="253" r="18" fill="none" stroke="#2b2b2b" stroke-width="2"/>
+    <text   x="188" y="259" fill="#2b2b2b">5</text>
+
+    <circle cx="112" cy="253" r="18" fill="none" stroke="#2b2b2b" stroke-width="2"/>
+    <text   x="112" y="259" fill="#2b2b2b">6</text>
+
+    <circle cx="55"  cy="205" r="18" fill="none" stroke="#2b2b2b" stroke-width="2"/>
+    <text   x="55"  y="211" fill="#2b2b2b">7</text>
+
+    <circle cx="42"  cy="131" r="18" fill="none" stroke="#2b2b2b" stroke-width="2"/>
+    <text   x="42"  y="137" fill="#2b2b2b">8</text>
+
+    <circle cx="79"  cy="66"  r="18" fill="none" stroke="#2b2b2b" stroke-width="2"/>
+    <text   x="79"  y="72" fill="#2b2b2b">9</text>
+  </g>
+</svg>

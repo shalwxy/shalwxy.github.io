@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 220">
+  <rect x="0" y="0" width="520" height="220" fill="#ffffff"/>
+
+  <!-- 가장 바깥 막대: 깊이 1, 바닥 -->
+  <line x1="30" y1="170" x2="472" y2="170" stroke="#2b2b2b" stroke-width="10" stroke-linecap="round"/>
+
+  <!-- 왼쪽 막대: 깊이 2 -->
+  <line x1="64" y1="120" x2="302" y2="120" stroke="#2b2b2b" stroke-width="10" stroke-linecap="round"/>
+
+  <!-- 오른쪽 막대: 깊이 2 (왼쪽 막대와 같은 높이) -->
+  <line x1="336" y1="120" x2="438" y2="120" stroke="#2b2b2b" stroke-width="10" stroke-linecap="round"/>
+
+  <!-- 가장 안쪽 막대: 깊이 3 -->
+  <line x1="98" y1="70" x2="268" y2="70" stroke="#2b2b2b" stroke-width="10" stroke-linecap="round"/>
+
+  <!-- 레이저 1: 위에서 아래로, 바깥쪽 세 막대를 자름 -->
+  <line x1="149" y1="44" x2="149" y2="178" stroke="#d1483f" stroke-width="2" stroke-dasharray="4 4"/>
+  <polygon points="149,186 143,172 155,172" fill="#d1483f"/>
+
+  <!-- 레이저 2: 위에서 아래로, 바깥쪽 세 막대를 자름 -->
+  <line x1="217" y1="44" x2="217" y2="178" stroke="#d1483f" stroke-width="2" stroke-dasharray="4 4"/>
+  <polygon points="217,186 211,172 223,172" fill="#d1483f"/>
+
+  <!-- 레이저 3: 위에서 아래로, 오른쪽 막대와 가장 바깥 막대를 자름 -->
+  <line x1="387" y1="94" x2="387" y2="178" stroke="#d1483f" stroke-width="2" stroke-dasharray="4 4"/>
+  <polygon points="387,186 381,172 393,172" fill="#d1483f"/>
+
+  <!-- 괄호 문자열을 같은 x축에 맞춰 표시 (문제의 입력 자체이므로 유지) -->
+  <g font-size="15" font-family="monospace" fill="#555">
+    <text x="30" y="212">(</text>
+    <text x="64" y="212">(</text>
+    <text x="98" y="212">(</text>
+    <text x="132" y="212">(</text>
+    <text x="166" y="212">)</text>
+    <text x="200" y="212">(</text>
+    <text x="234" y="212">)</text>
+    <text x="268" y="212">)</text>
+    <text x="302" y="212">)</text>
+    <text x="336" y="212">(</text>
+    <text x="370" y="212">(</text>
+    <text x="404" y="212">)</text>
+    <text x="438" y="212">)</text>
+    <text x="472" y="212">)</text>
+  </g>
+</svg>
