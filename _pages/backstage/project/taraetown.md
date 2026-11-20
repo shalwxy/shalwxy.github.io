@@ -4,6 +4,8 @@ layout: folder
 permalink: /backstage/project/taraetown/
 collection: backstage
 folder: _backstage/project/taraetown/
+sitemap: false
+search: false
 author_profile: false
 sidebar:
   nav: "backstage"

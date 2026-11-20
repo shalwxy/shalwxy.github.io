@@ -24,9 +24,9 @@ atom_feed:
   path: "/rss.xml"
   hide: true
 
-# path는 없다 — 태그 아카이브는 /lab/tags/, /essay/tags/, /playground/tags/로 서브 블로그별로
-# 분리되어 있고 전역 /tags/ 페이지는 없다(_includes/tag-list.html 참고). type만 쓰여서
-# 태그 링크가 #태그-슬러그 앵커를 쓰도록 한다.
+# path는 없다 — 태그 아카이브는 /lab/tags/, /essay/tags/, /playground/tags/, /backstage/tags/로
+# 서브 블로그별로 분리되어 있고 전역 /tags/ 페이지는 없다(_includes/tag-list.html 참고). type만
+# 쓰여서 태그 링크가 #태그-슬러그 앵커를 쓰도록 한다.
 tag_archive:
   type: liquid
 

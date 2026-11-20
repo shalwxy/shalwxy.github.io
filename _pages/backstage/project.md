@@ -4,6 +4,8 @@ layout: folder
 permalink: /backstage/project/
 collection: backstage
 folder: _backstage/project/
+sitemap: false
+search: false
 author_profile: false
 sidebar:
   nav: "backstage"

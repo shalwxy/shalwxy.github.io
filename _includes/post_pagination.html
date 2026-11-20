@@ -3,7 +3,7 @@
   "목록" 버튼 하나로 바꾼다. category_url 계산은 category_url.html에 있다
   (category_list.html과 공유).
 {%- endcomment -%}
-{%- if page.collection == 'lab' or page.collection == 'essay' or page.collection == 'playground' -%}
+{%- if page.collection == 'lab' or page.collection == 'essay' or page.collection == 'playground' or page.collection == 'backstage' -%}
   {% include category_url.html %}
   <nav class="pagination">
     <a href="#" class="pagination--pager" onclick="history.back(); return false;">{{ site.data.ui-text[site.locale].back_label | default: "Back" }}</a>

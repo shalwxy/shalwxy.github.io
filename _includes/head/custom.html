@@ -15,7 +15,7 @@
 {% endif %}
 
 {%- comment -%}
-  삼선 메뉴: 서브 블로그(lab/essay/playground) 안에서는 Lab/Essay/Playground 대신
+  삼선 메뉴: 서브 블로그(lab/essay/playground/backstage) 안에서는 Lab/Essay/Playground 대신
   그 블로그의 카테고리(navigation.yml)를 보여준다. 데스크톱에서는 왼쪽 사이드바에 같은
   카테고리 목록이 항상 보이므로, 그쪽과 중복되지 않게 삼선 메뉴는 모바일 화면에서만
   보이도록 persica-nav--sub 클래스를 붙이고 CSS(main.scss)에서 분기한다.
@@ -33,12 +33,12 @@
 {%- endif -%}
 {%- comment -%}
   url_section 계산은 tag-list.html, search/lunr-search-scripts.html에도 똑같이 있다.
-  "lab/essay/playground" 목록을 바꿀 땐 이 세 곳을 같이 확인할 것.
+  "lab/essay/playground/backstage" 목록을 바꿀 땐 이 세 곳을 같이 확인할 것.
 {%- endcomment -%}
 {%- assign url_section = page.url | split: '/' | where_exp: "s", "s != ''" | first -%}
 {%- assign nav_items = nil -%}
 {%- assign in_sub_blog = false -%}
-{%- if url_section == 'lab' or url_section == 'essay' or url_section == 'playground' -%}
+{%- if url_section == 'lab' or url_section == 'essay' or url_section == 'playground' or url_section == 'backstage' -%}
   {%- assign in_sub_blog = true -%}
   {%- assign nav_items = site.data.navigation[url_section] -%}
 {%- endif -%}
