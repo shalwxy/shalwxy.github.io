@@ -78,6 +78,13 @@
   }
 }
 
+/* <button class="btn ...">는 <a class="btn">와 달리 브라우저 기본 폼 컨트롤 폰트를 써서
+   페이지 폰트를 상속받지 않는다. 테마의 .btn 패딩이 em 단위라 이 폰트 차이 때문에
+   버튼 쪽(카카오톡 공유, 링크 복사, 결과 공유 버튼들)만 높이가 다르게 보였다. */
+button.btn {
+  font: inherit;
+}
+
 /* 카카오톡 공유 버튼: 테마의 $buttoncolors 맵에는 없는 브랜드 컬러라 직접 추가 */
 .btn--kakao {
   background-color: #fee500;
