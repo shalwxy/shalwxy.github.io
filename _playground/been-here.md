@@ -47,7 +47,7 @@ classes: wide
   flex: 1 1 auto; min-width: 0; box-sizing: border-box;
   -webkit-appearance: none; -moz-appearance: none; appearance: none; box-shadow: none;
   font-family: inherit; font-size: 1em;
-  height: 46px; padding: 0 0.9em; border: none; background: #fff;
+  height: 46px; padding: 0 0.9em; margin: 0; border: none; border-radius: 0; background: #fff;
 }
 .bh-wrap .bh-create input.bh-input:focus { outline: none; background: #fafbfc; }
 .bh-wrap .bh-create button.bh-create-btn {
@@ -97,25 +97,26 @@ button.bh-cluster-item:hover { background: #ebedf0; }
 .bh-reply span:not(.bh-reply-nick) { display: block; white-space: pre-wrap; word-break: break-word; }
 .bh-reply time { display: block; color: #8a8a8a; font-size: 0.78em; }
 .bh-reply-form {
-  display: flex; align-items: center; margin-top: 0.6em;
-  border: 1px solid #c9ccd1; border-radius: 8px; overflow: hidden;
+  display: flex; align-items: center; margin: 0.6em 0 0; padding: 0;
+  border: 1px solid #c9ccd1; border-radius: 8px; overflow: hidden; background: #fff;
 }
 .bh-popup form.bh-reply-form input {
   flex: 1 1 auto; min-width: 0; box-sizing: border-box;
   -webkit-appearance: none; -moz-appearance: none; appearance: none; box-shadow: none;
-  font-family: inherit; font-size: 0.88em;
-  height: 36px; padding: 0 0.7em; border: none; background: #fff;
+  font-family: inherit; font-size: 0.95em;
+  height: 40px; padding: 0 0.9em; margin: 0; border: none; border-radius: 0; background: #fff;
 }
 .bh-popup form.bh-reply-form input:focus { outline: none; background: #fafbfc; }
 .bh-popup form.bh-reply-form button {
   flex: none; white-space: nowrap; box-sizing: border-box;
   display: flex; align-items: center; justify-content: center;
   -webkit-appearance: none; -moz-appearance: none; appearance: none; box-shadow: none; margin: 0;
-  font-family: inherit; font-size: 0.88em; font-weight: 600;
-  height: 36px; padding: 0 0.9em; border: none;
-  background: #f3f4f6; color: #2a5a8a; cursor: pointer;
+  font-family: inherit; font-size: 0.95em; font-weight: 600;
+  height: 40px; padding: 0 1.1em; border: none;
+  background: #2a5a8a; color: #fff; cursor: pointer;
 }
-.bh-popup form.bh-reply-form button:hover { background: #e9ebee; }
+.bh-popup form.bh-reply-form button:hover { background: #244d77; }
+.bh-popup form.bh-reply-form button:disabled { opacity: 0.6; cursor: default; }
 </style>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
