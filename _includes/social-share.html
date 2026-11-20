@@ -49,8 +49,8 @@
   <button type="button" class="btn btn--inverse" id="copy-link-btn"
     data-url="{{ page.url | absolute_url }}"
     data-copied-label="{{ site.data.ui-text[site.locale].copy_link_copied_label | default: 'Copied!' }}"
-    title="{{ site.data.ui-text[site.locale].copy_link_label | default: 'Copy Link' }}">
-    <i class="fas fa-fw fa-link" aria-hidden="true"></i><span> {{ site.data.ui-text[site.locale].copy_link_label | default: "Copy Link" }}</span>
+    title="{{ site.data.ui-text[site.locale].copy_link_label | default: 'Copy' }}">
+    <i class="fas fa-fw fa-link" aria-hidden="true"></i><span> {{ site.data.ui-text[site.locale].copy_link_label | default: "Copy" }}</span>
   </button>
   <div class="copy-toast" id="copy-toast" role="status" aria-live="polite"></div>
   <script>
