@@ -1,7 +1,8 @@
 ---
-title: "Lab Tags"
+title: "Tags"
 layout: archive
 permalink: /lab/tags/
+collection: lab
 author_profile: false
 sidebar:
   nav: "lab"

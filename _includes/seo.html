@@ -9,11 +9,25 @@
 {%- if page.url == '/lab/' or page.url == '/essay/' or page.url == '/playground/' -%}
   {%- assign page_title = site.title | append: ' ' | append: page.title -%}
 {%- endif -%}
-{%- comment -%} 4.26.2 버그 패치: page_title이 site.title을 이미 포함하면 접미사 생략 (upstream master 반영분). {%- endcomment -%}
-{%- if page_title contains site.title -%}
+
+{%- comment -%}
+  서브 블로그(lab/essay/playground) 소속 글은 탭 제목 접미사를 "Persica"가 아니라
+  "Persica Lab"처럼 소속 서브 블로그 이름으로 붙인다.
+{%- endcomment -%}
+{%- assign site_suffix = site.title -%}
+{%- if page.collection == 'lab' -%}
+  {%- assign site_suffix = site.title | append: ' Lab' -%}
+{%- elsif page.collection == 'essay' -%}
+  {%- assign site_suffix = site.title | append: ' Essay' -%}
+{%- elsif page.collection == 'playground' -%}
+  {%- assign site_suffix = site.title | append: ' Playground' -%}
+{%- endif -%}
+
+{%- comment -%} 4.26.2 버그 패치: page_title이 site_suffix를 이미 포함하면 접미사 생략 (upstream master 반영분). {%- endcomment -%}
+{%- if page_title contains site_suffix -%}
   {%- assign seo_title = page_title | replace: '|', '&#124;' -%}
 {%- else -%}
-  {%- assign seo_title = page_title | append: " " | append: title_separator | append: " " | append: site.title | replace: '|', '&#124;' -%}
+  {%- assign seo_title = page_title | append: " " | append: title_separator | append: " " | append: site_suffix | replace: '|', '&#124;' -%}
 {%- endif -%}
 
 {%- assign page_title = page_title | markdownify | strip_html | strip_newlines | escape_once -%}

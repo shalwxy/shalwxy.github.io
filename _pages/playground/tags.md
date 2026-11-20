@@ -1,7 +1,8 @@
 ---
-title: "Playground Tags"
+title: "Tags"
 layout: archive
 permalink: /playground/tags/
+collection: playground
 author_profile: false
 sidebar:
   nav: "playground"

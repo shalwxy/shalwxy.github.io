@@ -1,7 +1,8 @@
 ---
-title: "Essay Tags"
+title: "Tags"
 layout: archive
 permalink: /essay/tags/
+collection: essay
 author_profile: false
 sidebar:
   nav: "essay"
