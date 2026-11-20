@@ -1,9 +1,9 @@
 ---
-title: "타래타운"
+title: "프로젝트"
 layout: folder
-permalink: /backstage/taraetown/
+permalink: /backstage/project/
 collection: backstage
-folder: _backstage/taraetown/
+folder: _backstage/project/
 author_profile: false
 sidebar:
   nav: "backstage"
