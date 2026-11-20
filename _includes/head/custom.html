@@ -75,24 +75,24 @@
 (function() {
   var homeHref = '{{ home_url | relative_url }}';
   {%- comment -%}
-    백스테이지 이스터에그: 코나미 커맨드를 입력하면 /backstage/로 이동한다.
-    정적 HTML에 <a href>를 두지 않고 키 입력 시퀀스에 반응하는 순수 JS 네비게이션으로만
-    구현한 이유 — 크롤러는 DOM에 실제로 렌더링된 링크(앵커 태그)를 따라가서 페이지를
-    발견하지, 스크립트 안의 문자열을 훑어 "이것도 링크일 수 있다"고 추정해 방문하지는
-    않는다. 또한 렌더링 크롤러도 페이지를 그릴 뿐 임의의 키보드 입력 시퀀스까지
-    흉내 내며 상호작용하지는 않으므로, 이 경로는 사람이 직접 입력해야만 열린다.
+    백스테이지 이스터에그 목적지. 정적 HTML에 <a href>를 두지 않고 화면 구석 탭
+    시퀀스에 반응하는 순수 JS 네비게이션으로만 구현한 이유 — 크롤러는 DOM에 실제로
+    렌더링된 링크(앵커 태그)를 따라가서 페이지를 발견하지, 스크립트 안의 문자열을
+    훑어 "이것도 링크일 수 있다"고 추정해 방문하지는 않는다. 또한 렌더링 크롤러도
+    페이지를 그릴 뿐 반복 탭 같은 임의의 상호작용까지 흉내 내진 않으므로, 이 경로는
+    사람이 직접 입력해야만 열린다(setupCornerTapEasterEgg 참고).
   {%- endcomment -%}
   var backstageEasterEggHref = '{{ "/backstage/" | relative_url }}';
   {%- comment -%}
-    루트로 가는 이스터에그. 백스테이지 쪽과 달리 루트는 이미 전부 공개·색인된
-    페이지라 "크롤러에게 안 들키기" 같은 제약이 없다 — 그냥 재미로 두는 단축키.
+    루트로 가는 이스터에그 목적지. 백스테이지 쪽과 달리 루트는 이미 전부
+    공개·색인된 페이지라 "크롤러에게 안 들키기" 같은 제약이 없다 — 그냥 재미로
+    두는 단축키.
   {%- endcomment -%}
   var rootEasterEggHref = '{{ "/" | relative_url }}';
 
   {%- comment -%}
-    입력창(검색창, been-here.md 글쓰기 input 등)에 타이핑하는 도중엔 두 이스터에그
-    모두 무시한다 — 특히 "home"처럼 평범한 단어는 댓글/메모를 쓰다가 우연히
-    완성될 수 있어서, 포커스가 입력 요소에 가 있으면 키 시퀀스 판정 자체를 건너뛴다.
+    입력창(검색창, been-here.md 글쓰기 input 등)에 포커스가 가 있을 땐 이스터에그
+    판정을 건너뛴다.
   {%- endcomment -%}
   function isTypingTarget(e) {
     var tag = e.target.tagName;
@@ -144,45 +144,36 @@
     });
   }
 
-  function setupEasterEgg() {
-    var sequence = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
-    var progress = 0;
+  {%- comment -%}
+    이스터에그 트리거: 화면 구석의 "보이지 않는 핫스팟"을 짧은 시간 안에 여러 번
+    탭(또는 클릭)하면 발동한다 — 특정 DOM 요소(로고 등)에 의존하면 테마가 바뀌었을
+    때 셀렉터가 깨질 수 있으니, 뷰포트 좌표만으로 판정해서 테마 마크업과 완전히
+    독립적으로 둔다. click 이벤트라 터치/마우스 클릭 둘 다에서 동일하게 동작한다.
+  {%- endcomment -%}
+  function setupCornerTapEasterEgg(corner, requiredTaps, windowMs, href) {
+    var count = 0;
+    var lastTap = 0;
+    var zoneSize = 60;
 
-    document.addEventListener('keydown', function(e) {
+    document.addEventListener('click', function(e) {
       if (isTypingTarget(e)) return;
 
-      var expected = sequence[progress];
-      var key = (expected === 'b' || expected === 'a') ? e.key.toLowerCase() : e.key;
+      var inZone = corner === 'left'
+        ? (e.clientX <= zoneSize && e.clientY <= zoneSize)
+        : (e.clientX >= window.innerWidth - zoneSize && e.clientY <= zoneSize);
 
-      if (key === expected) {
-        progress++;
-        if (progress === sequence.length) {
-          progress = 0;
-          window.location.href = backstageEasterEggHref;
-        }
-      } else {
-        progress = (key === sequence[0]) ? 1 : 0;
+      if (!inZone) {
+        count = 0;
+        return;
       }
-    });
-  }
 
-  function setupRootEasterEgg() {
-    var word = 'home';
-    var progress = 0;
+      var now = Date.now();
+      count = (now - lastTap <= windowMs) ? count + 1 : 1;
+      lastTap = now;
 
-    document.addEventListener('keydown', function(e) {
-      if (isTypingTarget(e)) return;
-
-      var key = e.key.toLowerCase();
-
-      if (key === word[progress]) {
-        progress++;
-        if (progress === word.length) {
-          progress = 0;
-          window.location.href = rootEasterEggHref;
-        }
-      } else {
-        progress = (key === word[0]) ? 1 : 0;
+      if (count >= requiredTaps) {
+        count = 0;
+        window.location.href = href;
       }
     });
   }
@@ -220,8 +211,8 @@
     setupHomeLink();
     setupSearchToggle();
     setupMenu();
-    setupEasterEgg();
-    setupRootEasterEgg();
+    setupCornerTapEasterEgg('left', 5, 2000, rootEasterEggHref);
+    setupCornerTapEasterEgg('right', 5, 2000, backstageEasterEggHref);
     setupCitationNotes();
   }
 
