@@ -27,7 +27,7 @@ classes: wide
   <div id="bh-map" class="bh-map"></div>
 
   <div class="bh-create">
-    <input type="text" id="bh-input" class="bh-input" maxlength="200" placeholder="떠오른 생각">
+    <input type="text" id="bh-input" class="bh-input" placeholder="떠오른 생각">
     <button type="button" class="bh-create-btn" id="bh-submit">남기기</button>
   </div>
 
@@ -64,6 +64,10 @@ classes: wide
 .bh-status { min-height: 1.4em; font-size: 0.9em; color: #666; }
 .bh-status.bh-bad { color: #a9342a; }
 .bh-status.bh-good { color: #335c38; }
+
+.bh-popup-status { min-height: 1.2em; margin-top: 0.4em; font-size: 0.82em; color: #666; }
+.bh-popup-status.bh-bad { color: #a9342a; }
+.bh-popup-status.bh-good { color: #335c38; }
 
 .bh-marker span {
   display: block; width: 22px; height: 22px; border-radius: 50%;
@@ -144,6 +148,7 @@ button.bh-cluster-item:hover { background: #ebedf0; }
   var input = document.getElementById('bh-input');
   var submitBtn = document.getElementById('bh-submit');
   var statusEl = document.getElementById('bh-status');
+  input.maxLength = TEXT_MAX_LEN;
 
   var map = L.map('bh-map').setView([20, 20], 2);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -272,6 +277,14 @@ button.bh-cluster-item:hover { background: #ebedf0; }
     statusEl.className = 'bh-status' + (cls ? ' bh-' + cls : '');
   }
 
+  function setPopupStatus(popup, text, cls) {
+    var el = popup.getElement();
+    var popupStatusEl = el && el.querySelector('.bh-popup-status');
+    if (!popupStatusEl) return;
+    popupStatusEl.textContent = text || '';
+    popupStatusEl.className = 'bh-popup-status' + (cls ? ' bh-' + cls : '');
+  }
+
   function escapeHtml(s) {
     return String(s).replace(/[&<>"']/g, function (c) {
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
@@ -301,6 +314,7 @@ button.bh-cluster-item:hover { background: #ebedf0; }
           '<input type="text" maxlength="' + TEXT_MAX_LEN + '" placeholder="떠오른 생각">' +
           '<button type="submit">남기기</button>' +
         '</form>' +
+        '<div class="bh-popup-status"></div>' +
       '</div>'
     );
   }
@@ -393,12 +407,12 @@ button.bh-cluster-item:hover { background: #ebedf0; }
           popup.setContent(buildPopupHtml(memo));
           wireReplyForm(popup, memo);
           wireReplies(popup, memo, true);
-          setStatus("'" + created.nickname + "'로 답글을 남겼습니다.", 'good');
+          setPopupStatus(popup, "'" + created.nickname + "'로 답글을 남겼습니다.", 'good');
         })
         .catch(function () {
           replyInput.disabled = false;
           btn.disabled = false;
-          setStatus('답글을 남기지 못했습니다. 잠시 후 다시 시도해주세요.', 'bad');
+          setPopupStatus(popup, '답글을 남기지 못했습니다. 잠시 후 다시 시도해주세요.', 'bad');
         });
     });
   }
@@ -420,6 +434,7 @@ button.bh-cluster-item:hover { background: #ebedf0; }
     if (!navigator.geolocation) { setStatus('이 브라우저는 위치 정보를 지원하지 않습니다.', 'bad'); return; }
 
     submitBtn.disabled = true;
+    input.disabled = true;
     setStatus('위치를 확인하는 중...', '');
     navigator.geolocation.getCurrentPosition(function (pos) {
       var lat = pos.coords.latitude;
@@ -437,9 +452,10 @@ button.bh-cluster-item:hover { background: #ebedf0; }
           loadMemos().catch(function () {});
         })
         .catch(function () { setStatus('메모를 남기지 못했습니다. 잠시 후 다시 시도해주세요.', 'bad'); })
-        .finally(function () { submitBtn.disabled = false; });
+        .finally(function () { submitBtn.disabled = false; input.disabled = false; });
     }, function (err) {
       submitBtn.disabled = false;
+      input.disabled = false;
       setStatus(geoErrorMessage(err), 'bad');
     }, { timeout: 10000 });
   });
