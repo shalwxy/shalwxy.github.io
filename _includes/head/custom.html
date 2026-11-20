@@ -145,10 +145,12 @@
   }
 
   {%- comment -%}
-    이스터에그 트리거: 화면 구석의 "보이지 않는 핫스팟"을 짧은 시간 안에 여러 번
-    탭(또는 클릭)하면 발동한다 — 특정 DOM 요소(로고 등)에 의존하면 테마가 바뀌었을
-    때 셀렉터가 깨질 수 있으니, 뷰포트 좌표만으로 판정해서 테마 마크업과 완전히
-    독립적으로 둔다. click 이벤트라 터치/마우스 클릭 둘 다에서 동일하게 동작한다.
+    이스터에그 트리거: 화면 아래쪽 구석의 "보이지 않는 핫스팟"을 짧은 시간 안에
+    여러 번 탭(또는 클릭)하면 발동한다 — 특정 DOM 요소(로고 등)에 의존하면 테마가
+    바뀌었을 때 셀렉터가 깨질 수 있으니, 뷰포트 좌표만으로 판정해서 테마 마크업과
+    완전히 독립적으로 둔다. click 이벤트라 터치/마우스 클릭 둘 다에서 동일하게
+    동작한다. 위쪽 구석은 마스트헤드(Home 링크, 검색/삼선 메뉴 버튼)가 실제로
+    차지하고 있어서 탭이 그 버튼들에 먼저 먹히므로, 고정 UI가 없는 아래쪽 구석을 쓴다.
   {%- endcomment -%}
   function setupCornerTapEasterEgg(corner, requiredTaps, windowMs, href) {
     var count = 0;
@@ -159,8 +161,8 @@
       if (isTypingTarget(e)) return;
 
       var inZone = corner === 'left'
-        ? (e.clientX <= zoneSize && e.clientY <= zoneSize)
-        : (e.clientX >= window.innerWidth - zoneSize && e.clientY <= zoneSize);
+        ? (e.clientX <= zoneSize && e.clientY >= window.innerHeight - zoneSize)
+        : (e.clientX >= window.innerWidth - zoneSize && e.clientY >= window.innerHeight - zoneSize);
 
       if (!inZone) {
         count = 0;

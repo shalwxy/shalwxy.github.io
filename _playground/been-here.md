@@ -15,9 +15,7 @@ author_profile: false
 classes: wide
 ---
 
-지금 서 있는 자리에 한마디를 남기면, 그 위치에 메모가 하나 찍힌다.
-
-[`주의를 기울이는 법 (롭 워커), 관찰 연습 (니콜라 노바)`](/essay/review/reading/attention-and-observation/#common-themes)의 '주석 달기' 부분에서 아이디어를 가져왔다.
+지금 서 있는 자리에 한마디를 남기면, 그 위치에 메모가 하나 찍힌다. 아이디어는 [`주의를 기울이는 법 (롭 워커), 관찰 연습 (니콜라 노바)`](/essay/review/reading/attention-and-observation/#common-themes)의 '주석 달기' 부분에서 확인할 수 있다.
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" integrity="sha256-YU3qCpj/P06tdPBJGPax0bm6Q1wltfwjsho5TR4+TYc=" crossorigin="">
@@ -31,7 +29,7 @@ classes: wide
     <button type="button" class="bh-create-btn" id="bh-submit">남기기</button>
   </div>
 
-  <div class="bh-warn">⚠ 지도에 정확한 위치가 표시됩니다. 개인적인 장소에서는 메모를 남기지 마세요.</div>
+  <div class="bh-warn">⚠ 지도에 정확한 위치가 표시됩니다. 메모를 남기기 전에 개인적인 장소인지 확인하세요.</div>
 
   <div class="bh-status" id="bh-status"></div>
 </div>
