@@ -6,12 +6,12 @@
   서브 블로그 허브(/lab/, /essay/, /playground/)는 탭 제목을 "{{ site.title }} Lab" 형태로 통일.
   루트는 더 이상 특별 취급하지 않는다 — index.md의 title 자체가 "Persica Hub"라 그대로 써도 맞는다.
 {%- endcomment -%}
-{%- if page.url == '/lab/' or page.url == '/essay/' or page.url == '/playground/' -%}
+{%- if page.url == '/lab/' or page.url == '/essay/' or page.url == '/playground/' or page.url == '/backstage/' -%}
   {%- assign page_title = site.title | append: ' ' | append: page.title -%}
 {%- endif -%}
 
 {%- comment -%}
-  서브 블로그(lab/essay/playground) 소속 글은 탭 제목 접미사를 "Persica"가 아니라
+  서브 블로그(lab/essay/playground/backstage) 소속 글은 탭 제목 접미사를 "Persica"가 아니라
   "Persica Lab"처럼 소속 서브 블로그 이름으로 붙인다.
 {%- endcomment -%}
 {%- assign site_suffix = site.title -%}
@@ -21,6 +21,8 @@
   {%- assign site_suffix = site.title | append: ' Essay' -%}
 {%- elsif page.collection == 'playground' -%}
   {%- assign site_suffix = site.title | append: ' Playground' -%}
+{%- elsif page.collection == 'backstage' -%}
+  {%- assign site_suffix = site.title | append: ' Backstage' -%}
 {%- endif -%}
 
 {%- comment -%} 4.26.2 버그 패치: page_title이 site_suffix를 이미 포함하면 접미사 생략 (upstream master 반영분). {%- endcomment -%}
@@ -58,6 +60,14 @@
 
 <title>{{ seo_title }}{% if paginator %}{% unless paginator.page == 1 %} {{ title_separator }} {{ site.data.ui-text[site.locale].page | default: "Page" }} {{ paginator.page }}{% endunless %}{% endif %}</title>
 <meta name="description" content="{{ seo_description }}">
+
+{%- comment -%}
+  backstage(공개 전 준비 공간)는 네비게이션 링크도, 사이트맵·내부 검색 색인도 없지만
+  URL을 직접 알면 접근 가능하다 — 검색엔진만이라도 긁어가지 않도록 noindex를 박아둔다.
+{%- endcomment -%}
+{%- if page.collection == 'backstage' or page.url == '/backstage/' -%}
+<meta name="robots" content="noindex, nofollow">
+{%- endif -%}
 
 {% if author.name %}
   <meta name="author" content="{{ author.name | default: author }}">

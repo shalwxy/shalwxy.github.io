@@ -53,3 +53,13 @@ playground:
     children:
       - title: "전체 프로젝트"
         url: /playground/
+
+# main에는 일부러 안 넣는다 — 공개 전 준비 공간이라 네비게이션으로는 노출하지 않는다.
+backstage:
+  - title: "Backstage"
+    url: /backstage/
+    children:
+      - title: "전체 글"
+        url: /backstage/
+      - title: "타래타운"
+        url: /backstage/taraetown/

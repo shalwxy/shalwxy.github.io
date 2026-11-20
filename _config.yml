@@ -87,6 +87,9 @@ collections:
   playground:
     output: true
     permalink: /:collection/:path/
+  backstage:
+    output: true
+    permalink: /:collection/:path/
 
 defaults:
   - scope:
@@ -137,6 +140,24 @@ defaults:
       toc_sticky: true
       sidebar:
         nav: "playground"
+  - scope:
+      path: ""
+      type: backstage
+    values:
+      layout: single
+      author_profile: false
+      read_time: true
+      comments: true
+      share: true
+      show_date: true
+      toc: true
+      toc_sticky: true
+      sidebar:
+        nav: "backstage"
+      # 공개 전 준비 공간: 메인 nav에 링크를 안 두는 것과 별개로,
+      # 사이트맵·검색엔진·내부 검색(lunr)에서도 노출되지 않도록 막아둔다.
+      sitemap: false
+      search: false
 
 markdown: kramdown
 kramdown:
