@@ -26,14 +26,12 @@
   margin-left: auto;
 }
 
-/* 공유하기 영역: 제목과 버튼들을 모두 가운데 정렬 (테마 기본은 왼쪽 정렬).
-   위아래 수평선 사이 간격도 맞춘다. 테마 기본은
-   1) .page__share에 float: left가 걸려있어서(그리드 레이아웃용) 바로 뒤의
-      .pagination이 margin-top만큼 못 띄어지고 아래쪽 선에 거의 붙어버리고,
-   2) .page__share-title(h4)의 브라우저 기본 margin-top이 padding-top 위에
-      그대로 얹혀서 위쪽 선과는 오히려 멀어지는 비대칭이 생겼다.
-   float를 끄고 제목의 margin-top을 0으로 리셋하면 위쪽은 padding-top만큼,
-   아래쪽은 .pagination의 margin-top(2em)만큼으로 간격이 맞춰진다. */
+/* 공유하기 영역: 버튼들을 가운데 정렬 (테마 기본은 왼쪽 정렬). 테마 기본은 .page__share에
+   float: left가 걸려있어서(그리드 레이아웃용) 바로 뒤의 .pagination이 margin-top만큼
+   못 띄어지고 아래쪽 선에 거의 붙어버린다. float를 끄면 위쪽은 padding-top만큼, 아래쪽은
+   .pagination의 margin-top(2em)만큼으로 간격이 맞춰진다.
+   "공유하기" 제목(h4)은 텍스트 제거 요청에 따라 _includes/social-share.html에서 아예
+   마크업을 뺐다. */
 .page__share {
   text-align: center;
   padding-top: 2em;
@@ -45,8 +43,35 @@
   float: none;
 }
 
-.page__share-title {
-  margin-top: 0;
+/* 공유 버튼: 테마 기본은 "37.5em 이하"일 때만 라벨 텍스트를 스크린리더 전용(sr-only)으로
+   감추고 아이콘만 보여준다. 화면 크기와 상관없이 항상 아이콘만 보이게 하려고 그 규칙을
+   미디어 쿼리 없이 적용한다. 또한 버튼들이 <a>(트위터·페이스북·링크드인)와
+   <button>(카카오톡·링크 복사)로 섞여 있어서, 두 태그의 브라우저 기본 line-height·
+   box-sizing이 달라 텍스트를 감춘 뒤에도 높이가 미세하게 어긋나 보였다. 아이콘 버튼을
+   고정 크기의 정사각형 inline-flex로 통일해 높이를 맞추고, 한 줄에 다 들어가도록 한다. */
+.page__share .btn {
+  display: inline-flex;
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
+  width: 2.25em;
+  height: 2.25em;
+  padding: 0;
+  margin: 0 0.25em 0.25em;
+  font-size: 1em;
+  line-height: 1;
+  vertical-align: middle;
+
+  span {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+  }
 }
 
 /* 글 하단 뒤로/목록 버튼: 테마 기본은 50%씩 폭을 나눠 가지는 큰 페이저 바라 글자가
