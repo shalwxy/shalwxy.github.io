@@ -31,7 +31,7 @@
       {%- if total_pages > 1 -%}
         <nav class="category-list__pager">
           {%- for p in (1..total_pages) -%}
-            <a href="#category-list-page-{{ p }}" class="btn btn--small btn--inverse category-list__pager-link">{{ p }}</a>
+            <a href="#category-list-page-{{ p }}" class="btn btn--small btn--inverse category-list__pager-link" data-scroll-ignore>{{ p }}</a>
           {%- endfor -%}
         </nav>
       {%- endif -%}

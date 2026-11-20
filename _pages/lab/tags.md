@@ -34,7 +34,7 @@ sidebar:
 <ul class="taxonomy__index">
   {% for tag in all_tags %}{% if tag != "" %}
     {% assign tagged = docs | where_exp: "doc", "doc.tags contains tag" %}
-    <li><a href="#{{ tag | slugify }}"><strong>{{ tag }}</strong> <span class="taxonomy__count">{{ tagged.size }}</span></a></li>
+    <li><a href="#{{ tag | slugify }}" data-scroll-ignore><strong>{{ tag }}</strong> <span class="taxonomy__count">{{ tagged.size }}</span></a></li>
   {% endif %}{% endfor %}
 </ul>
 </div>
