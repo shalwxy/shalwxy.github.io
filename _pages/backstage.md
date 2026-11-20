@@ -1,6 +1,6 @@
 ---
 title: "Backstage"
-description: "공개 전, 준비하는 공간"
+description: "무대에 오르기 전 다듬는 공간, Backstage"
 layout: folder
 permalink: /backstage/
 collection: backstage
