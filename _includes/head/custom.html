@@ -74,6 +74,15 @@
 <script>
 (function() {
   var homeHref = '{{ home_url | relative_url }}';
+  {%- comment -%}
+    백스테이지 이스터에그: 코나미 커맨드를 입력하면 /backstage/로 이동한다.
+    정적 HTML에 <a href>를 두지 않고 키 입력 시퀀스에 반응하는 순수 JS 네비게이션으로만
+    구현한 이유 — 크롤러는 DOM에 실제로 렌더링된 링크(앵커 태그)를 따라가서 페이지를
+    발견하지, 스크립트 안의 문자열을 훑어 "이것도 링크일 수 있다"고 추정해 방문하지는
+    않는다. 또한 렌더링 크롤러도 페이지를 그릴 뿐 임의의 키보드 입력 시퀀스까지
+    흉내 내며 상호작용하지는 않으므로, 이 경로는 사람이 직접 입력해야만 열린다.
+  {%- endcomment -%}
+  var backstageEasterEggHref = '{{ "/backstage/" | relative_url }}';
 
   function setupHomeLink() {
     var title = document.querySelector('.site-title');
@@ -120,6 +129,26 @@
     });
   }
 
+  function setupEasterEgg() {
+    var sequence = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+    var progress = 0;
+
+    document.addEventListener('keydown', function(e) {
+      var expected = sequence[progress];
+      var key = (expected === 'b' || expected === 'a') ? e.key.toLowerCase() : e.key;
+
+      if (key === expected) {
+        progress++;
+        if (progress === sequence.length) {
+          progress = 0;
+          window.location.href = backstageEasterEggHref;
+        }
+      } else {
+        progress = (key === sequence[0]) ? 1 : 0;
+      }
+    });
+  }
+
   function setupCitationNotes() {
     document.addEventListener('click', function(e) {
       var icon = e.target.closest('.citation-note__icon');
@@ -153,6 +182,7 @@
     setupHomeLink();
     setupSearchToggle();
     setupMenu();
+    setupEasterEgg();
     setupCitationNotes();
   }
 
