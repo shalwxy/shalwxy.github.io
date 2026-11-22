@@ -110,6 +110,9 @@ async function listMemos(env) {
   ).all();
 
   const rootIds = roots.results.map((r) => r.id);
+  const rootVisitorById = {};
+  roots.results.forEach((r) => { rootVisitorById[r.id] = r.visitor_id; });
+
   const repliesByParent = {};
   if (rootIds.length > 0) {
     const placeholders = rootIds.map(() => "?").join(",");
@@ -118,7 +121,11 @@ async function listMemos(env) {
     ).bind(...rootIds).all();
     for (const r of replies.results) {
       (repliesByParent[r.parent_id] = repliesByParent[r.parent_id] || []).push({
-        id: r.id, text: r.text, nickname: nicknameFor(r.visitor_id), created_at: r.created_at,
+        id: r.id, text: r.text, nickname: nicknameFor(r.visitor_id),
+        // 닉네임은 해시 충돌(형용사x동물 576가지)로 다른 사람과 겹칠 수 있어, 작성자 일치 여부는
+        // 닉네임이 아니라 해시 전 원본 visitor_id를 직접 비교해 판정한다. visitor_id 자체는 응답에 담지 않는다.
+        is_author: r.visitor_id === rootVisitorById[r.parent_id],
+        created_at: r.created_at,
       });
     }
   }
@@ -144,19 +151,24 @@ async function createRoot(env, body) {
 }
 
 // 답글은 루트 메모에만 달 수 있다 (답글에 또 답글은 없음 — 2단 구조로 제한).
+// 위치는 저장하지만(악용 추적 등 서버 쪽 용도), 응답에는 절대 포함하지 않는다 —
+// 그래서 listMemos / 아래 반환값 모두 답글의 lat/lng는 내려주지 않는다.
 async function createReply(env, parentId, body) {
   const text = cleanText(body.text);
   const visitorId = cleanVisitorId(body.visitor_id);
-  if (!text || !visitorId) return null;
+  if (!text || !visitorId || !isValidLat(body.lat) || !isValidLng(body.lng)) return null;
   const parent = await env.MEMO_DB.prepare(
-    "SELECT id FROM memo WHERE id = ? AND parent_id IS NULL"
+    "SELECT id, visitor_id FROM memo WHERE id = ? AND parent_id IS NULL"
   ).bind(parentId).first();
   if (!parent) return null;
   const created_at = new Date().toISOString();
   const res = await env.MEMO_DB.prepare(
-    "INSERT INTO memo (parent_id, lat, lng, text, visitor_id, created_at) VALUES (?, NULL, NULL, ?, ?, ?)"
-  ).bind(parentId, text, visitorId, created_at).run();
-  return { id: res.meta.last_row_id, text, nickname: nicknameFor(visitorId), created_at };
+    "INSERT INTO memo (parent_id, lat, lng, text, visitor_id, created_at) VALUES (?, ?, ?, ?, ?, ?)"
+  ).bind(parentId, body.lat, body.lng, text, visitorId, created_at).run();
+  return {
+    id: res.meta.last_row_id, text, nickname: nicknameFor(visitorId),
+    is_author: visitorId === parent.visitor_id, created_at,
+  };
 }
 
 export default {

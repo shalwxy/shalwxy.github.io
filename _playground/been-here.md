@@ -73,10 +73,12 @@ classes: wide
 }
 .bh-cluster-header { display: flex; justify-content: flex-end; margin-bottom: 0.4em; }
 button.bh-cluster-update {
+  display: flex; align-items: center; justify-content: center;
   -webkit-appearance: none; -moz-appearance: none; appearance: none; box-shadow: none; margin: 0;
-  padding: 0.3em 0.6em; border: 1px solid #c9ccd1; border-radius: 6px; background: #fff;
-  font-size: 0.8em; cursor: pointer;
+  padding: 0.4em; border: 1px solid #c9ccd1; border-radius: 6px; background: #fff; color: #555;
+  cursor: pointer;
 }
+button.bh-cluster-update:hover { color: #2a5a8a; border-color: #2a5a8a; }
 button.bh-cluster-update:disabled { opacity: 0.5; cursor: default; }
 .bh-cluster-list { max-height: 260px; overflow-y: auto; display: flex; flex-direction: column; gap: 0.4em; }
 button.bh-cluster-item {
@@ -90,14 +92,15 @@ button.bh-cluster-item:hover { background: #ebedf0; }
 .bh-cluster-item time { display: block; color: #8a8a8a; font-size: 0.78em; }
 
 .bh-popup { font-size: 0.92em; max-width: 260px; }
-.bh-popup-nick { margin: 0; color: #2a5a8a; font-weight: 700; font-size: 0.85em; }
-.bh-popup-text { margin: 0.15em 0 0.3em; font-weight: 600; white-space: pre-wrap; word-break: break-word; }
-.bh-popup-date { display: block; color: #8a8a8a; font-size: 0.82em; margin-bottom: 0.5em; }
+.bh-popup-nick { display: block; margin: 0; color: #2a5a8a; font-weight: 700; font-size: 0.85em; }
+.bh-popup-text { display: block; margin: 0.15em 0 0; font-weight: 600; white-space: pre-wrap; word-break: break-word; }
+.bh-popup-date { display: block; color: #8a8a8a; font-size: 0.82em; }
 .bh-replies { max-height: 150px; overflow-y: auto; border-top: 1px solid #e5e5e5; margin-top: 0.4em; padding-top: 0.4em; }
 .bh-reply { margin-bottom: 0.35em; }
 .bh-reply-nick { display: block; color: #2a5a8a; font-weight: 700; font-size: 0.82em; }
-.bh-reply span:not(.bh-reply-nick) { display: block; white-space: pre-wrap; word-break: break-word; }
+.bh-reply > span:not(.bh-reply-nick) { display: block; white-space: pre-wrap; word-break: break-word; }
 .bh-reply time { display: block; color: #8a8a8a; font-size: 0.78em; }
+.bh-reply-author-mark { color: #a9342a; font-weight: 700; }
 .bh-reply-form {
   display: flex; align-items: center; margin: 0.6em 0 0; padding: 0;
   border: 1px solid #c9ccd1; border-radius: 8px; overflow: hidden; background: #fff;
@@ -189,10 +192,11 @@ button.bh-cluster-item:hover { background: #ebedf0; }
     var btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'bh-cluster-item';
+    var replyCount = (item.memo.replies || []).length;
     btn.innerHTML =
       '<span class="bh-cluster-nick">' + escapeHtml(item.memo.nickname) + '</span>' +
       '<span class="bh-cluster-text">' + escapeHtml(item.memo.text) + '</span>' +
-      '<time>' + formatDate(item.memo.created_at) + '</time>';
+      '<time>' + formatDate(item.memo.created_at) + (replyCount ? ' · 답글 ' + replyCount + '개' : '') + '</time>';
     btn.addEventListener('click', function () {
       map.closePopup();
       openMemoPopup(item.memo);
@@ -211,7 +215,14 @@ button.bh-cluster-item:hover { background: #ebedf0; }
     var updateBtn = document.createElement('button');
     updateBtn.type = 'button';
     updateBtn.className = 'bh-cluster-update';
-    updateBtn.textContent = '업데이트';
+    updateBtn.setAttribute('aria-label', '새로고침');
+    updateBtn.innerHTML =
+      '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" ' +
+        'stroke-linecap="round" stroke-linejoin="round">' +
+        '<polyline points="23 4 23 10 17 10"></polyline>' +
+        '<polyline points="1 20 1 14 7 14"></polyline>' +
+        '<path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>' +
+      '</svg>';
     headerEl.appendChild(updateBtn);
 
     var listEl = document.createElement('div');
@@ -317,11 +328,12 @@ button.bh-cluster-item:hover { background: #ebedf0; }
   var REPLY_PAGE_SIZE = 10;
 
   function buildPopupHtml(memo) {
+    var replyCount = (memo.replies || []).length;
     return (
       '<div class="bh-popup">' +
-        '<p class="bh-popup-nick">' + escapeHtml(memo.nickname) + '</p>' +
-        '<p class="bh-popup-text">' + escapeHtml(memo.text) + '</p>' +
-        '<time class="bh-popup-date">' + formatDate(memo.created_at) + '</time>' +
+        '<span class="bh-popup-nick">' + escapeHtml(memo.nickname) + '</span>' +
+        '<span class="bh-popup-text">' + escapeHtml(memo.text) + '</span>' +
+        '<time class="bh-popup-date">' + formatDate(memo.created_at) + (replyCount ? ' · 답글 ' + replyCount + '개' : '') + '</time>' +
         '<div class="bh-replies"></div>' +
         '<form class="bh-reply-form">' +
           '<input type="text" maxlength="' + TEXT_MAX_LEN + '" placeholder="떠오른 생각">' +
@@ -332,11 +344,12 @@ button.bh-cluster-item:hover { background: #ebedf0; }
     );
   }
 
-  function buildReplyEl(r) {
+  function buildReplyEl(r, isAuthor) {
     var div = document.createElement('div');
     div.className = 'bh-reply';
     div.innerHTML =
-      '<span class="bh-reply-nick">' + escapeHtml(r.nickname) + '</span>' +
+      '<span class="bh-reply-nick">' + escapeHtml(r.nickname) +
+        (isAuthor ? ' <span class="bh-reply-author-mark">*</span>' : '') + '</span>' +
       '<span>' + escapeHtml(r.text) + '</span>' +
       '<time>' + formatDate(r.created_at) + '</time>';
     return div;
@@ -352,7 +365,7 @@ button.bh-cluster-item:hover { background: #ebedf0; }
     var rendered = 0;
     function renderMore() {
       var next = memo.replies.slice(rendered, rendered + REPLY_PAGE_SIZE);
-      next.forEach(function (r) { container.appendChild(buildReplyEl(r)); });
+      next.forEach(function (r) { container.appendChild(buildReplyEl(r, r.is_author)); });
       rendered += next.length;
     }
     container.onscroll = function () {
@@ -409,6 +422,12 @@ button.bh-cluster-item:hover { background: #ebedf0; }
       .catch(function (err) { setStatus('메모를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.', 'bad'); throw err; });
   }
 
+  function getCurrentPosition() {
+    return new Promise(function (resolve, reject) {
+      navigator.geolocation.getCurrentPosition(resolve, reject, { enableHighAccuracy: true, maximumAge: 0, timeout: 10000 });
+    });
+  }
+
   function geoErrorMessage(err) {
     if (err.code === err.PERMISSION_DENIED) return '위치 권한이 거부되어 메모를 남길 수 없습니다.';
     if (err.code === err.TIMEOUT) return '위치를 확인하는 데 시간이 너무 오래 걸렸습니다. 다시 시도해주세요.';
@@ -428,26 +447,44 @@ button.bh-cluster-item:hover { background: #ebedf0; }
       var text = replyInput.value.trim();
       if (!text) return;
       var btn = form.querySelector('button');
+      if (!navigator.geolocation) {
+        setPopupStatus(popup, '이 브라우저는 위치 정보를 지원하지 않습니다.', 'bad');
+        return;
+      }
       replyInput.disabled = true;
       btn.disabled = true;
-      fetch(API_URL + '/memos/' + memo.id + '/replies', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: text, visitor_id: getVisitorId() })
-      })
-        .then(function (res) { if (!res.ok) throw new Error('reply failed'); return res.json(); })
-        .then(function (created) {
-          memo.replies.push(created);
-          popup.setContent(buildPopupHtml(memo));
-          wireReplyForm(popup, memo);
-          wireReplies(popup, memo, true);
-          setPopupStatus(popup, "'" + created.nickname + "'로 답글을 남겼습니다.", 'good');
+      setPopupStatus(popup, '위치를 확인하는 중...', '');
+
+      function fail(message) {
+        replyInput.disabled = false;
+        btn.disabled = false;
+        setPopupStatus(popup, message, 'bad');
+      }
+
+      // 위치는 서버에 같이 보내 저장하지만(악용 추적용), 응답/화면에는 절대 노출하지 않는다.
+      getCurrentPosition().then(function (pos) {
+        fetch(API_URL + '/memos/' + memo.id + '/replies', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            text: text,
+            visitor_id: getVisitorId(),
+            lat: pos.coords.latitude,
+            lng: pos.coords.longitude
+          })
         })
-        .catch(function () {
-          replyInput.disabled = false;
-          btn.disabled = false;
-          setPopupStatus(popup, '답글을 남기지 못했습니다. 잠시 후 다시 시도해주세요.', 'bad');
-        });
+          .then(function (res) { if (!res.ok) throw new Error('reply failed'); return res.json(); })
+          .then(function (created) {
+            memo.replies.push(created);
+            popup.setContent(buildPopupHtml(memo));
+            wireReplyForm(popup, memo);
+            wireReplies(popup, memo, true);
+            setPopupStatus(popup, "'" + created.nickname + "'로 답글을 남겼습니다.", 'good');
+          })
+          .catch(function () { fail('답글을 남기지 못했습니다. 잠시 후 다시 시도해주세요.'); });
+      }, function (err) {
+        fail(geoErrorMessage(err));
+      });
     });
   }
 
