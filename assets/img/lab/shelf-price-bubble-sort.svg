@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 210">
+  <rect x="0" y="0" width="400" height="210" fill="#ffffff"/>
+
+  <!-- 인접 교환 3번의 자리이동(idx3->idx2->idx1->idx0)을 위쪽 아치 3개로 표시 -->
+  <path d="M 270 45 Q 235 12 200 45" fill="none" stroke="#d1483f" stroke-width="2"/>
+  <polygon points="200,45 210,38 213,49" fill="#d1483f"/>
+  <path d="M 200 45 Q 165 12 130 45" fill="none" stroke="#d1483f" stroke-width="2"/>
+  <polygon points="130,45 140,38 143,49" fill="#d1483f"/>
+  <path d="M 130 45 Q 95 12 60 45" fill="none" stroke="#d1483f" stroke-width="2"/>
+  <polygon points="60,45 70,38 73,49" fill="#d1483f"/>
+
+  <!-- 1행: 정렬 전. idx3=9(빨강, 왼쪽으로 이동할 값) -->
+  <g>
+    <rect x="30"  y="50" width="60" height="50" rx="4" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.5"/>
+    <rect x="100" y="50" width="60" height="50" rx="4" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.5"/>
+    <rect x="170" y="50" width="60" height="50" rx="4" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.5"/>
+    <rect x="240" y="50" width="60" height="50" rx="4" fill="#ffffff" stroke="#d1483f" stroke-width="2.5"/>
+    <rect x="310" y="50" width="60" height="50" rx="4" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.5"/>
+  </g>
+
+  <!-- 중간 연결선 -->
+  <line x1="60"  y1="100" x2="60"  y2="140" stroke="#cccccc" stroke-width="1.5" stroke-dasharray="3 3"/>
+  <line x1="130" y1="100" x2="130" y2="140" stroke="#cccccc" stroke-width="1.5" stroke-dasharray="3 3"/>
+  <line x1="200" y1="100" x2="200" y2="140" stroke="#cccccc" stroke-width="1.5" stroke-dasharray="3 3"/>
+  <line x1="270" y1="100" x2="270" y2="140" stroke="#cccccc" stroke-width="1.5" stroke-dasharray="3 3"/>
+  <line x1="340" y1="100" x2="340" y2="140" stroke="#cccccc" stroke-width="1.5" stroke-dasharray="3 3"/>
+
+  <!-- 2행: 한 바퀴(i=0) 끝. idx0=9(초록, 자리 확정) -->
+  <g>
+    <rect x="30"  y="140" width="60" height="50" rx="4" fill="#ffffff" stroke="#2f9e44" stroke-width="2.5"/>
+    <rect x="100" y="140" width="60" height="50" rx="4" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.5"/>
+    <rect x="170" y="140" width="60" height="50" rx="4" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.5"/>
+    <rect x="240" y="140" width="60" height="50" rx="4" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.5"/>
+    <rect x="310" y="140" width="60" height="50" rx="4" fill="#ffffff" stroke="#2b2b2b" stroke-width="1.5"/>
+  </g>
+
+  <g font-size="18" text-anchor="middle" fill="#2b2b2b" font-family="'Pretendard', -apple-system, sans-serif">
+    <text x="60"  y="81">32</text>
+    <text x="130" y="81">15</text>
+    <text x="200" y="81">47</text>
+    <text x="270" y="81">9</text>
+    <text x="340" y="81">21</text>
+
+    <text x="60"  y="171">9</text>
+    <text x="130" y="171">32</text>
+    <text x="200" y="171">15</text>
+    <text x="270" y="171">47</text>
+    <text x="340" y="171">21</text>
+  </g>
+</svg>
