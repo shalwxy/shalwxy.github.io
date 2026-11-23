@@ -6,24 +6,6 @@
 @import "minimal-mistakes/skins/{{ site.minimal_mistakes_skin | default: 'default' }}";
 @import "minimal-mistakes";
 
-/* draft 이스터에그(길게 누르기) 동작 중 — head/custom.html의 setupHoldEasterEgg 참고.
-   모바일에서 배경을 꾹 누르면 네이티브 텍스트 선택/콜아웃 메뉴가 끼어들어 타이머가
-   touchcancel로 취소되는 걸 막기 위해 선택을 잠깐 꺼둔다. 글 본문(.page__content)
-   안에서는 복사가 되어야 하므로 선택을 다시 켜준다 — 본문을 누를 때는 텍스트 선택이
-   이 이스터에그보다 우선한다. */
-html.persica-hold-active {
-  -webkit-user-select: none;
-  user-select: none;
-  -webkit-touch-callout: none;
-}
-
-html.persica-hold-active .page__content,
-html.persica-hold-active .page__content * {
-  -webkit-user-select: text;
-  user-select: text;
-  -webkit-touch-callout: default;
-}
-
 /* 상단 masthead 고정 (스크롤해도 상단에 붙어있음) */
 .masthead {
   position: sticky;
