@@ -205,6 +205,33 @@
     });
   }
 
+  {%- comment -%}
+    draft 이스터에그 트리거: 화면 어디든 짧은 시간 안에 여러 번 클릭(또는 탭)하면
+    발동한다. setupClickRhythmEasterEgg처럼 간격의 "리듬"(빠름/쉼 구간)을 따지지
+    않고 단순히 windowMs 안에 requiredClicks번만 채우면 되는, 더 너그러운 판정이다.
+    backstage의 리듬([2, 1] — 빠르게 2번 + 쉬고 + 1번)과 조건이 겹치지 않도록
+    일부러 다르게 뒀다 — 마구 빠르게 연타하면 backstage 쪽은 "빠른 2번" 다음에
+    쉬지 않고 바로 3번째가 와서 패턴이 깨져버리므로, 연타 기반인 draft와 리듬 기반인
+    backstage는 실제로 거의 부딪히지 않는다.
+  {%- endcomment -%}
+  function setupMultiClickEasterEgg(requiredClicks, windowMs, href) {
+    var count = 0;
+    var lastClick = 0;
+
+    document.addEventListener('click', function(e) {
+      if (isTypingTarget(e)) return;
+
+      var now = Date.now();
+      count = (now - lastClick <= windowMs) ? count + 1 : 1;
+      lastClick = now;
+
+      if (count >= requiredClicks) {
+        count = 0;
+        window.location.href = href;
+      }
+    });
+  }
+
   function setupCitationNotes() {
     document.addEventListener('click', function(e) {
       var icon = e.target.closest('.citation-note__icon');
@@ -239,7 +266,7 @@
     setupSearchToggle();
     setupMenu();
     setupClickRhythmEasterEgg([2, 1], backstageEasterEggHref);
-    setupClickRhythmEasterEgg([1, 1, 1], draftEasterEggHref);
+    setupMultiClickEasterEgg(5, 2000, draftEasterEggHref);
     setupCitationNotes();
   }
 
