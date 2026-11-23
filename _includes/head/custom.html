@@ -78,9 +78,9 @@
     backstage/draft 이스터에그 목적지. 정적 HTML에 <a href>를 두지 않고 순수 JS
     네비게이션으로만 구현한 이유 — 크롤러는 DOM에 실제로 렌더링된 링크(앵커 태그)를
     따라가서 페이지를 발견하지, 스크립트 안의 문자열을 훑어 "이것도 링크일 수 있다"고
-    추정해 방문하지는 않는다. 또한 렌더링 크롤러도 페이지를 그릴 뿐 클릭 리듬 같은
-    임의의 상호작용까지 흉내 내진 않으므로, 이 경로들은 사람이 직접 입력해야만
-    열린다(setupClickRhythmEasterEgg 참고).
+    추정해 방문하지는 않는다. 또한 렌더링 크롤러도 페이지를 그릴 뿐 손으로 모양을
+    그리는 임의의 상호작용까지 흉내 내진 않으므로, 이 경로들은 사람이 직접 입력해야만
+    열린다(setupShapeEasterEgg 참고).
   {%- endcomment -%}
   var backstageEasterEggHref = '{{ "/backstage/" | relative_url }}';
   var draftEasterEggHref = '{{ "/draft/" | relative_url }}';
@@ -140,96 +140,248 @@
   }
 
   {%- comment -%}
-    이스터에그 트리거: 화면 어디든 클릭(또는 탭)의 "리듬"이 주어진 패턴과 맞으면
-    발동한다 — 특정 DOM 요소(로고 등)나 화면 좌표에 의존하면 테마가 바뀌거나 그
-    자리에 실제 버튼이 있을 때 깨지거나 겹칠 수 있으니, document 전체에 거는 click
-    리스너와 클릭 간격(시간)만으로 판정해서 마크업/레이아웃과 완전히 독립적으로 둔다.
-    click 이벤트라 터치/마우스 클릭 둘 다에서 동일하게 동작한다. 길게 누르기(hold)는
-    모바일에서 OS의 "텍스트 선택" 제스처와 충돌해서(touchcancel로 타이머가 끊김)
-    쓰지 않는다.
-
-    pattern은 "버스트(빠르게 연속으로 친 클릭 묶음)의 크기"를 순서대로 나열한
-    배열이다. 예: [2, 1]은 "빠르게 2번 치고, 쉬었다가, 1번 더 친다"는 뜻. 버스트
-    내부 간격은 withinBurstMs 이하(빠른 연타)여야 하고, 버스트 사이 간격은
-    pauseMinMs~pauseMaxMs 사이(의도적으로 쉼)여야 한다. 둘 다 아닌 애매한 간격이
-    나오면 패턴이 깨진 것으로 보고 리셋한다.
+    이스터에그 트리거: 화면 어디든 드래그(또는 손가락으로 쭉 그리기)로 정해진 모양을
+    그리면 발동한다. 클릭 타이밍 기반 방식(연타/리듬)은 사람마다 손가락 속도·간격이
+    달라 "됐다 안됐다" 하는 문제가 계속 생겨서, 아예 타이밍에 의존하지 않는 모양
+    인식으로 바꿨다. 제스처 인식에서 검증된 $1 Unistroke Recognizer(Wobbrock,
+    Wilson, Li, 2007) 알고리즘을 그대로 구현한 것이다 — 그린 궤적을 점 64개로
+    리샘플링하고 크기·위치·회전을 정규화한 뒤, 후보 궤적을 ±45도 범위에서 돌려가며
+    템플릿과의 평균 점간 거리가 가장 작아지는 각도를 찾아 유사도 점수를 낸다. 속도,
+    크기, 시작 위치, 그리는 방향(시계/반시계), 약간의 회전에 전혀 영향받지 않는다.
   {%- endcomment -%}
-  function setupClickRhythmEasterEgg(pattern, href) {
-    var withinBurstMs = 400;
-    var pauseMinMs = 450;
-    var pauseMaxMs = 1500;
-
-    var bursts = [];
-    var currentBurst = 0;
-    var lastClick = null;
-
-    document.addEventListener('click', function(e) {
-      if (isTypingTarget(e)) return;
-
-      var now = Date.now();
-
-      if (lastClick === null) {
-        bursts = [];
-        currentBurst = 1;
+  function resamplePoints(points, n) {
+    var pathLen = 0;
+    for (var i = 1; i < points.length; i++) {
+      pathLen += Math.hypot(points[i].x - points[i - 1].x, points[i].y - points[i - 1].y);
+    }
+    var interval = pathLen / (n - 1);
+    var newPoints = [points[0]];
+    var D = 0;
+    var pts = points.slice();
+    for (var i = 1; i < pts.length; i++) {
+      var d = Math.hypot(pts[i].x - pts[i - 1].x, pts[i].y - pts[i - 1].y);
+      if (D + d >= interval) {
+        var qx = pts[i - 1].x + ((interval - D) / d) * (pts[i].x - pts[i - 1].x);
+        var qy = pts[i - 1].y + ((interval - D) / d) * (pts[i].y - pts[i - 1].y);
+        var q = { x: qx, y: qy };
+        newPoints.push(q);
+        pts.splice(i, 0, q);
+        D = 0;
       } else {
-        var gap = now - lastClick;
-        if (gap <= withinBurstMs) {
-          currentBurst++;
-        } else if (gap >= pauseMinMs && gap <= pauseMaxMs) {
-          bursts.push(currentBurst);
-          currentBurst = 1;
-        } else {
-          bursts = [];
-          currentBurst = 1;
-        }
+        D += d;
       }
-      lastClick = now;
+    }
+    while (newPoints.length < n) newPoints.push(points[points.length - 1]);
+    return newPoints;
+  }
 
-      var burstIndex = bursts.length;
-      var broken = burstIndex >= pattern.length ||
-        currentBurst > pattern[burstIndex];
-      for (var i = 0; i < bursts.length && !broken; i++) {
-        if (bursts[i] !== pattern[i]) broken = true;
-      }
+  function centroidOf(points) {
+    var x = 0, y = 0;
+    points.forEach(function(p) { x += p.x; y += p.y; });
+    return { x: x / points.length, y: y / points.length };
+  }
 
-      if (broken) {
-        bursts = [];
-        currentBurst = 1;
-        return;
-      }
-
-      if (burstIndex === pattern.length - 1 && currentBurst === pattern[burstIndex]) {
-        lastClick = null;
-        window.location.href = href;
-      }
+  function rotateByAngle(points, angle) {
+    var c = centroidOf(points);
+    var cos = Math.cos(angle), sin = Math.sin(angle);
+    return points.map(function(p) {
+      return {
+        x: (p.x - c.x) * cos - (p.y - c.y) * sin + c.x,
+        y: (p.x - c.x) * sin + (p.y - c.y) * cos + c.y
+      };
     });
   }
 
-  {%- comment -%}
-    draft 이스터에그 트리거: 화면 어디든 짧은 시간 안에 여러 번 클릭(또는 탭)하면
-    발동한다. setupClickRhythmEasterEgg처럼 간격의 "리듬"(빠름/쉼 구간)을 따지지
-    않고 단순히 windowMs 안에 requiredClicks번만 채우면 되는, 더 너그러운 판정이다.
-    backstage의 리듬([2, 1] — 빠르게 2번 + 쉬고 + 1번)과 조건이 겹치지 않도록
-    일부러 다르게 뒀다 — 마구 빠르게 연타하면 backstage 쪽은 "빠른 2번" 다음에
-    쉬지 않고 바로 3번째가 와서 패턴이 깨져버리므로, 연타 기반인 draft와 리듬 기반인
-    backstage는 실제로 거의 부딪히지 않는다.
-  {%- endcomment -%}
-  function setupMultiClickEasterEgg(requiredClicks, windowMs, href) {
-    var count = 0;
-    var lastClick = 0;
+  function indicativeAngle(points) {
+    var c = centroidOf(points);
+    return Math.atan2(points[0].y - c.y, points[0].x - c.x);
+  }
 
-    document.addEventListener('click', function(e) {
+  function scaleToSquare(points, size) {
+    var xs = points.map(function(p) { return p.x; });
+    var ys = points.map(function(p) { return p.y; });
+    var minX = Math.min.apply(null, xs), maxX = Math.max.apply(null, xs);
+    var minY = Math.min.apply(null, ys), maxY = Math.max.apply(null, ys);
+    var w = maxX - minX || 1, h = maxY - minY || 1;
+    return points.map(function(p) {
+      return { x: (p.x - minX) * (size / w), y: (p.y - minY) * (size / h) };
+    });
+  }
+
+  function translateToOrigin(points) {
+    var c = centroidOf(points);
+    return points.map(function(p) { return { x: p.x - c.x, y: p.y - c.y }; });
+  }
+
+  function normalizePath(rawPoints) {
+    var pts = resamplePoints(rawPoints, 64);
+    pts = rotateByAngle(pts, -indicativeAngle(pts));
+    pts = scaleToSquare(pts, 250);
+    pts = translateToOrigin(pts);
+    return pts;
+  }
+
+  function pathDistance(a, b) {
+    var sum = 0;
+    for (var i = 0; i < a.length; i++) sum += Math.hypot(a[i].x - b[i].x, a[i].y - b[i].y);
+    return sum / a.length;
+  }
+
+  function distanceAtAngle(points, template, angle) {
+    return pathDistance(rotateByAngle(points, angle), template);
+  }
+
+  {%- comment -%}
+    황금분할 탐색(golden section search)으로 ±45도 범위에서 거리를 최소화하는
+    회전각을 찾는다 — $1 알고리즘 원문 그대로.
+  {%- endcomment -%}
+  function distanceAtBestAngle(points, template) {
+    var thetaA = -Math.PI / 4, thetaB = Math.PI / 4, deltaTheta = 0.001745;
+    var phi = 0.5 * (-1 + Math.sqrt(5));
+    var x1 = phi * thetaA + (1 - phi) * thetaB, f1 = distanceAtAngle(points, template, x1);
+    var x2 = (1 - phi) * thetaA + phi * thetaB, f2 = distanceAtAngle(points, template, x2);
+    while (Math.abs(thetaB - thetaA) > deltaTheta) {
+      if (f1 < f2) {
+        thetaB = x2; x2 = x1; f2 = f1;
+        x1 = phi * thetaA + (1 - phi) * thetaB;
+        f1 = distanceAtAngle(points, template, x1);
+      } else {
+        thetaA = x1; x1 = x2; f1 = f2;
+        x2 = (1 - phi) * thetaA + phi * thetaB;
+        f2 = distanceAtAngle(points, template, x2);
+      }
+    }
+    return Math.min(f1, f2);
+  }
+
+  {%- comment -%}
+    템플릿 모양: 별(오각별, 한 획으로 — 바깥 꼭짓점 5개를 하나 건너씩 이어 그리는
+    익숙한 "한붓그리기 별" 방식)과 리본(무한대, 가로 누운 ∞ 기호 = 레모니스케이트
+    곡선). 둘 다 점을 적당히 촘촘하게 생성해두면 normalizePath가 알아서 64개로
+    다시 리샘플링한다.
+  {%- endcomment -%}
+  function buildStarTemplate() {
+    var cx = 125, cy = 125, outerR = 100;
+    var angles = [-90, -18, 54, 126, 198].map(function(d) { return d * Math.PI / 180; });
+    var outerPts = angles.map(function(a) {
+      return { x: cx + outerR * Math.cos(a), y: cy + outerR * Math.sin(a) };
+    });
+    var order = [0, 2, 4, 1, 3, 0];
+    var raw = [];
+    for (var i = 0; i < order.length - 1; i++) {
+      var p0 = outerPts[order[i]], p1 = outerPts[order[i + 1]];
+      for (var s = 0; s <= 20; s++) {
+        var t = s / 20;
+        raw.push({ x: p0.x + (p1.x - p0.x) * t, y: p0.y + (p1.y - p0.y) * t });
+      }
+    }
+    return raw;
+  }
+
+  function buildInfinityTemplate() {
+    var cx = 125, cy = 125, a = 100;
+    var raw = [];
+    for (var i = 0; i <= 120; i++) {
+      var t = (i / 120) * 2 * Math.PI;
+      raw.push({ x: cx + a * Math.cos(t), y: cy + a * Math.sin(t) * Math.cos(t) });
+    }
+    return raw;
+  }
+
+  var starTemplate = normalizePath(buildStarTemplate());
+  var infinityTemplate = normalizePath(buildInfinityTemplate());
+  var halfDiagonal = 0.5 * Math.sqrt(250 * 250 + 250 * 250);
+  var recognitionThreshold = 0.75;
+
+  {%- comment -%}
+    총 궤적 길이가 너무 짧으면(단순 탭, 작은 뒤척임) 모양 비교 자체를 생략한다 —
+    64개로 억지로 리샘플링해봐야 의미 있는 모양이 아니기 때문.
+  {%- endcomment -%}
+  function recognizeShape(rawPoints) {
+    if (rawPoints.length < 10) return null;
+
+    var totalLen = 0;
+    for (var i = 1; i < rawPoints.length; i++) {
+      totalLen += Math.hypot(rawPoints[i].x - rawPoints[i - 1].x, rawPoints[i].y - rawPoints[i - 1].y);
+    }
+    if (totalLen < 150) return null;
+
+    var candidate = normalizePath(rawPoints);
+    var starScore = 1 - distanceAtBestAngle(candidate, starTemplate) / halfDiagonal;
+    var infinityScore = 1 - distanceAtBestAngle(candidate, infinityTemplate) / halfDiagonal;
+
+    if (starScore >= recognitionThreshold && starScore > infinityScore) return 'star';
+    if (infinityScore >= recognitionThreshold && infinityScore > starScore) return 'infinity';
+    return null;
+  }
+
+  {%- comment -%}
+    Pointer Events로 마우스 드래그/터치 드래그를 처리한다. 마우스는 손가락 한 개
+    (포인터 하나)로 바로 그리기 시작해도 된다 — 데스크탑은 클릭 드래그가 스크롤과
+    경쟁하지 않는다. 하지만 터치는 다르다: 스크롤이 있는 영역에서 손가락 하나로
+    드래그하면 브라우저가 거의 즉시 "스크롤이구나" 판단하고 그 터치를 네이티브
+    스크롤에 넘겨버리면서 pointercancel을 쏘고 이후 pointermove를 끊어버린다 —
+    그러면 궤적을 끝까지 못 받아서 모양 인식이 실패한다. 반대로 touch-action:none
+    으로 스크롤 자체를 막으면 평소 스크롤까지 사이트 전체에서 망가진다.
+
+    그래서 터치는 손가락 두 개가 동시에 닿아야만 그리기로 인정한다 — 평범한
+    웹페이지에서 손가락 두 개로 평행 이동(핀치 아님)하는 건 브라우저가 가로채는
+    네이티브 동작이 없어서 스크롤과 전혀 부딪히지 않는다. 손가락 한 개만 있을 땐
+    이 로직이 아예 관여하지 않으니 평소 스크롤은 그대로 동작한다.
+  {%- endcomment -%}
+  function setupShapeEasterEgg(hrefs) {
+    var points = null;
+    var trackingPointerId = null;
+    var activeTouchIds = {};
+    var activeTouchCount = 0;
+
+    function beginTracking(e) {
+      trackingPointerId = e.pointerId;
+      points = [{ x: e.clientX, y: e.clientY }];
+    }
+
+    function start(e) {
       if (isTypingTarget(e)) return;
 
-      var now = Date.now();
-      count = (now - lastClick <= windowMs) ? count + 1 : 1;
-      lastClick = now;
-
-      if (count >= requiredClicks) {
-        count = 0;
-        window.location.href = href;
+      if (e.pointerType !== 'touch') {
+        beginTracking(e);
+        return;
       }
-    });
+
+      if (!activeTouchIds[e.pointerId]) {
+        activeTouchIds[e.pointerId] = true;
+        activeTouchCount++;
+      }
+      if (activeTouchCount === 2) {
+        beginTracking(e);
+      }
+    }
+
+    function move(e) {
+      if (!points || e.pointerId !== trackingPointerId) return;
+      points.push({ x: e.clientX, y: e.clientY });
+    }
+
+    function finish(e) {
+      if (e.pointerType === 'touch' && activeTouchIds[e.pointerId]) {
+        delete activeTouchIds[e.pointerId];
+        activeTouchCount--;
+      }
+
+      if (!points || e.pointerId !== trackingPointerId) return;
+
+      var shape = recognizeShape(points);
+      points = null;
+      trackingPointerId = null;
+      if (shape && hrefs[shape]) {
+        window.location.href = hrefs[shape];
+      }
+    }
+
+    document.addEventListener('pointerdown', start);
+    document.addEventListener('pointermove', move);
+    document.addEventListener('pointerup', finish);
+    document.addEventListener('pointercancel', finish);
   }
 
   function setupCitationNotes() {
@@ -265,8 +417,7 @@
     setupHomeLink();
     setupSearchToggle();
     setupMenu();
-    setupClickRhythmEasterEgg([2, 1], backstageEasterEggHref);
-    setupMultiClickEasterEgg(5, 2000, draftEasterEggHref);
+    setupShapeEasterEgg({ star: backstageEasterEggHref, infinity: draftEasterEggHref });
     setupCitationNotes();
   }
 
