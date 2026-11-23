@@ -11,18 +11,18 @@
   {% assign lang = "en" %}
 {% endcase %}
 {%- comment -%}
-  검색도 서브 블로그(lab/essay/playground/backstage)별로 분리한다. 각 섹션에는 자신의 글만
+  검색도 서브 블로그(lab/essay/playground/backstage/draft)별로 분리한다. 각 섹션에는 자신의 글만
   담은 스토어(lunr-store-lab.js 등)를 쓰고, 그 외 페이지(루트 등)는 전체 통합 스토어로 폴백한다.
   이 include는 scripts.html에서 include_cached가 아닌 include로 불러야 page.url을 쓸 수 있다
   (include_cached는 page 컨텍스트를 무시하고 출력을 캐시해버리기 때문).
 {%- endcomment -%}
 {%- comment -%}
   url_section 계산은 head/custom.html, tag-list.html에도 똑같이 있다.
-  "lab/essay/playground/backstage" 목록을 바꿀 땐 이 세 곳을 같이 확인할 것.
+  "lab/essay/playground/backstage/draft" 목록을 바꿀 땐 이 세 곳을 같이 확인할 것.
 {%- endcomment -%}
 {%- assign url_section = page.url | split: '/' | where_exp: "s", "s != ''" | first -%}
 {%- assign store_path = '/assets/js/lunr/lunr-store.js' -%}
-{%- if url_section == 'lab' or url_section == 'essay' or url_section == 'playground' or url_section == 'backstage' -%}
+{%- if url_section == 'lab' or url_section == 'essay' or url_section == 'playground' or url_section == 'backstage' or url_section == 'draft' -%}
   {%- assign store_path = '/assets/js/lunr/lunr-store-' | append: url_section | append: '.js' -%}
 {%- endif -%}
 <script src="{{ '/assets/js/lunr/lunr.min.js' | relative_url }}"></script>

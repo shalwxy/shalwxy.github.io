@@ -4,7 +4,7 @@
   예) /lab/engineering/distributed/foo/ -> /lab/engineering/distributed/
 
   post_pagination.html(목록 버튼)과 category_list.html(같은 카테고리의 다른 글)이 같이 쓴다.
-  둘 다 lab/essay/playground/backstage 글에서만 쓰이므로, 이 include를 쓰는 쪽에서 미리
+  둘 다 lab/essay/playground/backstage/draft 글에서만 쓰이므로, 이 include를 쓰는 쪽에서 미리
   page.collection 체크를 하고 나서 불러야 한다.
 {%- endcomment -%}
 {%- assign url_parts = page.url | split: '/' | where_exp: "s", "s != ''" -%}

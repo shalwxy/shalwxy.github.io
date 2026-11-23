@@ -4,7 +4,7 @@
   페이지당 5개씩 끊어서, :target CSS만으로(JS 없이) 페이지 번호를 눌러 전환한다 -
   main.scss의 태그 아카이브 :target 패턴과 동일한 방식.
 {%- endcomment -%}
-{%- if page.collection == 'lab' or page.collection == 'essay' or page.collection == 'playground' or page.collection == 'backstage' -%}
+{%- if page.collection == 'lab' or page.collection == 'essay' or page.collection == 'playground' or page.collection == 'backstage' or page.collection == 'draft' -%}
   {% include category_url.html %}
 
   {%- assign siblings = site[page.collection] | where_exp: "doc", "doc.url != page.url" -%}

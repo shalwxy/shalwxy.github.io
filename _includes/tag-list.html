@@ -11,17 +11,17 @@
 {% endcase %}
 
 {%- comment -%}
-  태그는 서브 블로그(lab/essay/playground/backstage)별로 분리된 태그 아카이브(/lab/tags/ 등)만
+  태그는 서브 블로그(lab/essay/playground/backstage/draft)별로 분리된 태그 아카이브(/lab/tags/ 등)만
   있고 전역 /tags/ 페이지는 없다. 그래서 서브 블로그 밖에서는 tag_archive_path를 nil로 둬서
   (site.tag_archive.path 같은 존재하지 않는 경로로 폴백하지 않고) 태그 링크 자체를 생략한다.
 {%- endcomment -%}
 {%- comment -%}
   url_section 계산은 head/custom.html, search/lunr-search-scripts.html에도 똑같이 있다.
-  "lab/essay/playground/backstage" 목록을 바꿀 땐 이 세 곳을 같이 확인할 것.
+  "lab/essay/playground/backstage/draft" 목록을 바꿀 땐 이 세 곳을 같이 확인할 것.
 {%- endcomment -%}
 {%- assign url_section = page.url | split: '/' | where_exp: "s", "s != ''" | first -%}
 {%- assign tag_archive_path = nil -%}
-{%- if url_section == 'lab' or url_section == 'essay' or url_section == 'playground' or url_section == 'backstage' -%}
+{%- if url_section == 'lab' or url_section == 'essay' or url_section == 'playground' or url_section == 'backstage' or url_section == 'draft' -%}
   {%- assign tag_archive_path = '/' | append: url_section | append: '/tags/' -%}
 {%- endif -%}
 

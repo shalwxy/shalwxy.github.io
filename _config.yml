@@ -24,8 +24,8 @@ atom_feed:
   path: "/rss.xml"
   hide: true
 
-# path는 없다 — 태그 아카이브는 /lab/tags/, /essay/tags/, /playground/tags/, /backstage/tags/로
-# 서브 블로그별로 분리되어 있고 전역 /tags/ 페이지는 없다(_includes/tag-list.html 참고). type만
+# path는 없다 — 태그 아카이브는 /lab/tags/, /essay/tags/, /playground/tags/, /backstage/tags/,
+# /draft/tags/로 서브 블로그별로 분리되어 있고 전역 /tags/ 페이지는 없다(_includes/tag-list.html 참고). type만
 # 쓰여서 태그 링크가 #태그-슬러그 앵커를 쓰도록 한다.
 tag_archive:
   type: liquid
@@ -88,6 +88,9 @@ collections:
     output: true
     permalink: /:collection/:path/
   backstage:
+    output: true
+    permalink: /:collection/:path/
+  draft:
     output: true
     permalink: /:collection/:path/
 
@@ -155,6 +158,28 @@ defaults:
       sidebar:
         nav: "backstage"
       # 공개 전 준비 공간: 메인 nav에 링크를 안 두는 것과 별개로,
+      # 사이트맵·검색엔진·내부 검색(lunr)에서도 노출되지 않도록 막아둔다.
+      sitemap: false
+      search: false
+  - scope:
+      # "draft"는 Jekyll이 레거시 _drafts(미발행 글) 기능과 겹치는 예약어로 취급해서
+      # `type: draft`로 스코프를 주면 조용히 `type: drafts`로 바뀌어버려(Jekyll
+      # Deprecator) 우리 draft 컬렉션 문서에는 전혀 적용되지 않는다. 그래서 type 대신
+      # 실제 컬렉션 폴더 경로(_draft/)로 스코프를 건다 — backstage 등 다른 서브
+      # 블로그와 달리 이 블록만 path 기반인 이유.
+      path: "_draft"
+    values:
+      layout: single
+      author_profile: false
+      read_time: true
+      comments: true
+      share: true
+      show_date: true
+      toc: true
+      toc_sticky: true
+      sidebar:
+        nav: "draft"
+      # backstage와 동일한 공개 전 준비 공간: 메인 nav에 링크를 안 두는 것과 별개로,
       # 사이트맵·검색엔진·내부 검색(lunr)에서도 노출되지 않도록 막아둔다.
       sitemap: false
       search: false

@@ -66,3 +66,38 @@ backstage:
     children:
       - title: "타래타운"
         url: /backstage/project/taraetown/
+
+# backstage와 마찬가지로 메인 nav에는 일부러 안 넣는다 — 공개 전 준비 공간.
+draft:
+  - title: "Draft"
+    url: /draft/
+    children:
+      - title: "전체"
+        url: /draft/
+  - title: "연습"
+    url: /draft/practice/
+    children:
+      - title: "매일 글쓰기"
+        url: /draft/practice/daily/
+      - title: "키워드 모임"
+        url: /draft/practice/keyword/
+      - title: "장면 스케치"
+        url: /draft/practice/scene/
+  - title: "소설"
+    url: /draft/fiction/
+    children:
+      - title: "연재 초고"
+        url: /draft/fiction/serial/
+      - title: "개정고"
+        url: /draft/fiction/revision/
+      - title: "외전"
+        url: /draft/fiction/spinoff/
+  - title: "사유"
+    url: /draft/reflection/
+    children:
+      - title: "탐구 노트"
+        url: /draft/reflection/notes/
+      - title: "창작론"
+        url: /draft/reflection/craft/
+      - title: "단평"
+        url: /draft/reflection/review/
