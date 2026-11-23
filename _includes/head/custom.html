@@ -168,18 +168,28 @@
     mousedown/touchstart에서 타이머를 걸고, 중간에 손을 떼거나(mouseup/touchend) 커서가
     벗어나거나(mouseleave) 손가락이 움직이면(touchmove, 스크롤 의도로 간주) 타이머를
     취소한다.
+
+    모바일에서는 배경(글 본문이 아닌 영역)을 꾹 누르면 iOS/Android가 "근처 텍스트 선택"
+    제스처를 가로채서 touchcancel을 쏴버리는 바람에 타이머가 3초를 못 채우고 매번
+    취소되는 문제가 있었다. html에 persica-hold-active 클래스를 올려 선택/콜아웃을
+    잠깐 꺼서(main.scss) 네이티브 선택 제스처가 끼어들 기회 자체를 없앤다 — 단, 실제
+    글 본문(.page__content) 안에서는 복사를 위해 선택을 다시 허용해둬서(main.scss),
+    본문 텍스트를 누를 때는 이 이스터에그보다 텍스트 선택이 우선한다.
   {%- endcomment -%}
   function setupHoldEasterEgg(holdMs, href) {
     var timer = null;
+    var activeClass = 'persica-hold-active';
 
     function start(e) {
       if (isTypingTarget(e)) return;
+      document.documentElement.classList.add(activeClass);
       timer = setTimeout(function() {
         window.location.href = href;
       }, holdMs);
     }
 
     function cancel() {
+      document.documentElement.classList.remove(activeClass);
       if (timer) {
         clearTimeout(timer);
         timer = null;
