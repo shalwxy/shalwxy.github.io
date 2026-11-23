@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 646" width="1200" height="646" role="img" aria-label="ISA 만기금 6,000만 원이 연금저축 1(600만 원, 연간 세액공제 한도)과 연금저축 2(5,400만 원, 나머지)로 나뉘어 옮겨가는 예시 흐름도">
+<rect width="1200" height="646" fill="#fcfcfb"/>
+<text x="48" y="54" font-size="28" font-weight="700" fill="#0b0b0b" font-family="'Noto Sans KR','Apple SD Gothic Neo',sans-serif">ISA 만기 자금은 어떻게 할까?</text>
+<text x="48" y="84" font-size="15" fill="#52514e" font-family="'Noto Sans KR','Apple SD Gothic Neo',sans-serif">ISA 연 2,000만 원씩 3년 납입, 연금저축 1의 연간 세액공제 한도(600만 원)가 비어 있다고 가정</text>
+<rect x="70" y="190" width="300" height="160" rx="12" fill="#ffffff" stroke="rgba(11,11,11,0.10)" stroke-width="1"/>
+<rect x="70" y="190" width="6" height="160" rx="3" fill="#eda100"/>
+<rect x="98" y="216" width="44" height="44" rx="11" fill="#eda100"/>
+<text x="120" y="245" font-size="20" font-weight="700" fill="#0b0b0b" text-anchor="middle" font-family="'Noto Sans KR','Apple SD Gothic Neo',sans-serif">④</text>
+<text x="156" y="232" font-size="21" font-weight="700" fill="#0b0b0b" font-family="'Noto Sans KR','Apple SD Gothic Neo',sans-serif">ISA</text>
+<text x="156" y="253" font-size="13" fill="#52514e" font-family="'Noto Sans KR','Apple SD Gothic Neo',sans-serif">월배당 포트폴리오 · 3년 만기</text>
+<text x="98" y="324" font-size="27" font-weight="700" fill="#0b0b0b" font-family="'Noto Sans KR','Apple SD Gothic Neo',sans-serif">만기금 6,000만원</text>
+<rect x="830" y="40" width="300" height="160" rx="12" fill="#ffffff" stroke="rgba(11,11,11,0.10)" stroke-width="1"/>
+<rect x="830" y="40" width="6" height="160" rx="3" fill="#2a78d6"/>
+<rect x="858" y="66" width="44" height="44" rx="11" fill="#2a78d6"/>
+<text x="880" y="95" font-size="20" font-weight="700" fill="#ffffff" text-anchor="middle" font-family="'Noto Sans KR','Apple SD Gothic Neo',sans-serif">①</text>
+<text x="916" y="82" font-size="21" font-weight="700" fill="#0b0b0b" font-family="'Noto Sans KR','Apple SD Gothic Neo',sans-serif">연금저축 1</text>
+<text x="916" y="103" font-size="13" fill="#52514e" font-family="'Noto Sans KR','Apple SD Gothic Neo',sans-serif">세액공제 받을 몫</text>
+<text x="858" y="174" font-size="27" font-weight="700" fill="#0b0b0b" font-family="'Noto Sans KR','Apple SD Gothic Neo',sans-serif">600만원</text>
+<rect x="830" y="360" width="300" height="160" rx="12" fill="#ffffff" stroke="rgba(11,11,11,0.10)" stroke-width="1"/>
+<rect x="830" y="360" width="6" height="160" rx="3" fill="#008300"/>
+<rect x="858" y="386" width="44" height="44" rx="11" fill="#008300"/>
+<text x="880" y="415" font-size="20" font-weight="700" fill="#ffffff" text-anchor="middle" font-family="'Noto Sans KR','Apple SD Gothic Neo',sans-serif">②</text>
+<text x="916" y="402" font-size="21" font-weight="700" fill="#0b0b0b" font-family="'Noto Sans KR','Apple SD Gothic Neo',sans-serif">연금저축 2</text>
+<text x="916" y="423" font-size="13" fill="#52514e" font-family="'Noto Sans KR','Apple SD Gothic Neo',sans-serif">나머지 금액</text>
+<text x="858" y="494" font-size="27" font-weight="700" fill="#0b0b0b" font-family="'Noto Sans KR','Apple SD Gothic Neo',sans-serif">5,400만원</text>
+<defs>
+  <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="7" refY="3.5" orient="auto">
+    <polygon points="0 0, 8 3.5, 0 7" fill="#898781"/>
+  </marker>
+</defs>
+<path d="M 370 270.0 C 630.0 270.0 630.0 120.0 818 120.0" fill="none" stroke="#898781" stroke-width="2" marker-end="url(#arrowhead)"/>
+<path d="M 370 270.0 C 630.0 270.0 630.0 440.0 818 440.0" fill="none" stroke="#898781" stroke-width="2" marker-end="url(#arrowhead)"/>
+<rect x="70" y="560" width="1060" height="56" rx="12" fill="#cde2fb"/>
+<text x="600" y="594.0" font-size="17" font-weight="700" fill="#0b0b0b" text-anchor="middle" font-family="'Noto Sans KR','Apple SD Gothic Neo',sans-serif">전환액 6,000만원의 10%는 600만원이지만, 추가 세액공제는 최대 300만원까지만 인정된다</text>
+</svg>
