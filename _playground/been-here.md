@@ -71,15 +71,6 @@ classes: wide
   display: block; width: 22px; height: 22px; border-radius: 50%;
   border: 3px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.35);
 }
-.bh-cluster-header { display: flex; justify-content: flex-end; margin-bottom: 0.4em; }
-button.bh-cluster-update {
-  display: flex; align-items: center; justify-content: center;
-  -webkit-appearance: none; -moz-appearance: none; appearance: none; box-shadow: none; margin: 0;
-  padding: 0.4em; border: 1px solid #c9ccd1; border-radius: 6px; background: #fff; color: #555;
-  cursor: pointer;
-}
-button.bh-cluster-update:hover { color: #2a5a8a; border-color: #2a5a8a; }
-button.bh-cluster-update:disabled { opacity: 0.5; cursor: default; }
 .leaflet-control-locate a {
   width: 34px; height: 34px; display: flex; align-items: center; justify-content: center;
   background: #fff; text-decoration: none; cursor: pointer;
@@ -239,7 +230,9 @@ button.bh-cluster-item:hover { background: #ebedf0; }
         L.DomEvent.stop(e);
         if (link.classList.contains('bh-refreshing')) return;
         link.classList.add('bh-refreshing');
-        loadMemos().catch(function () {}).finally(function () {
+        loadMemos().then(function () {
+          if (activeListRefresh) activeListRefresh.resetAndRender(activeListRefresh.getItems());
+        }).catch(function () {}).finally(function () {
           link.classList.remove('bh-refreshing');
         });
       });
@@ -249,6 +242,10 @@ button.bh-cluster-item:hover { background: #ebedf0; }
   map.addControl(new RefreshControl());
 
   var CLUSTER_PAGE_SIZE = 20;
+
+  // 현재 열려 있는 메모 목록 팝업(있다면)의 재조회 방법. 지도의 새로고침 버튼이
+  // loadMemos() 이후 이 목록도 같이 최신화할 수 있도록 팝업이 열려 있는 동안만 채워둔다.
+  var activeListRefresh = null;
 
   // 클러스터 영역(bounds) 안에 있는 메모들을 markersLayer에서 직접 모아 최신순으로 정렬한다.
   // 클러스터 객체 자체가 아니라 지리적 영역으로 걸러서, 업데이트 후 데이터가 바뀌어도 그대로 재사용할 수 있다.
@@ -295,32 +292,12 @@ button.bh-cluster-item:hover { background: #ebedf0; }
   // 목록은 한 번에 일부만 그리고 스크롤이 바닥에 닿을 때마다 더 그려서(무한 스크롤) 메모가
   // 많아져도 가볍게 유지한다.
   function openMemoListPopup(latlng, getItems) {
-    var headerEl = document.createElement('div');
-    headerEl.className = 'bh-cluster-header';
-    var updateBtn = document.createElement('button');
-    updateBtn.type = 'button';
-    updateBtn.className = 'bh-cluster-update';
-    updateBtn.setAttribute('aria-label', '새로고침');
-    updateBtn.innerHTML =
-      '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" ' +
-        'stroke-linecap="round" stroke-linejoin="round">' +
-        '<polyline points="23 4 23 10 17 10"></polyline>' +
-        '<polyline points="1 20 1 14 7 14"></polyline>' +
-        '<path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>' +
-      '</svg>';
-    headerEl.appendChild(updateBtn);
-
     var listEl = document.createElement('div');
     listEl.className = 'bh-cluster-list';
 
-    var wrapEl = document.createElement('div');
-    wrapEl.appendChild(headerEl);
-    wrapEl.appendChild(listEl);
-
-    L.popup({ maxWidth: 280, minWidth: 220 })
+    var popup = L.popup({ maxWidth: 280, minWidth: 220 })
       .setLatLng(latlng)
-      .setContent(wrapEl)
-      .openOn(map);
+      .setContent(listEl);
 
     var listState = { items: [], rendered: 0 };
 
@@ -342,14 +319,15 @@ button.bh-cluster-item:hover { background: #ebedf0; }
       if (listEl.scrollTop + listEl.clientHeight >= listEl.scrollHeight - 40) renderMore();
     });
 
-    updateBtn.addEventListener('click', function () {
-      updateBtn.disabled = true;
-      loadMemos().then(function () {
-        resetAndRender(getItems());
-        updateBtn.disabled = false;
-      }).catch(function () { updateBtn.disabled = false; });
+    // 이 팝업이 열려 있는 동안만 지도의 새로고침 버튼이 이 목록도 같이 갱신하게 한다.
+    // 팝업이 닫히거나 다른 팝업으로 교체되면(remove) 더 이상 갱신 대상이 아니므로 해제한다.
+    var refreshEntry = { getItems: getItems, resetAndRender: resetAndRender };
+    popup.on('remove', function () {
+      if (activeListRefresh === refreshEntry) activeListRefresh = null;
     });
+    activeListRefresh = refreshEntry;
 
+    popup.openOn(map);
     resetAndRender(getItems());
   }
 
