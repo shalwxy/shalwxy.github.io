@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="저금통에 동전을 넣고 새싹이 자라는 일러스트">
+  <defs>
+    <linearGradient id="pension-sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e8f1fc"/>
+      <stop offset="100%" stop-color="#dbe9fb"/>
+    </linearGradient>
+    <linearGradient id="pension-body" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3987e5"/>
+      <stop offset="100%" stop-color="#1c5cab"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="800" fill="url(#pension-sky)"/>
+  <rect x="0" y="620" width="1200" height="180" fill="#cde2fb"/>
+
+  <ellipse cx="600" cy="500" rx="230" ry="170" fill="url(#pension-body)"/>
+  <circle cx="440" cy="370" r="46" fill="#3987e5"/>
+  <circle cx="760" cy="370" r="46" fill="#3987e5"/>
+  <rect x="470" y="630" width="50" height="70" rx="16" fill="#1c5cab"/>
+  <rect x="680" y="630" width="50" height="70" rx="16" fill="#1c5cab"/>
+  <ellipse cx="600" cy="520" rx="70" ry="48" fill="#86b6ef"/>
+  <circle cx="575" cy="520" r="9" fill="#1c5cab"/>
+  <circle cx="625" cy="520" r="9" fill="#1c5cab"/>
+  <circle cx="500" cy="440" r="12" fill="#0b0b0b"/>
+  <rect x="565" y="340" width="70" height="16" rx="8" fill="#0b0b0b" opacity="0.7"/>
+
+  <g transform="rotate(-18 600 230)">
+    <circle cx="600" cy="230" r="54" fill="#eda100"/>
+    <circle cx="600" cy="230" r="54" fill="none" stroke="#c07e00" stroke-width="4"/>
+    <text x="600" y="246" font-size="46" font-weight="700" fill="#fffdf6" text-anchor="middle" font-family="'Noto Sans KR','Apple SD Gothic Neo',sans-serif">₩</text>
+  </g>
+
+  <circle cx="860" cy="260" r="8" fill="#e87ba4"/>
+  <circle cx="900" cy="330" r="6" fill="#008300"/>
+  <circle cx="330" cy="290" r="7" fill="#eda100"/>
+
+  <g>
+    <path d="M840 440 C 840 390, 870 360, 870 320" fill="none" stroke="#008300" stroke-width="10" stroke-linecap="round"/>
+    <path d="M870 340 C 850 320, 830 320, 815 335 C 830 350, 855 350, 870 340 Z" fill="#008300"/>
+    <path d="M870 320 C 890 300, 910 300, 925 315 C 910 330, 885 330, 870 320 Z" fill="#2a78d6"/>
+  </g>
+</svg>
