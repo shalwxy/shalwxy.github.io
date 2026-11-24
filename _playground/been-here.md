@@ -80,6 +80,12 @@ button.bh-cluster-update {
 }
 button.bh-cluster-update:hover { color: #2a5a8a; border-color: #2a5a8a; }
 button.bh-cluster-update:disabled { opacity: 0.5; cursor: default; }
+.leaflet-control-locate a {
+  width: 34px; height: 34px; display: flex; align-items: center; justify-content: center;
+  background: #fff; text-decoration: none; cursor: pointer;
+}
+.leaflet-control-locate a:hover { background: #f4f4f4; }
+.leaflet-control-locate a.bh-locating { opacity: 0.5; cursor: wait; }
 .bh-cluster-list { max-height: 260px; overflow-y: auto; display: flex; flex-direction: column; gap: 0.4em; }
 button.bh-cluster-item {
   display: block; width: 100%; text-align: left; font: inherit; cursor: pointer;
@@ -162,6 +168,50 @@ button.bh-cluster-item:hover { background: #ebedf0; }
     showCoverageOnHover: false
   });
   map.addLayer(markersLayer);
+
+  var myLocationLayer = null; // 현위치 표시(파란 점) — 메모 마커와는 별개
+
+  // 현위치 점이 메모 마커(markerPane, z-index 600)보다 항상 위에 그려지도록 전용 pane을 쓴다.
+  // 기본 L.circleMarker는 더 아래 레이어인 overlayPane(z-index 400)에 그려져서, 근처에 메모가 있으면 가려질 수 있다.
+  map.createPane('bh-my-location-pane');
+  map.getPane('bh-my-location-pane').style.zIndex = 625;
+  map.getPane('bh-my-location-pane').style.pointerEvents = 'none';
+
+  // 현위치를 파란 점(halo + dot)으로 표시한다. 메모 마커(닉네임별 색)와 헷갈리지 않도록 고정된 색을 쓴다.
+  function showMyLocation(lat, lng) {
+    if (myLocationLayer) map.removeLayer(myLocationLayer);
+    myLocationLayer = L.layerGroup([
+      L.circleMarker([lat, lng], { pane: 'bh-my-location-pane', radius: 16, stroke: false, fillColor: '#2a5a8a', fillOpacity: 0.18 }),
+      L.circleMarker([lat, lng], { pane: 'bh-my-location-pane', radius: 7, color: '#fff', weight: 2, fillColor: '#2a5a8a', fillOpacity: 1 })
+    ]).addTo(map);
+  }
+
+  // 지도를 현재 위치로 옮겨주는 버튼. 메모를 남길 때의 위치 확인과는 별개로, 지도 이동만 돕는다.
+  var LocateControl = L.Control.extend({
+    options: { position: 'bottomright' },
+    onAdd: function () {
+      var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-locate');
+      var link = L.DomUtil.create('a', '', container);
+      link.href = '#';
+      link.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#2a5a8a" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="6"></circle><line x1="12" y1="2" x2="12" y2="5"></line><line x1="12" y1="19" x2="12" y2="22"></line><line x1="2" y1="12" x2="5" y2="12"></line><line x1="19" y1="12" x2="22" y2="12"></line></svg>';
+      L.DomEvent.on(link, 'click', function (e) {
+        L.DomEvent.stop(e);
+        if (link.classList.contains('bh-locating')) return;
+        if (!navigator.geolocation) { setStatus('이 브라우저는 위치 정보를 지원하지 않습니다.', 'bad'); return; }
+        link.classList.add('bh-locating');
+        navigator.geolocation.getCurrentPosition(function (pos) {
+          link.classList.remove('bh-locating');
+          map.setView([pos.coords.latitude, pos.coords.longitude], 13);
+          showMyLocation(pos.coords.latitude, pos.coords.longitude);
+        }, function (err) {
+          link.classList.remove('bh-locating');
+          setStatus(geoErrorMessage(err), 'bad');
+        }, { enableHighAccuracy: true, timeout: 10000 });
+      });
+      return container;
+    }
+  });
+  map.addControl(new LocateControl());
 
   var CLUSTER_PAGE_SIZE = 20;
 

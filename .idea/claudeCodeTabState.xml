@@ -8,7 +8,7 @@
             <TabSessionState>
               <option name="projectPath" value="$PROJECT_DIR$" />
               <option name="provider" value="claude" />
-              <option name="sessionId" value="87a79478-679d-4882-ad32-fa19069b3bb1" />
+              <option name="sessionId" value="dee877dc-004f-4fcc-9ecd-1c9d9f277e0c" />
               <option name="cwd" value="$PROJECT_DIR$" />
               <option name="model" value="claude-sonnet-5[1m]" />
               <option name="permissionMode" value="default" />
@@ -20,14 +20,28 @@
             <TabSessionState>
               <option name="projectPath" value="$PROJECT_DIR$" />
               <option name="provider" value="claude" />
+              <option name="sessionId" value="87a79478-679d-4882-ad32-fa19069b3bb1" />
               <option name="cwd" value="$PROJECT_DIR$" />
               <option name="model" value="claude-sonnet-5[1m]" />
               <option name="permissionMode" value="default" />
             </TabSessionState>
           </value>
         </entry>
+        <entry key="2">
+          <value>
+            <TabSessionState>
+              <option name="projectPath" value="$PROJECT_DIR$" />
+              <option name="provider" value="claude" />
+              <option name="sessionId" value="c72852b9-63fd-4c35-8531-cbc599388aa9" />
+              <option name="cwd" value="$PROJECT_DIR$" />
+              <option name="model" value="claude-sonnet-5[1m]" />
+              <option name="permissionMode" value="default" />
+              <option name="unread" value="true" />
+            </TabSessionState>
+          </value>
+        </entry>
       </map>
     </option>
-    <option name="tabCount" value="2" />
+    <option name="tabCount" value="3" />
   </component>
 </project>

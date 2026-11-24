@@ -12,13 +12,13 @@ author_profile: false
 classes: wide
 ---
 
-[`[독서] 연금 부자 수업 (박곰희)`](/essay/review/reading/pension-rich-class/) 글에서 다룬 "4개의 통장" 구조를 바탕으로 만든 계산기다. 연금저축과 IRP에 넣은 돈은 **세액공제**로 돌려받고 운용수익은 수령 전까지 **과세이연**되며, ISA에 넣은 돈은 **비과세 한도** 안에서 운용수익에 세금이 안 붙는다. 월 납입액을 어떻게 배분하느냐에 따라 1년에 얼마를 돌려받고, 연금 납입 기간과 ISA 만기를 반복하는 기간 동안 세금을 얼마나 아끼는지 숫자로 보여준다.
+[`[독서] 연금 부자 수업 (박곰희)`](/essay/review/reading/pension-rich-class/) 글의 "4개 통장" 구조로 만든 계산기다. 연금저축·IRP는 **세액공제**와 **과세이연**으로, ISA는 **비과세 한도**로 세금을 아낀다. 월 납입액 배분에 따라 얼마를 돌려받고 아끼는지 숫자로 보여준다.
 
 <div class="pt-notice">
-  ⚠️ <strong>이 계산기는 <strong id="pt-asof">-</strong> 기준으로 확정된 법만 반영한다.</strong> 세액공제 한도(연금저축 600만원·합산 900만원), 공제율(16.5%/13.2%), ISA 비과세 한도(200만원·서민형 400만원), 사적연금 종합과세 전환 기준(1,500만원)은 모두 확정 법 기준이고, 2025년 세법개정안으로 확정돼 2026년부터 시행 중인 종신형 연금계좌 분리과세 3%도 반영했다. (같은 개정안의 연금계좌 해외펀드 외국납부세액공제는 확정된 변경사항이지만 해외펀드 투자 자체를 다루지 않는 계산기라 반영 대상이 아니다.)<br><br>
-  <strong>2026년 세제개편안</strong>(2026-08-03 재정경제부 발표)에 담긴 "생산적금융 ISA" 신설, 청년(15~34세) IRP 세액공제 소득요건 폐지 등은 이 글을 쓰는 시점 기준 <strong>아직 국회 심의 중인 정부안</strong>이라(시행 예정 2027년) 계산에 넣지 않았다. 확정되면 이 계산기도 업데이트할 예정이다.<br><br>
-  ISA와 연금저축·IRP의 운용수익은 모두 월 적립식 투자가 매달 복리로 불어난다고 가정한 추정치이며, 연금 수령 단계 세금도 참고용 추정이다. 실제 세액은 반드시 홈택스·국세청 안내로 재확인한다.<br>
-  최종 업데이트: <strong>2026-11-24</strong> · 참고한 자료는 글 하단의 "참고 자료"를 확인한다.
+  ⚠️ <strong><strong id="pt-asof">-</strong> 기준 확정 법만 반영했다.</strong> 세액공제 한도(600/900만원), 공제율(16.5%/13.2%), ISA 비과세 한도(200/400만원), 사적연금 1,500만원 기준, 종신형 분리과세 3%(2026년 시행 확정).<br><br>
+  <strong>2026년 세제개편안</strong>(생산적금융 ISA 신설, 청년 IRP 요건 폐지 등)은 아직 국회 심의 중인 정부안(시행 예정 2027년)이라 반영하지 않았다.<br><br>
+  운용수익은 복리로 불어난다고 가정한 추정치이고, 실제 세액은 홈택스·국세청으로 재확인한다.<br>
+  최종 업데이트: <strong>2026-11-24</strong> · 참고 자료는 글 하단 참고.
 </div>
 
 <div class="pt-wrap">
@@ -26,14 +26,14 @@ classes: wide
     <h3>입력</h3>
 
     <label>
-      <span class="pt-label-text">총급여 (만원, 연)<span class="pt-tip" tabindex="0" data-tip="세액공제율을 가르는 기준입니다. 총급여 5,500만원(종합소득금액 4,500만원) 이하면 16.5%, 초과하면 13.2% 공제율이 적용됩니다.">?</span></span>
+      <span class="pt-label-text">총급여 (만원, 연)<span class="pt-tip" tabindex="0" data-tip="5,500만원(종합소득 4,500만원) 이하 16.5%, 초과 13.2% 공제율.">?</span></span>
       <input type="number" id="pt-income" value="6000">
     </label>
 
     <label class="pt-checkbox">
       <input type="checkbox" id="pt-ordinary">
       ISA 서민형·농어민형 해당
-      <span class="pt-tip" tabindex="0" data-tip="총급여 5,000만원 이하면 자동으로 체크됩니다. 종합소득금액(3,800만원) 기준이나 농어민 여부는 입력값이 없어 자동 판정할 수 없으니, 해당하면 직접 체크하세요. 체크하면 ISA 비과세 한도가 200만원에서 400만원으로 늘어납니다.">?</span>
+      <span class="pt-tip" tabindex="0" data-tip="총급여 5,000만원 이하면 자동 체크됩니다. 종합소득·농어민 여부는 직접 체크하세요. 비과세 한도가 400만원으로 늘어납니다.">?</span>
     </label>
     <div class="pt-hint-slot"><div class="pt-hint" id="pt-ordinary-hint"></div></div>
 
@@ -50,24 +50,24 @@ classes: wide
     </label>
 
     <label>
-      <span class="pt-label-text">연금저축·IRP 납입 기간 (년)<span class="pt-tip" tabindex="0" data-tip="세액공제를 받는 기간입니다. 보통 은퇴 전까지 수십 년에 걸쳐 납입하므로, ISA 투자 기간(보통 3~5년 만기)과는 길이가 다릅니다.">?</span></span>
+      <span class="pt-label-text">연금저축·IRP 납입 기간 (년)<span class="pt-tip" tabindex="0" data-tip="세액공제 받는 기간. 은퇴 전까지 수십 년이라 ISA 기간과 다릅니다.">?</span></span>
       <input type="number" id="pt-pension-years" value="25">
     </label>
 
     <label>
-      <span class="pt-label-text">ISA 투자 기간 (년)<span class="pt-tip" tabindex="0" data-tip="ISA는 보통 3년 만기(최장 5년)로 운용하고 재가입하는 구조라, 연금저축·IRP 납입 기간과 따로 입력받습니다.">?</span></span>
+      <span class="pt-label-text">ISA 투자 기간 (년)<span class="pt-tip" tabindex="0" data-tip="보통 3년 만기(최장 5년)로 재가입하는 구조라 따로 입력받습니다.">?</span></span>
       <input type="number" id="pt-isa-years" value="3">
     </label>
 
     <label>
-      <span class="pt-label-text">예상 연 수익률 (%, 운용 가정)<span class="pt-tip" tabindex="0" data-tip="ISA와 연금저축·IRP 적립금의 운용수익을 추정하는 데 공통으로 쓰는 가정치입니다. 실제 수익률은 운용 상품에 따라 크게 달라집니다.">?</span></span>
+      <span class="pt-label-text">예상 연 수익률 (%, 운용 가정)<span class="pt-tip" tabindex="0" data-tip="ISA·연금저축·IRP 공통 가정치입니다. 실제 수익률은 상품마다 다릅니다.">?</span></span>
       <input type="number" step="0.1" id="pt-return" value="4">
     </label>
 
     <label class="pt-checkbox">
       <input type="checkbox" id="pt-whole-life">
       연금 수령을 종신형으로 받을 예정
-      <span class="pt-tip" tabindex="0" data-tip="종신형 연금계좌로 수령하면 나이와 무관하게 3%(2025년 세법개정, 2026년 시행 확정)로 분리과세됩니다. 체크하지 않으면 확정기간형으로 보고 수령 시작 나이에 따른 세율을 적용합니다.">?</span>
+      <span class="pt-tip" tabindex="0" data-tip="종신형은 나이 무관 3% 분리과세. 안 하면 확정기간형(나이별 세율)입니다.">?</span>
     </label>
 
     <label>연금 수령 시작 나이 (세)
@@ -112,7 +112,7 @@ classes: wide
 .pt-checkbox { flex-direction: row !important; align-items: center; gap: 0.5em !important; }
 .pt-checkbox input { width: auto; }
 .pt-label-text { display: inline-flex; align-items: center; }
-.pt-hint-slot { position: relative; height: 1.6em; margin-top: -0.5em; }
+.pt-hint-slot { position: relative; height: 2.8em; margin-top: -0.5em; }
 .pt-hint { position: absolute; top: 0; left: 0; right: 0; font-size: 0.78em; color: #52514e; line-height: 1.3em; }
 .pt-result {
   flex: 1 1 380px; background: #f7f7f8; border-radius: 10px; padding: 1.2em 1.4em;
@@ -206,7 +206,7 @@ classes: wide
     var checkbox = document.getElementById('pt-ordinary');
     checkbox.checked = income > 0 && income <= ISA_ORDINARY_INCOME_THRESHOLD;
     document.getElementById('pt-ordinary-hint').textContent =
-      '총급여 ' + ISA_ORDINARY_INCOME_THRESHOLD.toLocaleString('ko-KR') + '만원 기준으로 자동 추정했습니다. 종합소득금액·농어민 여부로 다르면 직접 체크/해제하세요.';
+      '총급여 ' + ISA_ORDINARY_INCOME_THRESHOLD.toLocaleString('ko-KR') + '만원 기준 자동 추정. 종합소득·농어민 여부로 다르면 직접 체크/해제.';
   });
   document.getElementById('pt-income').dispatchEvent(new Event('input'));
 
@@ -281,44 +281,42 @@ classes: wide
     var html = '';
     html += '<h4>세액공제 (납입 단계)</h4>';
     html += '<div class="pt-row"><span>연금저축 공제대상액 (연, 600만원 한도)</span><span>' + fmt(savingsEligible) + '</span></div>';
-    html += '<div class="pt-row"><span>IRP 포함 합산 공제대상액<span class="pt-tip" tabindex="0" data-tip="연금저축은 단독으로 연 600만원까지만 공제 대상이고, 여기에 IRP 납입액을 더해 연 900만원까지 세액공제를 받을 수 있습니다.">?</span></span><span>' + fmt(combinedEligible) + '</span></div>';
+    html += '<div class="pt-row"><span>IRP 포함 합산 공제대상액<span class="pt-tip" tabindex="0" data-tip="연금저축 600만원 + IRP를 더해 최대 900만원까지 공제됩니다.">?</span></span><span>' + fmt(combinedEligible) + '</span></div>';
     html += '<div class="pt-row"><span>적용 공제율 (총급여 ' + fmt(income) + ' 기준)</span><span>' + fmtPct(deductionRate) + '</span></div>';
     html += '<div class="pt-row pt-total"><span>연간 환급액</span><span>' + fmt(annualRefund) + '</span></div>';
     html += '<div class="pt-row"><span>' + pensionYears + '년간 누적 환급액</span><span>' + fmt(totalRefund) + '</span></div>';
 
     html += '<h4>연금저축·IRP 과세이연 효과 (운용 단계, ' + pensionYears + '년 기준)</h4>';
-    html += '<p class="pt-note">ISA와 같은 방식(매달 복리로 불어난다고 가정)으로 추정한 운용수익입니다.</p>';
     html += '<div class="pt-row"><span>추정 운용수익 (연 ' + annualReturn + '%)</span><span>' + fmt(pensionProfit) + '</span></div>';
     html += '<div class="pt-row"><span>일반 과세계좌였다면 (15.4%)</span><span>' + fmt(pensionGeneralTax) + '</span></div>';
     html += '<div class="pt-row pt-total"><span>과세이연 효과 (수령 전까지 미룬 세금)</span><span>' + fmt(pensionGeneralTax) + '</span></div>';
-    html += '<p class="pt-note">ISA 비과세와 달리 세금을 영구히 안 내는 게 아니라 수령 시점까지 미루는 것입니다. 미룬 세금은 수령 단계에서 연금소득세로 나갑니다(아래 "연금 수령 시 참고").</p>';
+    html += '<p class="pt-note">ISA와 달리 영구 비과세가 아니라 수령 시 연금소득세로 나갑니다.</p>';
 
     html += '<h4>ISA 비과세 효과 (운용 단계, ' + isaYears + '년 만기 1회 기준)</h4>';
-    html += '<p class="pt-note">월 적립식 납입이 매달 복리로 불어난다고 가정한 추정치입니다.</p>';
     html += '<div class="pt-row"><span>ISA 납입 원금 (' + isaYears + '년)</span><span>' + fmt(isaPrincipal) + '</span></div>';
     html += '<div class="pt-row"><span>추정 운용수익 (연 ' + annualReturn + '%)</span><span>' + fmt(isaProfit) + '</span></div>';
     html += '<div class="pt-row"><span>비과세 한도 (' + (isOrdinary ? '서민형·농어민형' : '일반형') + ')</span><span>' + fmt(taxFreeLimit) + '</span></div>';
     html += '<div class="pt-row"><span>ISA 분리과세 (9.9%, 한도 초과분만)</span><span>' + fmt(isaTax) + '</span></div>';
     html += '<div class="pt-row"><span>일반 과세계좌였다면 (15.4%)</span><span>' + fmt(generalTax) + '</span></div>';
     html += '<div class="pt-row pt-total"><span>ISA로 아낀 세금 (1회, ' + isaYears + '년 만기)</span><span>' + fmt(isaSaved) + '</span></div>';
-    html += '<p class="pt-note">만기마다 재가입해 ' + pensionYears + '년 동안 ' + isaCycles + '번 반복한다고 가정한 단순 추정입니다(복리효과 미반영).</p>';
+    html += '<p class="pt-note">만기마다 재가입해 ' + isaCycles + '번 반복한다고 가정했습니다(복리효과 미반영).</p>';
     html += '<div class="pt-row pt-total"><span>누적 절세효과 (' + pensionYears + '년 ÷ ' + isaYears + '년 ≈ ' + isaCycles + '회)</span><span>' + fmt(isaSavedCumulative) + '</span></div>';
 
     html += '<h4>연금 수령 시 참고</h4>';
     if (isWholeLife) {
       html += '<div class="pt-row"><span>적용 세율 (종신형, 확정)</span><span>' + fmtPct(WHOLE_LIFE_RATE) + '</span></div>';
-      html += '<p class="pt-note">종신형은 수령액 구간과 무관하게 3%로 분리과세됩니다(2025년 세법개정, 2026년 시행 확정). 실제 연 수령액은 보험사·금융사의 종신형 지급률에 따라 달라집니다. 연 수령액을 모델링하지 않아 순 과세이연 효과도 계산하지 않았습니다.</p>';
+      html += '<p class="pt-note">실제 연 수령액은 보험사 지급률에 따라 다르고, 모델링하지 않아 순 과세이연 효과는 계산하지 않았습니다.</p>';
     } else {
       html += '<div class="pt-row pt-total"><span>추정 연 수령액 (' + payoutYears + '년 수령 기준)</span><span>' + fmt(payoutAnnual) + '</span></div>';
       if (exceedsThreshold) {
-        html += '<div class="pt-warn">⚠ 추정 연 수령액이 사적연금 종합과세 전환 기준(1,500만원)을 넘습니다. 이 경우 ' + startAge + '세 수령 기준의 ' + fmtPct(appliedRate) + ' 분리과세는 적용되지 않고, 전체 연금소득에 대해 종합과세 또는 16.5% 분리과세 중 선택해야 합니다. 다른 소득과 합산되는 종합과세일 때의 실제 세액은 이 계산기로 추정할 수 없어서 순 과세이연 효과도 계산하지 않았습니다.</div>';
+        html += '<div class="pt-warn">⚠ 1,500만원을 넘어 ' + startAge + '세 기준 ' + fmtPct(appliedRate) + ' 분리과세 대신 종합과세 또는 16.5% 분리과세를 선택해야 합니다. 실제 세액을 추정할 수 없어 순 과세이연 효과도 계산하지 않았습니다.</div>';
       } else {
         html += '<div class="pt-row"><span>' + startAge + '세 수령 기준 적용 세율</span><span>' + fmtPct(appliedRate) + '</span></div>';
         html += '<div class="pt-row"><span>추정 연금소득세</span><span>' + fmt(payoutTax) + '</span></div>';
         html += '<div class="pt-row pt-total"><span>순 과세이연 효과 (과세이연 효과 − ' + payoutYears + '년 수령세 총액)</span><span>' + fmt(netDeferralBenefit) + '</span></div>';
-        html += '<p class="pt-note">과세이연 효과(' + fmt(pensionGeneralTax) + ')에서 ' + payoutYears + '년 동안 낼 연금소득세 총액(' + fmt(payoutTax * payoutYears) + ')을 뺀 값입니다. 운용수익(15.4% 가정)과 원금+수익 전체(' + fmtPct(appliedRate) + ')로 과세 대상이 달라 정확한 1:1 상쇄는 아니고, 전체 흐름에서 세제 혜택이 어느 정도 남는지 가늠하는 참고용입니다.</p>';
+        html += '<p class="pt-note">과세 대상(운용수익 vs 원금+수익 전체)과 세율이 달라 정확한 상쇄는 아닌 참고용 수치입니다.</p>';
       }
-      html += '<p class="pt-note">추정 연 수령액은 납입 원금과 위 과세이연 효과에서 추정한 운용수익을 더한 금액 기준입니다. 실제 수령액은 운용 성과와 수령 방식에 따라 달라집니다.</p>';
+      html += '<p class="pt-note">납입 원금과 추정 운용수익을 더한 금액 기준이며, 실제 수령액은 운용 성과에 따라 달라집니다.</p>';
     }
 
     html += '<h4>총 절세효과 요약</h4>';
@@ -329,9 +327,9 @@ classes: wide
     }
     html += '<div class="pt-row pt-total"><span>총 절세효과</span><span>' + fmt(totalSaved) + '</span></div>';
     if (netDeferralBenefit !== null) {
-      html += '<p class="pt-note">세액공제·ISA는 납입·운용 단계(' + pensionYears + '년 안팎) 기준이고, 순 과세이연 효과는 그 뒤 수령 ' + payoutYears + '년까지 포함한 더 긴 기간 기준이라 서로 기간이 다릅니다. ISA는 ' + isaYears + '년 만기를 ' + isaCycles + '번 반복한다고 가정한 단순 추정입니다.</p>';
+      html += '<p class="pt-note">세액공제·ISA는 ' + pensionYears + '년 안팎, 순 과세이연 효과는 그 뒤 수령 ' + payoutYears + '년까지 포함해 기간이 서로 다릅니다.</p>';
     } else {
-      html += '<p class="pt-note">세액공제·ISA는 납입·운용 단계(' + pensionYears + '년 안팎) 기준입니다. ISA는 ' + isaYears + '년 만기를 ' + isaCycles + '번 반복한다고 가정한 단순 추정입니다. 연금저축·IRP의 과세이연 효과와 연금 수령 단계 세금은 ' + (isWholeLife ? '종신형이라 연 수령액을 모델링하지 않아서' : '1,500만원 초과로 실제 세액을 추정할 수 없어서') + ' 순 과세이연 효과를 계산하지 못했고, 이 합계에도 포함하지 않았습니다.</p>';
+      html += '<p class="pt-note">' + (isWholeLife ? '종신형이라 연 수령액을 모델링하지 않아' : '1,500만원 초과로 실제 세액을 추정할 수 없어') + ' 순 과세이연 효과는 이 합계에 포함하지 않았습니다.</p>';
     }
 
     lastOutput = { totalRefund: totalRefund, isaSaved: isaSavedCumulative, totalSaved: totalSaved };
@@ -436,10 +434,10 @@ classes: wide
 
 ## 참고 자료
 
-2025~2026년에 나온 연금·ISA 세제 관련 자료 중 참고한 것들이다. "2026년 세제개편안"은 이 글을 쓰는 시점(2026-11-24) 기준 아직 국회 심의 중인 정부안이므로, 확정 여부는 국세청·기획재정부 공식 발표로 재확인한다.
+참고한 연금·ISA 세제 자료다. "2026년 세제개편안"은 아직 국회 심의 중인 정부안이므로 확정 여부는 국세청·기획재정부 공식 발표로 재확인한다.
 
 - [2026-08-07 · 정책브리핑(korea.kr) — 2026년 세제개편안 PART 01: 생산적금융 ISA 신설·일반 ISA 정비 (미확정 정부안)](https://www.korea.kr/news/policyNewsView.do?newsId=148969672)
 - [2025-08-29 · KB의 생각 — 2025년 세법 개정안의 연금 세제 개편 방향과 시사점 (종신형 연금 분리과세 4%→3%, 해외펀드 외국납부세액공제)](https://kbthink.com/pension/plan/gw/250829-2.html)
 - [2025-07-31 · 뉴시스 — 기재부 '2025년 세제개편안' 발표](https://mobile.newsis.com/view/NISX20250731_0003273798)
 
-연금저축·IRP 세액공제 한도(600만원·900만원, 16.5%/13.2%), ISA 비과세 한도(200만원·서민형 400만원), 사적연금 종합과세 전환 기준(1,500만원)은 국세청 홈택스·소득세법의 공지된 현행 기준이며, 이번 조사에서는 변경 사실이 확인되지 않았다. 가입·납입 전에는 반드시 홈택스 또는 취급 금융사에서 최신 기준을 다시 확인한다.
+그 외 한도·기준 수치(600/900만원, 200/400만원, 1,500만원 등)는 국세청 홈택스·소득세법의 현행 기준이며 변경 사실은 확인되지 않았다. 가입·납입 전에는 홈택스나 취급 금융사에서 최신 기준을 다시 확인한다.

@@ -100,6 +100,12 @@ classes: wide
 }
 .rr-controls .btn { flex: 0 0 auto; }
 .rr-popup { font-size: 0.85em; }
+.leaflet-control-locate a {
+  width: 34px; height: 34px; display: flex; align-items: center; justify-content: center;
+  background: #fff; text-decoration: none; cursor: pointer;
+}
+.leaflet-control-locate a:hover { background: #f4f4f4; }
+.leaflet-control-locate a.rr-locating { opacity: 0.5; cursor: wait; }
 </style>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
@@ -111,6 +117,7 @@ classes: wide
   var centerMarker = null;
   var circleLayer = null;
   var winnerMarker = null;
+  var myLocationLayer = null; // 현위치 표시(파란 점) — 중심점과는 별개
   var radius = 1000;      // m
   var lastResult = null;  // 가장 최근 뽑기 결과 — 공유 버튼이 여기서 읽는다
 
@@ -136,6 +143,48 @@ classes: wide
   setTimeout(function () { map.invalidateSize(); }, 0);
   window.addEventListener('load', function () { map.invalidateSize(); });
   window.addEventListener('resize', function () { map.invalidateSize(); });
+
+  // 현위치 점이 중심점/뽑힌 곳 마커(markerPane, z-index 600)보다 항상 위에 그려지도록 전용 pane을 쓴다.
+  // 기본 L.circleMarker는 더 아래 레이어인 overlayPane(z-index 400)에 그려져서, 근처에 마커가 있으면 가려질 수 있다.
+  map.createPane('rr-my-location-pane');
+  map.getPane('rr-my-location-pane').style.zIndex = 625;
+  map.getPane('rr-my-location-pane').style.pointerEvents = 'none';
+
+  // 현위치를 파란 점(halo + dot)으로 표시한다. 중심점(빨강)·뽑힌 곳(초록)과 헷갈리지 않도록 색을 구분한다.
+  function showMyLocation(lat, lng) {
+    if (myLocationLayer) map.removeLayer(myLocationLayer);
+    myLocationLayer = L.layerGroup([
+      L.circleMarker([lat, lng], { pane: 'rr-my-location-pane', radius: 16, stroke: false, fillColor: '#2a5a8a', fillOpacity: 0.18 }),
+      L.circleMarker([lat, lng], { pane: 'rr-my-location-pane', radius: 7, color: '#fff', weight: 2, fillColor: '#2a5a8a', fillOpacity: 1 })
+    ]).addTo(map);
+  }
+
+  // 지도를 현재 위치로 옮겨주는 버튼. 중심점을 찍는 것과는 무관하고, 지도 이동만 돕는다.
+  var LocateControl = L.Control.extend({
+    options: { position: 'bottomright' },
+    onAdd: function () {
+      var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-locate');
+      var link = L.DomUtil.create('a', '', container);
+      link.href = '#';
+      link.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#2a5a8a" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="6"></circle><line x1="12" y1="2" x2="12" y2="5"></line><line x1="12" y1="19" x2="12" y2="22"></line><line x1="2" y1="12" x2="5" y2="12"></line><line x1="19" y1="12" x2="22" y2="12"></line></svg>';
+      L.DomEvent.on(link, 'click', function (e) {
+        L.DomEvent.stop(e);
+        if (link.classList.contains('rr-locating')) return;
+        if (!navigator.geolocation) { setBanner('이 브라우저는 위치 정보를 지원하지 않습니다.', ''); return; }
+        link.classList.add('rr-locating');
+        navigator.geolocation.getCurrentPosition(function (pos) {
+          link.classList.remove('rr-locating');
+          map.setView([pos.coords.latitude, pos.coords.longitude], 16);
+          showMyLocation(pos.coords.latitude, pos.coords.longitude);
+        }, function () {
+          link.classList.remove('rr-locating');
+          setBanner('현위치를 확인할 수 없습니다.', '');
+        }, { enableHighAccuracy: true, timeout: 10000 });
+      });
+      return container;
+    }
+  });
+  map.addControl(new LocateControl());
 
   // 중심점 기준 미터 단위 평면좌표를 위경도로 돌리는 간이 등장방형 역투영
   function fromLocalXY(x, y, refLat, refLng) {

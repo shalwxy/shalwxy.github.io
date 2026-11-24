@@ -78,6 +78,12 @@ classes: wide
 .mc-controls { display: flex; justify-content: flex-end; gap: 0.6em; flex-wrap: wrap; }
 .mc-warn { background: #fbe4e1; color: #a9342a; border-radius: 6px; padding: 0.6em 0.8em; margin: 0.6em 0; font-size: 0.85em; }
 .mc-popup { font-size: 0.85em; }
+.leaflet-control-locate a {
+  width: 34px; height: 34px; display: flex; align-items: center; justify-content: center;
+  background: #fff; text-decoration: none; cursor: pointer;
+}
+.leaflet-control-locate a:hover { background: #f4f4f4; }
+.leaflet-control-locate a.mc-locating { opacity: 0.5; cursor: wait; }
 </style>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
@@ -88,6 +94,7 @@ classes: wide
   var points = [];       // { lat, lng, marker }
   var circleLayer = null;
   var centerMarker = null;
+  var myLocationLayer = null; // 현위치 표시(파란 점) — 출발점과는 별개
 
   var countEl = document.getElementById('mc-count');
   var radiusEl = document.getElementById('mc-radius');
@@ -109,6 +116,48 @@ classes: wide
   window.addEventListener('load', function () { map.invalidateSize(); });
   // 폭이 바뀌면 정사각형 높이도 같이 바뀌므로(aspect-ratio), 화면 회전·창 크기 변경 시 다시 계산한다
   window.addEventListener('resize', function () { map.invalidateSize(); });
+
+  // 현위치 점이 출발점 마커(markerPane, z-index 600)보다 항상 위에 그려지도록 전용 pane을 쓴다.
+  // 기본 L.circleMarker는 더 아래 레이어인 overlayPane(z-index 400)에 그려져서, 근처에 마커가 있으면 가려질 수 있다.
+  map.createPane('mc-my-location-pane');
+  map.getPane('mc-my-location-pane').style.zIndex = 625;
+  map.getPane('mc-my-location-pane').style.pointerEvents = 'none';
+
+  // 현위치를 파란 점(halo + dot)으로 표시한다. 출발점(빨강)·결과(초록)와 헷갈리지 않도록 색을 구분한다.
+  function showMyLocation(lat, lng) {
+    if (myLocationLayer) map.removeLayer(myLocationLayer);
+    myLocationLayer = L.layerGroup([
+      L.circleMarker([lat, lng], { pane: 'mc-my-location-pane', radius: 16, stroke: false, fillColor: '#2a5a8a', fillOpacity: 0.18 }),
+      L.circleMarker([lat, lng], { pane: 'mc-my-location-pane', radius: 7, color: '#fff', weight: 2, fillColor: '#2a5a8a', fillOpacity: 1 })
+    ]).addTo(map);
+  }
+
+  // 지도를 현재 위치로 옮겨주는 버튼. 출발점을 찍는 것과는 무관하고, 지도 이동만 돕는다.
+  var LocateControl = L.Control.extend({
+    options: { position: 'bottomright' },
+    onAdd: function () {
+      var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-locate');
+      var link = L.DomUtil.create('a', '', container);
+      link.href = '#';
+      link.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#2a5a8a" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="6"></circle><line x1="12" y1="2" x2="12" y2="5"></line><line x1="12" y1="19" x2="12" y2="22"></line><line x1="2" y1="12" x2="5" y2="12"></line><line x1="19" y1="12" x2="22" y2="12"></line></svg>';
+      L.DomEvent.on(link, 'click', function (e) {
+        L.DomEvent.stop(e);
+        if (link.classList.contains('mc-locating')) return;
+        if (!navigator.geolocation) { setBanner('이 브라우저는 위치 정보를 지원하지 않습니다.', 'mc-bad'); return; }
+        link.classList.add('mc-locating');
+        navigator.geolocation.getCurrentPosition(function (pos) {
+          link.classList.remove('mc-locating');
+          map.setView([pos.coords.latitude, pos.coords.longitude], 16);
+          showMyLocation(pos.coords.latitude, pos.coords.longitude);
+        }, function () {
+          link.classList.remove('mc-locating');
+          setBanner('현위치를 확인할 수 없습니다.', 'mc-bad');
+        }, { enableHighAccuracy: true, timeout: 10000 });
+      });
+      return container;
+    }
+  });
+  map.addControl(new LocateControl());
 
   // 첫 번째 점을 기준으로 위경도를 미터 단위 평면좌표로 바꾼다 (간이 등장방형 투영)
   function toLocalXY(lat, lng, refLat, refLng) {
