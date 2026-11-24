@@ -150,6 +150,7 @@ classes: wide
   z-index: 20;
 }
 .hb-tip:hover::after, .hb-tip:focus::after { opacity: 1; }
+.hb-paren { font-size: 0.85em; }
 </style>
 
 <script>
@@ -262,6 +263,30 @@ classes: wide
 
   function fmt(n) {
     return Math.round(n).toLocaleString('ko-KR') + '만원';
+  }
+
+  // 괄호로 감싼 텍스트만 찾아 작은 글씨(.hb-paren)로 감싼다. 문자열 상태에서 정규식으로
+  // 치환하면 data-tip 속성 안의 괄호까지 건드릴 수 있어, 렌더링된 텍스트 노드만 순회한다.
+  function wrapParens(root) {
+    var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
+    var nodes = [];
+    var n;
+    while ((n = walker.nextNode())) nodes.push(n);
+    nodes.forEach(function (node) {
+      if (node.nodeValue.indexOf('(') === -1) return;
+      var frag = document.createDocumentFragment();
+      node.nodeValue.split(/(\([^()]*\))/g).forEach(function (part) {
+        if (/^\(.*\)$/.test(part)) {
+          var small = document.createElement('small');
+          small.className = 'hb-paren';
+          small.textContent = part;
+          frag.appendChild(small);
+        } else if (part) {
+          frag.appendChild(document.createTextNode(part));
+        }
+      });
+      node.parentNode.replaceChild(frag, node);
+    });
   }
 
   // null = 입력 없음. 매치되면 { hit: true, expiry: '...날짜' }, 아니면 { hit: false }.
@@ -392,7 +417,9 @@ classes: wide
 
     lastOutput = { finalLoan: finalLoan, totalCashNeeded: totalCashNeeded, monthlyPay: monthlyPay };
     calculated = true;
-    document.getElementById('hb-result').innerHTML = html;
+    var resultEl = document.getElementById('hb-result');
+    resultEl.innerHTML = html;
+    wrapParens(resultEl);
   }
 
   document.getElementById('hb-calc').addEventListener('click', calculate);

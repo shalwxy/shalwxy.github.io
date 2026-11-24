@@ -102,8 +102,8 @@ classes: wide
   background: #fff3cd; border: 1px solid #ffe69c;
   border-radius: 8px; padding: 0.9em 1.1em; font-size: 0.85em; line-height: 1.6;
 }
-.pt-wrap { max-width: 900px; margin: 0 auto; display: flex; gap: 2em; flex-wrap: wrap; }
-.pt-form { flex: 1 1 320px; display: flex; flex-direction: column; gap: 0.9em; }
+.pt-wrap { max-width: 900px; margin: 0 auto; display: flex; gap: 2em; flex-wrap: wrap; word-break: keep-all; }
+.pt-form { flex: 1 1 320px; min-width: 0; display: flex; flex-direction: column; gap: 0.9em; }
 .pt-form h3 { margin: 0 0 0.2em; }
 .pt-form label { display: flex; flex-direction: column; gap: 0.3em; font-size: 0.88em; font-weight: 600; }
 .pt-form input[type="number"] {
@@ -115,16 +115,17 @@ classes: wide
 .pt-hint-slot { position: relative; height: 2.8em; margin-top: -0.5em; }
 .pt-hint { position: absolute; top: 0; left: 0; right: 0; font-size: 0.78em; color: #52514e; line-height: 1.3em; }
 .pt-result {
-  flex: 1 1 380px; background: #f7f7f8; border-radius: 10px; padding: 1.2em 1.4em;
+  flex: 1 1 380px; min-width: 0; background: #f7f7f8; border-radius: 10px; padding: 1.2em 1.4em;
   font-size: 0.92em; line-height: 1.7;
 }
 .pt-placeholder { color: #888; }
 .pt-result h4 { margin: 1em 0 0.4em; font-size: 1em; }
 .pt-result h4:first-child { margin-top: 0; }
 .pt-row { display: flex; justify-content: space-between; align-items: baseline; gap: 1em; }
-.pt-row > span:first-child { white-space: nowrap; }
+.pt-row > span:first-child { flex: 1 1 auto; min-width: 0; }
 .pt-row > span:last-child { flex: 0 0 auto; white-space: nowrap; text-align: right; }
 .pt-row.pt-total { font-weight: 700; font-size: 1.08em; border-top: 1px solid #ddd; margin-top: 0.4em; padding-top: 0.4em; }
+.pt-row.pt-tight { font-size: 0.7em; }
 .pt-note { font-size: 0.8em; color: #666; }
 .pt-warn { background: #fbe4e1; color: #a9342a; border-radius: 6px; padding: 0.6em 0.8em; margin: 0.6em 0; font-size: 0.85em; }
 
@@ -143,6 +144,7 @@ classes: wide
   z-index: 20;
 }
 .pt-tip:hover::after, .pt-tip:focus::after { opacity: 1; }
+.pt-paren { font-size: 0.85em; }
 </style>
 
 <script>
@@ -188,6 +190,30 @@ classes: wide
   }
   function fmtPct(n) {
     return (n * 100).toFixed(1) + '%';
+  }
+
+  // 괄호로 감싼 텍스트만 찾아 작은 글씨(.pt-paren)로 감싼다. 문자열 상태에서 정규식으로
+  // 치환하면 data-tip 속성 안의 괄호까지 건드릴 수 있어, 렌더링된 텍스트 노드만 순회한다.
+  function wrapParens(root) {
+    var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
+    var nodes = [];
+    var n;
+    while ((n = walker.nextNode())) nodes.push(n);
+    nodes.forEach(function (node) {
+      if (node.nodeValue.indexOf('(') === -1) return;
+      var frag = document.createDocumentFragment();
+      node.nodeValue.split(/(\([^()]*\))/g).forEach(function (part) {
+        if (/^\(.*\)$/.test(part)) {
+          var small = document.createElement('small');
+          small.className = 'pt-paren';
+          small.textContent = part;
+          frag.appendChild(small);
+        } else if (part) {
+          frag.appendChild(document.createTextNode(part));
+        }
+      });
+      node.parentNode.replaceChild(frag, node);
+    });
   }
 
   document.getElementById('pt-asof').textContent = SNAPSHOT_LABEL;
@@ -287,17 +313,20 @@ classes: wide
     html += '<div class="pt-row"><span>' + pensionYears + '년간 누적 환급액</span><span>' + fmt(totalRefund) + '</span></div>';
 
     html += '<h4>연금저축·IRP 과세이연 효과 (운용 단계, ' + pensionYears + '년 기준)</h4>';
+    html += '<div class="pt-row"><span>납입 원금 (' + pensionYears + '년)</span><span>' + fmt(accumulatedPrincipal) + '</span></div>';
     html += '<div class="pt-row"><span>추정 운용수익 (연 ' + annualReturn + '%)</span><span>' + fmt(pensionProfit) + '</span></div>';
-    html += '<div class="pt-row"><span>일반 과세계좌였다면 (15.4%)</span><span>' + fmt(pensionGeneralTax) + '</span></div>';
+    html += '<div class="pt-row pt-total"><span>원금+운용수익 합계</span><span>' + fmt(pensionFV) + '</span></div>';
+    html += '<div class="pt-row pt-tight"><span>운용수익에 대해 일반 과세계좌였다면 냈을 세금 (15.4%)</span><span>' + fmt(pensionGeneralTax) + '</span></div>';
     html += '<div class="pt-row pt-total"><span>과세이연 효과 (수령 전까지 미룬 세금)</span><span>' + fmt(pensionGeneralTax) + '</span></div>';
     html += '<p class="pt-note">ISA와 달리 영구 비과세가 아니라 수령 시 연금소득세로 나갑니다.</p>';
 
     html += '<h4>ISA 비과세 효과 (운용 단계, ' + isaYears + '년 만기 1회 기준)</h4>';
     html += '<div class="pt-row"><span>ISA 납입 원금 (' + isaYears + '년)</span><span>' + fmt(isaPrincipal) + '</span></div>';
     html += '<div class="pt-row"><span>추정 운용수익 (연 ' + annualReturn + '%)</span><span>' + fmt(isaProfit) + '</span></div>';
+    html += '<div class="pt-row pt-total"><span>원금+운용수익 합계</span><span>' + fmt(isaFV) + '</span></div>';
     html += '<div class="pt-row"><span>비과세 한도 (' + (isOrdinary ? '서민형·농어민형' : '일반형') + ')</span><span>' + fmt(taxFreeLimit) + '</span></div>';
     html += '<div class="pt-row"><span>ISA 분리과세 (9.9%, 한도 초과분만)</span><span>' + fmt(isaTax) + '</span></div>';
-    html += '<div class="pt-row"><span>일반 과세계좌였다면 (15.4%)</span><span>' + fmt(generalTax) + '</span></div>';
+    html += '<div class="pt-row pt-tight"><span>운용수익에 대해 일반 과세계좌였다면 냈을 세금 (15.4%)</span><span>' + fmt(generalTax) + '</span></div>';
     html += '<div class="pt-row pt-total"><span>ISA로 아낀 세금 (1회, ' + isaYears + '년 만기)</span><span>' + fmt(isaSaved) + '</span></div>';
     html += '<p class="pt-note">만기마다 재가입해 ' + isaCycles + '번 반복한다고 가정했습니다(복리효과 미반영).</p>';
     html += '<div class="pt-row pt-total"><span>누적 절세효과 (' + pensionYears + '년 ÷ ' + isaYears + '년 ≈ ' + isaCycles + '회)</span><span>' + fmt(isaSavedCumulative) + '</span></div>';
@@ -334,7 +363,9 @@ classes: wide
 
     lastOutput = { totalRefund: totalRefund, isaSaved: isaSavedCumulative, totalSaved: totalSaved };
     calculated = true;
-    document.getElementById('pt-result').innerHTML = html;
+    var resultEl = document.getElementById('pt-result');
+    resultEl.innerHTML = html;
+    wrapParens(resultEl);
   }
 
   document.getElementById('pt-calc').addEventListener('click', calculate);
