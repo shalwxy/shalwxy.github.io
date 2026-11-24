@@ -86,6 +86,14 @@ button.bh-cluster-update:disabled { opacity: 0.5; cursor: default; }
 }
 .leaflet-control-locate a:hover { background: #f4f4f4; }
 .leaflet-control-locate a.bh-locating { opacity: 0.5; cursor: wait; }
+.leaflet-control-refresh a {
+  width: 34px; height: 34px; display: flex; align-items: center; justify-content: center;
+  background: #fff; text-decoration: none; cursor: pointer; color: #2a5a8a;
+}
+.leaflet-control-refresh a:hover { background: #f4f4f4; }
+.leaflet-control-refresh a.bh-refreshing { opacity: 0.5; cursor: wait; }
+.leaflet-control-refresh a.bh-refreshing svg { animation: bh-spin 0.8s linear infinite; }
+@keyframes bh-spin { to { transform: rotate(360deg); } }
 .bh-cluster-list { max-height: 260px; overflow-y: auto; display: flex; flex-direction: column; gap: 0.4em; }
 button.bh-cluster-item {
   display: block; width: 100%; text-align: left; font: inherit; cursor: pointer;
@@ -212,6 +220,33 @@ button.bh-cluster-item:hover { background: #ebedf0; }
     }
   });
   map.addControl(new LocateControl());
+
+  // 지도를 다시 불러와서 그사이 다른 사람이(또는 내가) 남긴 메모도 보이게 하는 버튼.
+  var RefreshControl = L.Control.extend({
+    options: { position: 'topright' },
+    onAdd: function () {
+      var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-refresh');
+      var link = L.DomUtil.create('a', '', container);
+      link.href = '#';
+      link.innerHTML =
+        '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" ' +
+          'stroke-linecap="round" stroke-linejoin="round">' +
+          '<polyline points="23 4 23 10 17 10"></polyline>' +
+          '<polyline points="1 20 1 14 7 14"></polyline>' +
+          '<path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>' +
+        '</svg>';
+      L.DomEvent.on(link, 'click', function (e) {
+        L.DomEvent.stop(e);
+        if (link.classList.contains('bh-refreshing')) return;
+        link.classList.add('bh-refreshing');
+        loadMemos().catch(function () {}).finally(function () {
+          link.classList.remove('bh-refreshing');
+        });
+      });
+      return container;
+    }
+  });
+  map.addControl(new RefreshControl());
 
   var CLUSTER_PAGE_SIZE = 20;
 
