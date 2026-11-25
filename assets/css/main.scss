@@ -856,21 +856,26 @@ footer.page__meta {
   display: none;
 }
 
-/* 같은 행 카드들의 크기를 맞추고, 그 안의 작성일·수정일 줄이 카드마다 같은 높이에서
-   시작하게 한다 — 요약을 지운 지금, 카드 안에서 높이가 들쭉날쭉할 수 있는 건 이미지(테두리
-   비율 고정, 아래)와 제목뿐이다. 제목을 2줄로 고정하면(짧은 제목은 빈 줄만큼 여백이 남고,
-   긴 제목은 말줄임표로 잘림) 그 아래 날짜 줄이 모든 카드에서 똑같은 위치에 오게 된다. */
+/* playground 카드 제목은 길게 쓰지 않기로 해서 항상 한 줄이다 — 혹시라도 긴 제목이 들어오면
+   줄바꿈 대신 말줄임표로 자른다(2줄 대비 min-height 등 이전의 높이 맞춤 장치는 더 이상
+   필요 없어 제거했다). */
 .grid__item .archive__item-title {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
   overflow: hidden;
-  // box-sizing: border-box(전역 리셋)에서는 min-height 안에 padding/border까지 포함돼서
-  // 2줄 텍스트가 들어갈 때 박스가 더 늘어나 1줄 카드와 높이가 어긋난다. content-box로
-  // 고정해 min-height이 순수 텍스트 영역(2줄)만 보장하도록 한다.
-  box-sizing: content-box;
-  line-height: 1.25;
-  min-height: 2.5em;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  // 그림→제목 간격 0.3em(요청 사항) — 테마 기본(0.5em)을 덮어쓴다.
+  margin-top: 0.3em;
+}
+
+/* 제목→날짜, 날짜 아래 여백도 각각 0.3em(요청 사항) — 둘 다 이 파일 위쪽의 일반 규칙
+   (.archive__item-title + .page__meta의 margin-top: 0, .list__item/.grid__item .page__meta의
+   margin-bottom: 0)을 그리드 카드에서만 더 구체적인 선택자로 덮어쓴다. */
+.grid__item .archive__item-title + .page__meta {
+  margin-top: 0.3em;
+}
+
+.grid__item .page__meta {
+  margin-bottom: 0.3em;
 }
 
 /* 이미지도 원본 비율(1200×800 = 3:2)이 전부 같지만, 테마 기본은 max-height로만 높이를
@@ -885,17 +890,6 @@ footer.page__meta {
     height: 100%;
     object-fit: cover;
   }
-}
-
-/* 제목·이미지 높이를 맞춰도, 수정일이 있는 글(날짜·수정일 두 줄)과 없는 글(날짜 한 줄)은
-   메타 영역 높이가 달라서 카드 전체 크기가 서로 달라진다. 수정일이 없는 카드도 그 자리만큼
-   빈 공간을 미리 확보해 모든 카드 높이가 같아지게 한다(측정값: 한 줄 18px, 두 줄 36px
-   — 이 폰트 크기(12px) 기준 3em). 기본 align-items: center 때문에 한 줄짜리 카드는 그
-   한 줄이 3em 박스 가운데로 밀려서, 두 줄짜리 카드(위에서부터 시작)와 작성일 위치가
-   어긋났다 — flex-start로 항상 위에서 시작하게 맞춘다. */
-.grid__item .page__meta-info {
-  min-height: 3em;
-  align-items: flex-start;
 }
 
 /* 좁은 그리드 칸(작은 화면 2열·중간 화면 4열)에서 "업데이트: 2026-11-14"처럼 긴 메타 항목이
@@ -913,13 +907,21 @@ footer.page__meta {
   }
 }
 
-/* playground 목록 카드: 아래 3가지는 모바일 화면에서만 바뀌고(스크린샷 기준) 웹(태블릿
-   $small 이상 2열 · $medium 이상 4열)은 기존 그대로 둔다. $small - 1은 이 파일의
-   @media screen and (max-width: $large - 1)과 같은 "경계보다 1px 작게" 패턴이다 —
-   정확히 $small에서는 테마의 min-width: $small 2열 규칙이 이미 따로 적용되므로 겹치지 않는다. */
+/* "2026-11-13"(작성일) 바로 뒤에 수정일 아이콘·날짜가 공백 없이 붙어 보인다 — 구분점
+   (.page__meta-sep)의 ::before를 그리드 카드에서는 감춰서(테마 기본) 그 안에 있던 좌우
+   padding(유일한 공백 소스)도 같이 사라졌기 때문이다. 수정일 쪽에 여백을 더해 작성일과
+   띄운다. 모바일뿐 아니라 모든 열 수(2열·4열)에서 똑같이 붙어 보이는 문제라 breakpoint
+   없이 적용한다. */
+.grid__item .page__meta-updated {
+  margin-left: 0.5em;
+}
+
+/* 모바일에서만 1열(풀폭 카드)을 2열로 바꾼다(스크린샷 기준) — 웹(태블릿 $small 이상 2열 ·
+   데스크톱 $medium 이상 4열)은 기존 그대로 둔다. $small - 1은 이 파일의
+   @media screen and (max-width: $large - 1)과 같은 "경계보다 1px 작게" 패턴이다 — 정확히
+   $small에서는 테마의 min-width: $small 2열 규칙이 이미 따로 적용되므로 겹치지 않는다.
+   값은 테마가 37.5em 이상에서 쓰는 2열 수치(.grid__item, 48.98%/2.04% 간격)를 그대로 가져왔다. */
 @media (max-width: $small - 1) {
-  /* 1. 모바일에서만 1열(풀폭 카드)을 2열로 바꾼다 — 값은 테마가 37.5em 이상에서 쓰는
-     2열 수치(.grid__item, 48.98%/2.04% 간격)를 그대로 가져왔다. */
   .grid__item {
     float: left;
     width: 48.9795918367%;
@@ -935,22 +937,5 @@ footer.page__meta {
       clear: none;
       margin-left: 2.0408163265%;
     }
-  }
-
-  /* 2. 제목이 한 줄뿐이면 2줄 높이(위 .grid__item .archive__item-title의 min-height: 2.5em)
-     박스 안에서 글자가 위쪽에 붙고 아래쪽이 빈 채로 남아, 그만큼 날짜 행과 멀어져 보인다. 박스 안
-     내용 정렬만 끝(아래)으로 바꿔서(-webkit-box-pack), 전체 박스 높이(= 카드 간 정렬 기준)는
-     그대로 두고 한 줄 제목만 아래쪽(날짜 행 바로 위)으로 붙인다. 2줄 제목은 이미 박스를
-     꽉 채우므로 영향이 없다. */
-  .grid__item .archive__item-title {
-    -webkit-box-pack: end;
-  }
-
-  /* 3. "2026-11-13"(작성일) 바로 뒤에 수정일 아이콘·날짜가 공백 없이 붙어 보인다 —
-     구분점(.page__meta-sep)의 ::before를 그리드 카드에서는 감춰서(테마 기본) 그 안에 있던
-     좌우 padding(유일한 공백 소스)도 같이 사라졌기 때문이다. 수정일 쪽에 여백을 더해
-     작성일과 띄운다. */
-  .grid__item .page__meta-updated {
-    margin-left: 0.5em;
   }
 }

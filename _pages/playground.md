@@ -6,6 +6,7 @@ entries_layout: grid
 permalink: /playground/
 collection: playground
 author_profile: false
+classes: wide
 sidebar:
   nav: "playground"
 header:
