@@ -16,11 +16,7 @@
   이 include는 scripts.html에서 include_cached가 아닌 include로 불러야 page.url을 쓸 수 있다
   (include_cached는 page 컨텍스트를 무시하고 출력을 캐시해버리기 때문).
 {%- endcomment -%}
-{%- comment -%}
-  url_section 계산은 head/custom.html, tag-list.html에도 똑같이 있다.
-  서브블로그 목록 자체는 _config.yml의 site.sub_blogs 하나로 통일돼 있다.
-{%- endcomment -%}
-{%- assign url_section = page.url | split: '/' | where_exp: "s", "s != ''" | first -%}
+{% include url_section.html %}
 {%- assign store_path = '/assets/js/lunr/lunr-store.js' -%}
 {%- if site.sub_blogs contains url_section -%}
   {%- assign store_path = '/assets/js/lunr/lunr-store-' | append: url_section | append: '.js' -%}

@@ -3,28 +3,28 @@
 
 {%- assign page_title = page.title | default: site.title | replace: '|', '&#124;' -%}
 {%- comment -%}
-  서브 블로그 허브(/lab/, /essay/, /playground/)는 탭 제목을 "{{ site.title }} Lab" 형태로 통일.
-  루트는 더 이상 특별 취급하지 않는다 — index.md의 title 자체가 "Persica Hub"라 그대로 써도 맞는다.
+  서브 블로그 허브(/lab/, /essay/, /playground/, /backstage/, /draft/)는 탭 제목을
+  "{{ site.title }} Lab" 형태로 통일한다. 루트는 더 이상 특별 취급하지 않는다 — index.md의
+  title 자체가 "Persica Hub"라 그대로 써도 맞는다. 서브 블로그 목록은 _config.yml의
+  site.sub_blogs 하나로 통일돼 있다(url_section 계산은 url_section.html 참고).
 {%- endcomment -%}
-{%- if page.url == '/lab/' or page.url == '/essay/' or page.url == '/playground/' or page.url == '/backstage/' or page.url == '/draft/' -%}
+{% include url_section.html %}
+{%- assign hub_url = '/' | append: url_section | append: '/' -%}
+{%- if site.sub_blogs contains url_section and page.url == hub_url -%}
   {%- assign page_title = site.title | append: ' ' | append: page.title -%}
 {%- endif -%}
 
 {%- comment -%}
   서브 블로그(lab/essay/playground/backstage/draft) 소속 글은 탭 제목 접미사를 "Persica"가 아니라
-  "Persica Lab"처럼 소속 서브 블로그 이름으로 붙인다.
+  "Persica Lab"처럼 소속 서브 블로그 이름으로 붙인다. 컬렉션 이름이 전부 영문 소문자 한 단어라
+  capitalize만으로 "Lab"/"Essay"/"Playground"/"Backstage"/"Draft"가 그대로 나온다 — 단, capitalize를
+  append 체인 끝에 걸면 "Persica lab"처럼 합쳐진 문자열 전체(첫 글자만 대문자, 나머지 소문자)에
+  적용돼버리므로 page.collection만 먼저 따로 capitalize한 뒤에 붙여야 한다.
 {%- endcomment -%}
 {%- assign site_suffix = site.title -%}
-{%- if page.collection == 'lab' -%}
-  {%- assign site_suffix = site.title | append: ' Lab' -%}
-{%- elsif page.collection == 'essay' -%}
-  {%- assign site_suffix = site.title | append: ' Essay' -%}
-{%- elsif page.collection == 'playground' -%}
-  {%- assign site_suffix = site.title | append: ' Playground' -%}
-{%- elsif page.collection == 'backstage' -%}
-  {%- assign site_suffix = site.title | append: ' Backstage' -%}
-{%- elsif page.collection == 'draft' -%}
-  {%- assign site_suffix = site.title | append: ' Draft' -%}
+{%- if site.sub_blogs contains page.collection -%}
+  {%- assign collection_label = page.collection | capitalize -%}
+  {%- assign site_suffix = site.title | append: ' ' | append: collection_label -%}
 {%- endif -%}
 
 {%- comment -%} 4.26.2 버그 패치: page_title이 site_suffix를 이미 포함하면 접미사 생략 (upstream master 반영분). {%- endcomment -%}

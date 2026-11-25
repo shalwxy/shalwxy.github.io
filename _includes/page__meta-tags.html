@@ -12,7 +12,7 @@
       {%- assign path_type = nil -%}
   {%- endcase -%}
 
-  {%- assign url_section = page.url | split: '/' | where_exp: "s", "s != ''" | first -%}
+  {% include url_section.html %}
   {%- assign tag_archive_path = nil -%}
   {%- if site.sub_blogs contains url_section -%}
     {%- assign tag_archive_path = '/' | append: url_section | append: '/tags/' -%}

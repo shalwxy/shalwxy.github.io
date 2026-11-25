@@ -31,11 +31,7 @@
 {%- if page.url == '/' -%}
   {%- assign is_root = true -%}
 {%- endif -%}
-{%- comment -%}
-  url_section 계산은 tag-list.html, search/lunr-search-scripts.html에도 똑같이 있다.
-  서브블로그 목록 자체는 _config.yml의 site.sub_blogs 하나로 통일돼 있다.
-{%- endcomment -%}
-{%- assign url_section = page.url | split: '/' | where_exp: "s", "s != ''" | first -%}
+{% include url_section.html %}
 {%- assign nav_items = nil -%}
 {%- assign in_sub_blog = false -%}
 {%- if site.sub_blogs contains url_section -%}

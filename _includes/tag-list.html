@@ -15,11 +15,7 @@
   있고 전역 /tags/ 페이지는 없다. 그래서 서브 블로그 밖에서는 tag_archive_path를 nil로 둬서
   (site.tag_archive.path 같은 존재하지 않는 경로로 폴백하지 않고) 태그 링크 자체를 생략한다.
 {%- endcomment -%}
-{%- comment -%}
-  url_section 계산은 head/custom.html, search/lunr-search-scripts.html에도 똑같이 있다.
-  서브블로그 목록 자체는 _config.yml의 site.sub_blogs 하나로 통일돼 있다.
-{%- endcomment -%}
-{%- assign url_section = page.url | split: '/' | where_exp: "s", "s != ''" | first -%}
+{% include url_section.html %}
 {%- assign tag_archive_path = nil -%}
 {%- if site.sub_blogs contains url_section -%}
   {%- assign tag_archive_path = '/' | append: url_section | append: '/tags/' -%}

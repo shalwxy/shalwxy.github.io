@@ -422,7 +422,7 @@ button.btn {
   display: table;
   width: 100%;
 
-  @media (max-width: $small) {
+  @media (max-width: $small - 1) {
     display: block;
     width: auto;
   }
@@ -914,11 +914,10 @@ footer.page__meta {
 }
 
 /* playground 목록 카드: 아래 3가지는 모바일 화면에서만 바뀌고(스크린샷 기준) 웹(태블릿
-   37.5em 2열 · 데스크톱 48em 4열)은 기존 그대로 둔다. 37.4375em은 $small(37.5em)의 -1px로,
-   이 파일 다른 곳(nav__list의 63.9375em = $large - 1px)과 같은 "경계보다 1px 작게"
-   패턴이다 — 정확히 37.5em에서는 테마의 min-width: 37.5em 2열 규칙이 이미 따로 적용되므로
-   겹치지 않는다. */
-@media (max-width: 37.4375em) {
+   $small 이상 2열 · $medium 이상 4열)은 기존 그대로 둔다. $small - 1은 이 파일의
+   @media screen and (max-width: $large - 1)과 같은 "경계보다 1px 작게" 패턴이다 —
+   정확히 $small에서는 테마의 min-width: $small 2열 규칙이 이미 따로 적용되므로 겹치지 않는다. */
+@media (max-width: $small - 1) {
   /* 1. 모바일에서만 1열(풀폭 카드)을 2열로 바꾼다 — 값은 테마가 37.5em 이상에서 쓰는
      2열 수치(.grid__item, 48.98%/2.04% 간격)를 그대로 가져왔다. */
   .grid__item {
