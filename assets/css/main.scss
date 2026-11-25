@@ -30,46 +30,45 @@
    좁은 화면에서는 두 그룹이 자연스럽게 줄바꿈되고, 각 그룹 내부(날짜/읽는시간/태그)도
    필요하면 다시 줄바꿈된다. 글 하단 footer도 같은 page__meta 클래스를 쓰므로(테마 기본,
    날짜·태그 라벨에 같은 축소 폰트를 입히려는 용도), `header` 안에 있을 때만(= single.html에서
-   제목 바로 아래 쓰는 상단 메타) flex 레이아웃을 적용해 footer에는 영향이 없게 한다. */
+   제목 바로 아래 쓰는 상단 메타) flex 레이아웃을 적용해 footer에는 영향이 없게 한다.
+   margin-bottom(날짜 행 → 본문 간격)도 같은 이유로 여기서 같이 정한다 — 목록 카드 쪽
+   margin-bottom은 바로 아래 별도 규칙에서 다룬다. */
 header .page__meta {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 0.5em 1em;
+  margin-bottom: 1.25em;
 }
 
-/* 제목과 메타 줄 사이 간격을 margin-top만으로 줄였더니 값을 계속 줄여도 거의 안 좁아졌는데,
-   원인은 margin collapse였다 — 테마의 범용 h1~h6 규칙(_base.scss)이 .page__title에
-   margin-bottom: 0.5em(자기 글자 크기 기준, 약 12~13px)을 주는데 override 안 돼 있었고,
-   인접한 형제 요소의 margin-top/margin-bottom은 더 큰 값으로 합쳐진다(합산이 아니라 max).
-   그래서 .page__meta 쪽 margin-top을 아무리 줄여도 .page__title의 margin-bottom이 항상
-   이겨서 간격이 그대로였다. .page__title의 margin-bottom을 0으로 없애야 아래 margin-top
-   값이 실제로 간격을 결정한다. */
-.page__title {
+/* 목록 카드(.list__item/.grid__item 안의 .page__meta)는 날짜 행과 글 요약 사이 간격을
+   없앤다. header 쪽과 선택자 범위가 겹치지 않아서(카드는 <header> 밖에 있음), 테마가 같은
+   요소에 걸어둔 다른 margin-bottom 값과 명시도 경쟁을 할 필요 없이 그대로 적용된다. */
+.list__item .page__meta,
+.grid__item .page__meta {
   margin-bottom: 0;
 }
 
+/* 제목(.page__title: 글 상세 h1, .archive__item-title: 카드 h2) 자신의 margin-bottom을
+   없앤다 — 테마 기본 h1~h6 규칙(_base.scss)이 여기에 0.5em(자기 글자 크기 기준)을 주는데,
+   지우지 않으면 margin collapse에서 이 값이 항상 더 커서 이겨버려(합산이 아니라 max),
+   바로 아래 두 규칙(제목 → 날짜 행 간격)을 아무리 조절해도 반영되지 않는다. */
+.page__title,
+.archive__item-title {
+  margin-bottom: 0;
+}
+
+/* 제목 → 날짜 행 간격: 글 상세(header 안)와 목록 카드를 다른 값으로 둔다. */
 header .page__title + .page__meta {
   margin-top: 0.9em;
 }
 
+.archive__item-title + .page__meta {
+  margin-top: 0;
+}
+
 .page__meta-info {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-}
-
-/* 플레이그라운드 카드(목록)에서만: 작성일(+읽는시간)과 수정일을 한 줄에 나란히 두지 않고
-   두 줄로 나눠 보여준다(page__meta.html의 stack_playground_dates 분기). 가로 정렬이던 기본
-   .page__meta-info를 세로로 바꾸고, 각 줄(.page__meta-row)은 그 안에서만 가로로 배치한다. */
-.page__meta-info--stacked {
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.2em;
-}
-
-.page__meta-row {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -85,43 +84,27 @@ header .page__title + .page__meta {
   white-space: nowrap;
 }
 
-/* page__meta.html의 루트는 원래 <p>라서 브라우저 기본 하단 여백으로 바로 다음 내용(카드의
-   글 요약, 단일 글의 본문 시작 문단)과 간격이 떴는데, 날짜 옆에 태그·공유 버튼·수정일을
-   같이 보여주려고 <div>로 통일하면서 그 기본 여백이 사라져 다음 내용과 너무 붙어 보였다.
-   0.75em으로 되돌렸다가 여전히 붙어 보인다는 피드백에 따라 더 키웠다. */
-.page__meta {
-  margin-bottom: 1.25em;
-}
+/* 태그+공유 버튼 묶음. 데스크톱에서는 flex: 1로 날짜 줄 옆 남은 폭을 전부 차지해서(지금까지와
+   같은 모양 — 태그는 날짜 그룹 바로 옆, 공유 버튼은 margin-left: auto로 맨 오른쪽 끝),
+   모바일에서는 "공간이 부족하면 알아서 줄바꿈"(자연스러운 flex-wrap)에 맡기지 않고 이 묶음
+   전체가 날짜 줄 다음 줄로 오도록 명시적으로 강제한다 — flex-basis: 100%는 flex-wrap
+   컨테이너에서 "이 아이템에게 한 줄 전체를 줘라"는 뜻이라, 내용물 너비와 무관하게 항상
+   새 줄로 넘어간다. 그 줄 안에서 태그는 기본 위치(왼쪽), 공유 버튼은 margin-left: auto로
+   오른쪽에 자리잡는다. */
+.page__meta-secondary {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  align-items: center;
 
-/* 목록 카드에서는 위 margin-bottom이 실제로 안 먹고 있었다 — 테마가 목록/그리드 카드에
-   .list__item .page__meta, .grid__item .page__meta에 margin: 0 0 4px(클래스 2개)를 따로 걸어두는데,
-   이게 방금 위의 .page__meta(클래스 1개)보다 명시도가 높아서 margin-bottom만 4px로 눌려버렸다
-   (margin-top은 바로 아래 규칙처럼 같은 명시도의 규칙으로 덮어써서 괜찮았는데, margin-bottom은
-   맞대응하는 규칙이 없었다). 테마와 똑같은 선택자로 다시 덮어써서 1.25em이 실제로 적용되게 한다. */
-.list__item .page__meta,
-.grid__item .page__meta {
-  margin-bottom: 0em;
-}
-
-/* 목록 카드: 제목과 날짜 행 사이도 날짜 행과 글 요약 사이(바로 위 margin-bottom)와 똑같은
-   간격이 되도록 같은 값을 margin-top에 그대로 쓴다 — 둘 다 .page__meta 자신의 font-size
-   기준이라 같은 em 값이면 실제 픽셀 간격도 똑같아진다. 다만 가고 싶은 값이 테마 기본
-   .archive__item-title의 margin-bottom(0.25em, 제목 자신의 더 큰 글자 크기 기준이라 절대
-   픽셀로는 이쪽이 더 큼)보다 작으면 margin collapse에서 그 쪽이 이겨버리므로, 작은 값을
-   믿고 쓰려면 제목 쪽 margin-bottom도 0으로 없애야 한다. */
-.archive__item-title {
-  margin-bottom: 0;
-}
-
-.archive__item-title + .page__meta {
-  margin-top: 0em;
+  @media (max-width: $small) {
+    flex-basis: 100%;
+  }
 }
 
 .page__meta-share {
   display: flex;
   align-items: center;
-  // flex-wrap으로 줄바꿈돼 혼자 한 줄을 차지할 때도(좁은 화면) space-between 대신
-  // margin-left: auto로 오른쪽 정렬을 유지한다.
   margin-left: auto;
 }
 
@@ -230,6 +213,17 @@ header .page__title + .page__meta {
   }
 }
 
+/* "맨 위로 이동"(footer.page__meta)과 "뒤로/목록"(.pagination) 사이 구분선은 불필요하다는
+   피드백에 따라 없앤다. 테마 기본은 .page__meta 바로 다음에 오는 .pagination에
+   border-top(_sass/minimal-mistakes/_page.scss)을 거는데, 이 블로그는 항상 그 순서로
+   오므로 이 조합만 지운다. border만 없애면 테마가 같이 주는 margin-top/padding-top
+   2em씩(총 4em)이 선 없이 덩그러니 남아 어색해서 여백도 같이 줄인다. */
+.page__meta + .pagination {
+  margin-top: 1em;
+  padding-top: 0;
+  border-top: none;
+}
+
 /* 글 하단 뒤로/목록 버튼: 테마 기본은 50%씩 폭을 나눠 가지는 큰 페이저 바라 글자가
    과도하게 커 보인다. 폭을 내용만큼만 차지하는 작은 버튼 두 개로 바꿔 가운데 정렬하고,
    바로 아래 반응(giscus)/댓글 영역과 너무 붙어 보이지 않게 아래 여백도 둔다.
@@ -309,7 +303,9 @@ button.btn {
   border-radius: $border-radius;
   background: rgba(0, 0, 0, 0.85);
   color: #fff;
-  font-size: $type-size-6;
+  // 2배 요청: padding이 em 단위(자기 글자 크기 기준)라 font-size만 2배로 키우면
+  // padding도 같이 2배가 돼서 토스트 전체가 정확히 2배 크기가 된다.
+  font-size: $type-size-6 * 2;
   white-space: nowrap;
   opacity: 0;
   pointer-events: none;
@@ -323,7 +319,7 @@ button.btn {
 }
 
 /* 무한 스크롤 (lab/essay/playground 메인·카테고리 목록): 배치 래퍼는 레이아웃에
-   영향을 주면 안 돼서 display: contents로 투명하게 만든다. .showcase 같은 grid
+   영향을 주면 안 돼서 display: contents로 투명하게 만든다. .entries-grid 같은 grid
    컨테이너에서도 카드가 그대로 grid item이 되도록. [hidden]은 숨긴 배치만 안 보이게. */
 .infinite-scroll__batch {
   display: contents;
@@ -625,7 +621,7 @@ footer.page__meta .back-to-top {
 
 /* 글 목록/태그 아카이브의 "맨 위로 이동"은 .page__meta 같은 축소 컨텍스트 밖에 있어서
    위 footer 쪽과 달리 바로 $type-size-6(0.75배 적용한 크기)을 쓰면 된다. 위쪽 여백도 둔다.
-   두 군데 모두 커버해야 한다 — folder.html/showcase.html(.page__content 바로 아래)과
+   두 군데 모두 커버해야 한다 — folder.html(.page__content 바로 아래)과
    태그 아카이브 페이지(lab|essay|playground)/tags.md(.taxonomy__section 안, 태그마다 한 번씩). */
 .page__content > .back-to-top,
 .page__content .taxonomy__section > .back-to-top {
@@ -791,26 +787,21 @@ footer.page__meta .back-to-top {
   }
 }
 
-.showcase {
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-auto-rows: 1fr;
-  gap: 2em;
-  margin-top: 1em;
-
-  @include breakpoint($medium) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-.showcase__card {
-  display: flex;
-  flex-direction: column;
+/* playground 목록: 전용 showcase.html 레이아웃을 버리고 테마 기본 entries_layout: grid
+   (archive-single.html, .grid__item)로 옮겼다 — "자세히 보기"/"관련 글 보기" 버튼이
+   없어도 된다면, 날짜·수정일·읽는시간 표시를 lab/essay와 공유하는 page__meta.html을
+   그대로 쓸 수 있고 전용 CSS 묶음(.showcase*, 10여 개 클래스)도 없앨 수 있어서다.
+   열 수(작은 화면 2열, 중간 화면 4열)는 테마 기본값 그대로 두고, 카드에 테두리·그림자·
+   hover 효과만 더해 showcase 카드와 비슷한 입체감을 준다. */
+.grid__item .archive__item {
+  // 2~4열로 나뉘는 좁은 칸에서 1.5em 패딩은 카드 안쪽 실제 내용 폭을 너무 많이 잡아먹어서
+  // (138px 카드 기준 양쪽 패딩만 48px) 제목·날짜가 비좁게 여러 줄로 꺾였다. 0.75em으로
+  // 줄여서 내용이 들어갈 자리를 늘렸다.
+  padding: 0.75em;
   border: 1px solid $border-color;
   border-radius: $border-radius;
   background: $background-color;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-  overflow: hidden;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 
   &:hover {
@@ -819,118 +810,23 @@ footer.page__meta .back-to-top {
   }
 }
 
-.showcase__image {
-  display: block;
-  aspect-ratio: 16 / 9;
-  background: mix($primary-color, $background-color, 12%);
-  overflow: hidden;
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
+/* 목록 카드에는 요약이 필요 없다는 요청에 따라, 테마 기본(중간 화면 이상에서만 보여줌)과
+   무관하게 항상 숨긴다. */
+.grid__item .archive__item-excerpt {
+  display: none;
 }
 
-.showcase__image--placeholder {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  font-size: 4em;
-  font-weight: bold;
-  color: $primary-color;
-  opacity: 0.5;
-}
+/* 좁은 그리드 칸(작은 화면 2열·중간 화면 4열)에서 "업데이트: 2026-11-14"처럼 긴 메타 항목이
+   nowrap 때문에 줄바꿈되지 못하고 카드 밖으로 넘쳤다. 그리드 카드 안에서만 다시 줄바꿈을
+   허용하되(테마가 이미 각 항목을 줄 단위로 분리해두므로 "업데이트:"와 날짜 사이에서 자연스럽게
+   꺾인다), 정작 날짜 글자 자체(<time>)는 따로 nowrap을 줘서 "2026-11-" 다음 "14"가 하이픈
+   중간에서 꺾이는 건 막는다 — 날짜가 통째로 다음 줄로 넘어갈지언정 숫자 중간은 안 끊기게 한다. */
+.grid__item .page__meta-date,
+.grid__item .page__meta-readtime,
+.grid__item .page__meta-updated {
+  white-space: normal;
 
-.showcase__body {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  padding: 1.5em;
-}
-
-.showcase__title {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  overflow: hidden;
-  // box-sizing: border-box(전역 리셋)에서는 min-height 안에 padding/border까지
-  // 포함돼서, 2줄 텍스트가 들어갈 때 padding/border만큼 박스가 더 늘어나
-  // 1줄 카드와 높이가 어긋난다. content-box로 고정해 min-height이 순수
-  // 텍스트 영역(2줄)만 보장하도록 한다.
-  box-sizing: content-box;
-  // line-height(1.25em) * 2줄 분량을 항상 확보해서, 제목이 1줄이든 2줄이든
-  // 바로 아래 border-bottom(구분선)의 위치가 카드마다 같아지도록 한다.
-  min-height: 2.5em;
-  margin: 0 0 0.75em;
-  padding-bottom: 0.75em;
-  border-bottom: 1px solid $border-color;
-  font-size: $type-size-3;
-  line-height: 1.25;
-
-  a {
-    color: $text-color;
-    text-decoration: none;
-
-    &:hover {
-      color: $primary-color;
-    }
-  }
-}
-
-.showcase__date {
-  margin: 0 0 0.75em;
-  font-size: $type-size-6;
-  color: $muted-text-color;
-  // 날짜(예: 2026-11-15)는 글자 수가 적어 카드 폭엔 항상 들어가지만, 하이픈(-)은 CSS
-  // 줄바꿈 규칙상 그 자체로 줄바꿈 기회라 좁은 카드에서 날짜 중간이 끊겨 보일 수 있다.
-  // 통째로 한 줄에 붙인다.
-  white-space: nowrap;
-
-  i {
-    margin-right: 0.25em;
-  }
-}
-
-/* 수정일 줄: 작성일(.showcase__date) 바로 다음 줄에 붙여서 보여준다. 작성일의
-   margin-bottom(0.75em)과 이 음수 margin-top이 합쳐지면(margin collapse에서 양수+음수는
-   합산) 두 줄 사이 간격만 0.25em로 좁아지고, 맨 뒤에 오는 줄의 margin-bottom(0.75em)은
-   그대로 남아 아래 글 요약과의 간격은 평소와 같다. */
-.showcase__date--updated {
-  margin-top: -0.5em;
-}
-
-.showcase__excerpt {
-  flex: 1;
-  font-size: $type-size-5;
-  color: $muted-text-color;
-
-  p {
-    margin: 0;
-  }
-}
-
-.showcase__tags {
-  margin: 1em 0 0;
-  font-size: $type-size-6;
-  color: $muted-text-color;
-}
-
-.showcase__tag {
-  margin-right: 0.75em;
-}
-
-.showcase__actions {
-  margin: 1em 0 0;
-
-  .btn {
-    margin: 0 0.5em 0.5em 0;
-  }
-
-  .showcase__action-placeholder {
-    visibility: hidden;
+  time {
+    white-space: nowrap;
   }
 }
