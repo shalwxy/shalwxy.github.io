@@ -61,14 +61,10 @@ layout: default
         {% if site.data.ui-text[site.locale].meta_label %}
           <h4 class="page__meta-title">{{ site.data.ui-text[site.locale].meta_label }}</h4>
         {% endif %}
-        {% include page__taxonomy.html %}
-        {% include page__date.html %}
         {% if page.collection == 'lab' or page.collection == 'essay' or page.collection == 'playground' or page.collection == 'backstage' or page.collection == 'draft' %}
           <a href="#page-title" class="back-to-top">{{ site.data.ui-text[site.locale].back_to_top | default: 'Back to Top' }} &uarr;</a>
         {% endif %}
       </footer>
-
-      {% if page.share %}{% include social-share.html %}{% endif %}
 
       {% include post_pagination.html %}
     </div>

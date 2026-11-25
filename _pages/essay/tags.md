@@ -25,7 +25,7 @@ sidebar:
   <section id="{{ tag | slugify }}" class="taxonomy__section">
     <h2 class="archive__subtitle">{{ tag }}</h2>
     <div class="entries-list">
-      {% for post in tagged %}{% include archive-single.html %}{% endfor %}
+      {% for post in tagged %}{% include archive-single.html type="list" %}{% endfor %}
     </div>
     <a href="#page-title" class="back-to-top">{{ site.data.ui-text[site.locale].back_to_top | default: 'Back to Top' }} &uarr;</a>
   </section>

@@ -1,31 +1,131 @@
+{%- comment -%}
+  remote_theme(mmistakes/minimal-mistakes@4.26.2)의 _includes/page__meta.html을 통째로 복사해서
+  확장한 파일 — 작성일·수정일·읽는시간 순으로 한 줄에 보여주고(카드/목록 포함), 단일 글 페이지에서는
+  (include.type이 없는 호출) 태그(page__meta-tags.html)와 공유 버튼(social-share.html)도 같은 줄
+  우측에 덧붙인다. archive-single.html이 카드/목록(include.type=grid|list)에서 호출할 때는
+  태그·공유 버튼은 생략한다. 하단 footer가 쓰던 page__date.html의 "수정일" 표시는 여기로
+  옮겨왔으므로 더 이상 쓰지 않는다 — 글이 한 번도 수정되지 않았다면(last_modified_at 없음)
+  "수정일 = 작성일"을 또 보여주는 게 의미가 없어서, last_modified_at이 실제로 있을 때만
+  보여준다(테마 기본은 없으면 날짜로 대체해서 항상 보여줌).
+
+  playground 컬렉션만 두 가지 예외가 있다:
+  - 카드/목록에서는 작성일+읽는시간을 한 줄, 수정일을 그 다음 줄로 나눠 보여준다(요청 사항).
+  - 글 상세(단일 페이지)에서는 읽는시간을 아예 보여주지 않는다(요청 사항).
+  Liquid의 if 태그는 괄호로 조건을 묶을 수 없어서(괄호를 변수명 일부로 오인해 조용히
+  잘못 평가될 수 있음), and/or를 함께 쓸 조건은 전부 중첩 if로 풀어썼다.
+
+  remote_theme 버전을 올릴 때는 업스트림의 같은 파일과 다시 비교해서 변경分이 있으면 반영해야 한다.
+{%- endcomment -%}
 {% assign document = post | default: page %}
-{% if document.read_time or document.show_date %}
-  <p class="page__meta">
-    {% if document.show_date and document.date %}
-      {% assign date = document.date %}
-      <span class="page__meta-date">
-        <i class="far {% if include.type == 'grid' and document.read_time and document.show_date %}fa-fw {% endif %}fa-calendar-alt" aria-hidden="true"></i>
-        {% assign date_format = site.date_format | default: "%B %-d, %Y" %}
-        <time datetime="{{ date | date_to_xmlschema }}">{{ date | date: date_format }}</time>
-      </span>
-    {% endif %}
+{% assign date_format = site.date_format | default: "%B %-d, %Y" %}
 
-    {% if document.read_time and document.show_date %}<span class="page__meta-sep"></span>{% endif %}
+{% assign is_single_page = true %}
+{% if include.type %}{% assign is_single_page = false %}{% endif %}
 
-    {% if document.read_time %}
-      {% assign words_per_minute = document.words_per_minute | default: site.words_per_minute | default: 200 %}
-      {% assign words = document.content | strip_html | number_of_words %}
+{% assign is_playground = false %}
+{% if document.collection == 'playground' %}{% assign is_playground = true %}{% endif %}
 
-      <span class="page__meta-readtime">
-        <i class="far {% if include.type == 'grid' and document.read_time and document.show_date %}fa-fw {% endif %}fa-eye" aria-hidden="true"></i>
-        {% if words < words_per_minute %}
-          {{ site.data.ui-text[site.locale].less_than | default: "less than" }} 1 {{ site.data.ui-text[site.locale].minute_read | default: "minute read" }}
-        {% elsif words == words_per_minute %}
-          1 {{ site.data.ui-text[site.locale].minute_read | default: "minute read" }}
-        {% else %}
-          {{ words | divided_by: words_per_minute }} {{ site.data.ui-text[site.locale].minute_read | default: "minute read" }}
+{% assign show_read_time = true %}
+{% if is_playground and is_single_page %}{% assign show_read_time = false %}{% endif %}
+
+{% assign stack_playground_dates = false %}
+{% if is_playground and is_single_page == false %}{% assign stack_playground_dates = true %}{% endif %}
+
+{% assign has_read_time = false %}
+{% if document.read_time and show_read_time %}{% assign has_read_time = true %}{% endif %}
+
+{% if has_read_time or document.show_date or document.last_modified_at %}
+  <div class="page__meta">
+    {% if stack_playground_dates %}
+      <div class="page__meta-info page__meta-info--stacked">
+        <span class="page__meta-row">
+          {% if document.show_date and document.date %}
+            {% assign date = document.date %}
+            <span class="page__meta-date">
+              <i class="far {% if include.type == 'grid' %}fa-fw {% endif %}fa-calendar-alt" aria-hidden="true"></i>
+              <time datetime="{{ date | date_to_xmlschema }}">{{ date | date: date_format }}</time>
+            </span>
+          {% endif %}
+
+          {% if has_read_time and document.show_date %}<span class="page__meta-sep"></span>{% endif %}
+
+          {% if has_read_time %}
+            {% assign words_per_minute = document.words_per_minute | default: site.words_per_minute | default: 200 %}
+            {% assign words = document.content | strip_html | number_of_words %}
+
+            <span class="page__meta-readtime">
+              <i class="far {% if include.type == 'grid' %}fa-fw {% endif %}fa-eye" aria-hidden="true"></i>
+              {% if words < words_per_minute %}
+                {{ site.data.ui-text[site.locale].less_than | default: "less than" }} 1 {{ site.data.ui-text[site.locale].minute_read | default: "minute read" }}
+              {% elsif words == words_per_minute %}
+                1 {{ site.data.ui-text[site.locale].minute_read | default: "minute read" }}
+              {% else %}
+                {{ words | divided_by: words_per_minute }} {{ site.data.ui-text[site.locale].minute_read | default: "minute read" }}
+              {% endif %}
+            </span>
+          {% endif %}
+        </span>
+
+        {% if document.last_modified_at %}
+          <span class="page__meta-row">
+            <span class="page__meta-updated">
+              <i class="far fa-calendar-check" aria-hidden="true"></i>
+              {{ site.data.ui-text[site.locale].date_label | default: "Updated:" }}
+              <time datetime="{{ document.last_modified_at | date_to_xmlschema }}">{{ document.last_modified_at | date: date_format }}</time>
+            </span>
+          </span>
         {% endif %}
-      </span>
+      </div>
+    {% else %}
+      <div class="page__meta-info">
+        {% if document.show_date and document.date %}
+          {% assign date = document.date %}
+          <span class="page__meta-date">
+            <i class="far {% if include.type == 'grid' and has_read_time and document.show_date %}fa-fw {% endif %}fa-calendar-alt" aria-hidden="true"></i>
+            <time datetime="{{ date | date_to_xmlschema }}">{{ date | date: date_format }}</time>
+          </span>
+        {% endif %}
+
+        {% if document.last_modified_at and document.show_date and document.date %}<span class="page__meta-sep"></span>{% endif %}
+
+        {% if document.last_modified_at %}
+          <span class="page__meta-updated">
+            <i class="far {% if include.type == 'grid' and has_read_time and document.show_date %}fa-fw {% endif %}fa-calendar-check" aria-hidden="true"></i>
+            {{ site.data.ui-text[site.locale].date_label | default: "Updated:" }}
+            <time datetime="{{ document.last_modified_at | date_to_xmlschema }}">{{ document.last_modified_at | date: date_format }}</time>
+          </span>
+        {% endif %}
+
+        {% if has_read_time %}
+          {% if document.show_date or document.last_modified_at %}<span class="page__meta-sep"></span>{% endif %}
+          {% assign words_per_minute = document.words_per_minute | default: site.words_per_minute | default: 200 %}
+          {% assign words = document.content | strip_html | number_of_words %}
+
+          <span class="page__meta-readtime">
+            <i class="far {% if include.type == 'grid' and document.show_date %}fa-fw {% endif %}fa-eye" aria-hidden="true"></i>
+            {% if words < words_per_minute %}
+              {{ site.data.ui-text[site.locale].less_than | default: "less than" }} 1 {{ site.data.ui-text[site.locale].minute_read | default: "minute read" }}
+            {% elsif words == words_per_minute %}
+              1 {{ site.data.ui-text[site.locale].minute_read | default: "minute read" }}
+            {% else %}
+              {{ words | divided_by: words_per_minute }} {{ site.data.ui-text[site.locale].minute_read | default: "minute read" }}
+            {% endif %}
+          </span>
+        {% endif %}
+
+        {% if is_single_page %}
+          {% if page.tags[0] %}<span class="page__meta-sep"></span>{% endif %}
+          {% include page__meta-tags.html %}
+        {% endif %}
+      </div>
     {% endif %}
-  </p>
+
+    {% if is_single_page %}
+      {% if page.share %}
+        <div class="page__meta-share">
+          {% include social-share.html %}
+        </div>
+      {% endif %}
+    {% endif %}
+  </div>
 {% endif %}

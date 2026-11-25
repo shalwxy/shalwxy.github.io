@@ -26,21 +26,177 @@
   margin-left: auto;
 }
 
-/* 공유하기 영역: 버튼들을 가운데 정렬 (테마 기본은 왼쪽 정렬). 테마 기본은 .page__share에
-   float: left가 걸려있어서(그리드 레이아웃용) 바로 뒤의 .pagination이 margin-top만큼
-   못 띄어지고 아래쪽 선에 거의 붙어버린다. float를 끄면 위쪽은 padding-top만큼, 아래쪽은
-   .pagination의 margin-top(2em)만큼으로 간격이 맞춰진다.
-   "공유하기" 제목(h4)은 텍스트 제거 요청에 따라 _includes/social-share.html에서 아예
-   마크업을 뺐다. */
-.page__share {
-  text-align: center;
-  padding-top: 2em;
+/* 글 상단 메타 줄: 날짜·읽는시간·태그는 왼쪽에, 공유 버튼은 같은 줄 우측에 배치한다.
+   좁은 화면에서는 두 그룹이 자연스럽게 줄바꿈되고, 각 그룹 내부(날짜/읽는시간/태그)도
+   필요하면 다시 줄바꿈된다. 글 하단 footer도 같은 page__meta 클래스를 쓰므로(테마 기본,
+   날짜·태그 라벨에 같은 축소 폰트를 입히려는 용도), `header` 안에 있을 때만(= single.html에서
+   제목 바로 아래 쓰는 상단 메타) flex 레이아웃을 적용해 footer에는 영향이 없게 한다. */
+header .page__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5em 1em;
 }
 
-/* float: none만으로는 테마의 `.page .page__inner-wrap .page__share` 규칙(클래스 4개)에
-   밀려서 적용되지 않는다. 같은 선택자 체인으로 맞춰서 덮어쓴다. */
-.page .page__inner-wrap .page__share {
+/* 제목과 메타 줄 사이 간격을 margin-top만으로 줄였더니 값을 계속 줄여도 거의 안 좁아졌는데,
+   원인은 margin collapse였다 — 테마의 범용 h1~h6 규칙(_base.scss)이 .page__title에
+   margin-bottom: 0.5em(자기 글자 크기 기준, 약 12~13px)을 주는데 override 안 돼 있었고,
+   인접한 형제 요소의 margin-top/margin-bottom은 더 큰 값으로 합쳐진다(합산이 아니라 max).
+   그래서 .page__meta 쪽 margin-top을 아무리 줄여도 .page__title의 margin-bottom이 항상
+   이겨서 간격이 그대로였다. .page__title의 margin-bottom을 0으로 없애야 아래 margin-top
+   값이 실제로 간격을 결정한다. */
+.page__title {
+  margin-bottom: 0;
+}
+
+header .page__title + .page__meta {
+  margin-top: 0.9em;
+}
+
+.page__meta-info {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* 플레이그라운드 카드(목록)에서만: 작성일(+읽는시간)과 수정일을 한 줄에 나란히 두지 않고
+   두 줄로 나눠 보여준다(page__meta.html의 stack_playground_dates 분기). 가로 정렬이던 기본
+   .page__meta-info를 세로로 바꾸고, 각 줄(.page__meta-row)은 그 안에서만 가로로 배치한다. */
+.page__meta-info--stacked {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.2em;
+}
+
+.page__meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* 날짜/읽는시간/수정일 각 항목은 flex 아이템이라 공간이 부족하면 통째로 다음 줄로
+   넘어가는 게 기본 동작이라 보통은 중간에 끊기지 않지만, 혹시라도 아주 좁은 화면에서
+   내부 띄어쓰기 지점(예: "3 분 소요") 때문에 한 항목이 두 줄로 쪼개지는 걸 막기 위해
+   명시적으로 줄바꿈을 금지한다. */
+.page__meta-date,
+.page__meta-readtime,
+.page__meta-updated {
+  white-space: nowrap;
+}
+
+/* page__meta.html의 루트는 원래 <p>라서 브라우저 기본 하단 여백으로 바로 다음 내용(카드의
+   글 요약, 단일 글의 본문 시작 문단)과 간격이 떴는데, 날짜 옆에 태그·공유 버튼·수정일을
+   같이 보여주려고 <div>로 통일하면서 그 기본 여백이 사라져 다음 내용과 너무 붙어 보였다.
+   0.75em으로 되돌렸다가 여전히 붙어 보인다는 피드백에 따라 더 키웠다. */
+.page__meta {
+  margin-bottom: 1.25em;
+}
+
+/* 목록 카드에서는 위 margin-bottom이 실제로 안 먹고 있었다 — 테마가 목록/그리드 카드에
+   .list__item .page__meta, .grid__item .page__meta에 margin: 0 0 4px(클래스 2개)를 따로 걸어두는데,
+   이게 방금 위의 .page__meta(클래스 1개)보다 명시도가 높아서 margin-bottom만 4px로 눌려버렸다
+   (margin-top은 바로 아래 규칙처럼 같은 명시도의 규칙으로 덮어써서 괜찮았는데, margin-bottom은
+   맞대응하는 규칙이 없었다). 테마와 똑같은 선택자로 다시 덮어써서 1.25em이 실제로 적용되게 한다. */
+.list__item .page__meta,
+.grid__item .page__meta {
+  margin-bottom: 0em;
+}
+
+/* 목록 카드: 제목과 날짜 행 사이도 날짜 행과 글 요약 사이(바로 위 margin-bottom)와 똑같은
+   간격이 되도록 같은 값을 margin-top에 그대로 쓴다 — 둘 다 .page__meta 자신의 font-size
+   기준이라 같은 em 값이면 실제 픽셀 간격도 똑같아진다. 다만 가고 싶은 값이 테마 기본
+   .archive__item-title의 margin-bottom(0.25em, 제목 자신의 더 큰 글자 크기 기준이라 절대
+   픽셀로는 이쪽이 더 큼)보다 작으면 margin collapse에서 그 쪽이 이겨버리므로, 작은 값을
+   믿고 쓰려면 제목 쪽 margin-bottom도 0으로 없애야 한다. */
+.archive__item-title {
+  margin-bottom: 0;
+}
+
+.archive__item-title + .page__meta {
+  margin-top: 0em;
+}
+
+.page__meta-share {
+  display: flex;
+  align-items: center;
+  // flex-wrap으로 줄바꿈돼 혼자 한 줄을 차지할 때도(좁은 화면) space-between 대신
+  // margin-left: auto로 오른쪽 정렬을 유지한다.
+  margin-left: auto;
+}
+
+/* 태그 배지: 날짜·읽는시간 옆에 붙는 작은 알약 모양. 글 하단 공유 섹션이 쓰던
+   page__taxonomy-item(테마 기본, 사각형)과는 다른 둥근 배지로 구분한다. */
+.page__meta-tags {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.4em;
+}
+
+.page__meta-tag {
+  display: inline-block;
+  padding: 0.15em 0.75em;
+  border-radius: 999px;
+  background: mix($primary-color, $background-color, 10%);
+  color: $text-color;
+  text-decoration: none;
+  font-size: 0.9em;
+  white-space: nowrap;
+
+  &:hover {
+    background: $primary-color;
+    color: #fff;
+  }
+}
+
+/* 공유 버튼: 테마 기본은 글 하단에 독립 섹션(.page__share)으로 떨어져 있는데, 이 블로그는
+   날짜·읽는시간 줄 우측에 붙인다. 하단 전용이던 가운데 정렬·상단 여백·구분선 스타일은
+   더 필요 없으므로 지운다. 또한 테마는 사이드바(toc_sticky 등) 레이아웃에서
+   `.page .page__inner-wrap .page__share`에 float: left/width: 100%/clear: both를 걸어
+   (_sass/minimal-mistakes/_page.scss) 줄 전체를 차지하게 만드는데, 여기서는 .page__meta 안에
+   중첩되므로 더 구체적인 선택자로 그 규칙을 무력화해야 한다. */
+.page__meta-share .page__share {
+  margin: 0;
+  padding: 0;
+  border-top: none;
+}
+
+.page .page__inner-wrap .page__meta .page__share {
   float: none;
+  width: auto;
+  clear: none;
+}
+
+/* 트위터·페이스북·링크드인 버튼 글자색(아이콘도 currentColor라 같이 적용됨): 테마는
+   .page__meta { a { color: inherit; } }(_sass/minimal-mistakes/_page.scss)를 두는데, 이 선택자가
+   요소(a) + 클래스 조합이라 .btn--twitter 같은 클래스 하나짜리 선택자보다 명시도가 높아서
+   브랜드 배경색 위에 흰 글자/아이콘 대신 .page__meta의 회색 글자색이 입혀져 버린다(카카오톡·링크
+   복사 버튼은 <button>이라 이 영향을 받지 않음). 테마가 각 버튼에 쓰는 yiq-contrasted를 같은
+   색상으로 다시 적용해 올바른 대비색으로 되돌린다. hover(.btn--twitter:hover, 테마 기본)는
+   명시도가 같아서(클래스 2개) 소스 순서상 뒤에 오는 이 규칙에 덮일 수 있으므로, hover도 같은
+   명시도로 같이 재정의해 어두워지는 효과를 유지한다. */
+.page__meta-share .btn--twitter {
+  @include yiq-contrasted($twitter-color);
+
+  &:hover {
+    @include yiq-contrasted(mix(#000, $twitter-color, 20%));
+  }
+}
+
+.page__meta-share .btn--facebook {
+  @include yiq-contrasted($facebook-color);
+
+  &:hover {
+    @include yiq-contrasted(mix(#000, $facebook-color, 20%));
+  }
+}
+
+.page__meta-share .btn--linkedin {
+  @include yiq-contrasted($linkedin-color);
+
+  &:hover {
+    @include yiq-contrasted(mix(#000, $linkedin-color, 20%));
+  }
 }
 
 /* 공유 버튼: 테마 기본은 "37.5em 이하"일 때만 라벨 텍스트를 스크린리더 전용(sr-only)으로
@@ -76,9 +232,16 @@
 
 /* 글 하단 뒤로/목록 버튼: 테마 기본은 50%씩 폭을 나눠 가지는 큰 페이저 바라 글자가
    과도하게 커 보인다. 폭을 내용만큼만 차지하는 작은 버튼 두 개로 바꿔 가운데 정렬하고,
-   바로 아래 반응(giscus)/댓글 영역과 너무 붙어 보이지 않게 아래 여백도 둔다. */
+   바로 아래 반응(giscus)/댓글 영역과 너무 붙어 보이지 않게 아래 여백도 둔다.
+   글자 크기는 원래 $type-size-6(0.75em, 약 12px) → 2배인 $type-size-3(1.563em, 약 25px)로
+   키웠다가, 그건 너무 크다는 피드백에 따라 $type-size-3의 0.75배(약 1.17em, 약 18.75px)로
+   다시 낮췄다 — 원래 크기의 약 1.56배 정도. padding이 em 단위라 버튼 크기 전체가 같은
+   비율로 줄어든다. 좁은 화면에서 두 버튼 폭 합이 넘치는 경우를 대비해 줄바꿈을 허용한다
+   (뒤로/목록처럼 짧은 라벨 기준으로는 320px 폭에서도 한 줄에 들어가지만, 번역 등으로 라벨이
+   길어질 가능성에 대한 안전장치). */
 .pagination {
   display: flex;
+  flex-wrap: wrap;
   float: none;
   justify-content: center;
   margin-bottom: 1.5em;
@@ -89,7 +252,7 @@
     flex: none;
     width: auto;
     padding: 0.5em 1.5em;
-    font-size: $type-size-6;
+    font-size: $type-size-3 * 0.75;
 
     &:first-child,
     &:last-child {
@@ -430,22 +593,44 @@ button.btn {
   }
 }
 
-/* "맨 위로 이동"은 같은 글의 "태그:"/"업데이트:" 라벨(.page__meta, font-size: 0.75em)과
-   글자 크기가 같아야 한다. footer.page__meta 안에서는 이미 0.75em 컨텍스트라 1em(배율 없음)을
-   주면 그대로 0.75em 효과가 나서 태그/업데이트와 같아진다. */
+/* "맨 위로 이동"을 텍스트 링크 대신 버튼처럼 보이게 한다. 테마 기본은 display: block +
+   text-align: right로 "글자만 오른쪽에 떠 있는" 모양이라 테두리/배경을 줘도 버튼 한 칸이 아니라
+   줄 전체(100%)가 채워져 버린다. width: fit-content로 내용 크기만큼만 박스를 줄이고
+   margin-left: auto로 그 박스를 오른쪽 끝에 붙인다(부모가 flex든 아니든 모두 동작). */
+.back-to-top {
+  width: fit-content;
+  margin-left: auto;
+  padding: 0.4em 1em;
+  border: 1px solid mix(#000, $border-color, 15%);
+  border-radius: $border-radius;
+  background: $background-color;
+  text-align: center;
+  white-space: nowrap;
+
+  &:hover {
+    background: $primary-color;
+    border-color: $primary-color;
+    color: #fff;
+  }
+}
+
+/* "맨 위로 이동": 테마 기본값(font-size: 0.6em)은 너무 작다는 판단에 본문 기본 글자 크기
+   ($type-size-5, 1em)로 키웠었는데, 그것도 조금 크다는 피드백에 따라 그 크기의 0.75배
+   (= $type-size-6, 0.75em)로 다시 낮췄다. footer.page__meta 안에서는 이미 .page__meta의
+   font-size: $type-size-6(0.75em) 컨텍스트라, 그 안에서 배율 없이 1em만 줘도 바깥 기준
+   $type-size-6이 된다(우연히도 테마 기본 0.75em 체계와 맞아떨어져 더 계산할 필요가 없다). */
 footer.page__meta .back-to-top {
   font-size: 1em;
 }
 
 /* 글 목록/태그 아카이브의 "맨 위로 이동"은 .page__meta 같은 축소 컨텍스트 밖에 있어서
-   테마 기본값(font-size: 0.6em, margin-top 없음)을 그대로 쓰면 글의 태그/업데이트보다
-   작고 바로 위 카드에 붙어 보인다. 0.75em을 직접 줘서 같은 크기로 맞추고 위쪽 여백도 둔다.
+   위 footer 쪽과 달리 바로 $type-size-6(0.75배 적용한 크기)을 쓰면 된다. 위쪽 여백도 둔다.
    두 군데 모두 커버해야 한다 — folder.html/showcase.html(.page__content 바로 아래)과
    태그 아카이브 페이지(lab|essay|playground)/tags.md(.taxonomy__section 안, 태그마다 한 번씩). */
 .page__content > .back-to-top,
 .page__content .taxonomy__section > .back-to-top {
   margin-top: 2.5em;
-  font-size: 0.75em;
+  font-size: $type-size-6;
 }
 
 /* 태그 아카이브: 주소에 #태그 가 있으면 해당 태그 섹션만 표시 */
@@ -700,10 +885,22 @@ footer.page__meta .back-to-top {
   margin: 0 0 0.75em;
   font-size: $type-size-6;
   color: $muted-text-color;
+  // 날짜(예: 2026-11-15)는 글자 수가 적어 카드 폭엔 항상 들어가지만, 하이픈(-)은 CSS
+  // 줄바꿈 규칙상 그 자체로 줄바꿈 기회라 좁은 카드에서 날짜 중간이 끊겨 보일 수 있다.
+  // 통째로 한 줄에 붙인다.
+  white-space: nowrap;
 
   i {
     margin-right: 0.25em;
   }
+}
+
+/* 수정일 줄: 작성일(.showcase__date) 바로 다음 줄에 붙여서 보여준다. 작성일의
+   margin-bottom(0.75em)과 이 음수 margin-top이 합쳐지면(margin collapse에서 양수+음수는
+   합산) 두 줄 사이 간격만 0.25em로 좁아지고, 맨 뒤에 오는 줄의 margin-bottom(0.75em)은
+   그대로 남아 아래 글 요약과의 간격은 평소와 같다. */
+.showcase__date--updated {
+  margin-top: -0.5em;
 }
 
 .showcase__excerpt {

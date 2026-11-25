@@ -42,6 +42,13 @@ layout: archive
                 <time datetime="{{ project.date | date_to_xmlschema }}">{{ project.date | date: site.date_format | default: "%B %-d, %Y" }}</time>
               </p>
             {% endif %}
+            {% if project.last_modified_at %}
+              <p class="showcase__date showcase__date--updated">
+                <i class="far fa-calendar-check" aria-hidden="true"></i>
+                {{ site.data.ui-text[site.locale].date_label | default: "Updated:" }}
+                <time datetime="{{ project.last_modified_at | date_to_xmlschema }}">{{ project.last_modified_at | date: site.date_format | default: "%B %-d, %Y" }}</time>
+              </p>
+            {% endif %}
             {% if project.excerpt %}
               <div class="showcase__excerpt">{{ project.excerpt | markdownify }}</div>
             {% endif %}

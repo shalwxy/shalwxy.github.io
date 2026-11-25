@@ -22,7 +22,7 @@
           <div class="category-list__page" id="category-list-page-{{ p }}">
             <div class="entries-list">
               {%- for post in siblings offset: offset limit: per_page -%}
-                {% include archive-single.html %}
+                {% include archive-single.html type="list" %}
               {%- endfor -%}
             </div>
           </div>

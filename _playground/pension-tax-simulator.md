@@ -7,6 +7,9 @@ tags:
   - 연금
 header:
   teaser: /assets/img/thumbnail/playground-pension.svg
+links:
+  - label: "관련 글 보기"
+    url: /essay/review/reading/pension-rich-class/
 toc: false
 author_profile: false
 classes: wide
@@ -27,7 +30,7 @@ classes: wide
 
     <label>
       <span class="pt-label-text">총급여 (만원, 연)<span class="pt-tip" tabindex="0" data-tip="5,500만원(종합소득 4,500만원) 이하 16.5%, 초과 13.2% 공제율.">?</span></span>
-      <input type="number" id="pt-income" value="6000">
+      <input type="number" id="pt-income" value="5000">
     </label>
 
     <label class="pt-checkbox">
@@ -119,14 +122,20 @@ classes: wide
   font-size: 0.92em; line-height: 1.7;
 }
 .pt-placeholder { color: #888; }
+.pt-headline {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 1em;
+  background: #eaf2fc; border: 1px solid #bcd6f2; border-radius: 8px;
+  padding: 0.7em 0.9em; margin-bottom: 1em; font-size: 1em; font-weight: 600; color: #333;
+}
+.pt-headline strong { font-size: 1.35em; color: #1c5cab; white-space: nowrap; }
 .pt-result h4 { margin: 1em 0 0.4em; font-size: 1em; }
 .pt-result h4:first-child { margin-top: 0; }
 .pt-row { display: flex; justify-content: space-between; align-items: baseline; gap: 1em; }
 .pt-row > span:first-child { flex: 1 1 auto; min-width: 0; }
 .pt-row > span:last-child { flex: 0 0 auto; white-space: nowrap; text-align: right; }
 .pt-row.pt-total { font-weight: 700; font-size: 1.08em; border-top: 1px solid #ddd; margin-top: 0.4em; padding-top: 0.4em; }
+.pt-row.pt-grand { font-size: 1.2em; color: #1c5cab; }
 .pt-row.pt-tight { font-size: 0.7em; }
-.pt-note { font-size: 0.8em; color: #666; }
 .pt-warn { background: #fbe4e1; color: #a9342a; border-radius: 6px; padding: 0.6em 0.8em; margin: 0.6em 0; font-size: 0.85em; }
 
 .pt-tip {
@@ -144,7 +153,7 @@ classes: wide
   z-index: 20;
 }
 .pt-tip:hover::after, .pt-tip:focus::after { opacity: 1; }
-.pt-paren { font-size: 0.85em; }
+.pt-paren { font-size: 0.78em; font-weight: 400; }
 </style>
 
 <script>
@@ -305,47 +314,42 @@ classes: wide
     var totalSaved = totalRefund + isaSavedCumulative + (netDeferralBenefit !== null ? netDeferralBenefit : 0);
 
     var html = '';
+    html += '<div class="pt-headline"><span>총 절세효과</span><strong>' + fmt(totalSaved) + '</strong></div>';
     html += '<h4>세액공제 (납입 단계)</h4>';
     html += '<div class="pt-row"><span>연금저축 공제대상액 (연, 600만원 한도)</span><span>' + fmt(savingsEligible) + '</span></div>';
     html += '<div class="pt-row"><span>IRP 포함 합산 공제대상액<span class="pt-tip" tabindex="0" data-tip="연금저축 600만원 + IRP를 더해 최대 900만원까지 공제됩니다.">?</span></span><span>' + fmt(combinedEligible) + '</span></div>';
     html += '<div class="pt-row"><span>적용 공제율 (총급여 ' + fmt(income) + ' 기준)</span><span>' + fmtPct(deductionRate) + '</span></div>';
-    html += '<div class="pt-row pt-total"><span>연간 환급액</span><span>' + fmt(annualRefund) + '</span></div>';
-    html += '<div class="pt-row"><span>' + pensionYears + '년간 누적 환급액</span><span>' + fmt(totalRefund) + '</span></div>';
+    html += '<div class="pt-row"><span>연간 환급액</span><span>' + fmt(annualRefund) + '</span></div>';
+    html += '<div class="pt-row pt-total"><span>' + pensionYears + '년간 누적 환급액</span><span>' + fmt(totalRefund) + '</span></div>';
 
     html += '<h4>연금저축·IRP 과세이연 효과 (운용 단계, ' + pensionYears + '년 기준)</h4>';
     html += '<div class="pt-row"><span>납입 원금 (' + pensionYears + '년)</span><span>' + fmt(accumulatedPrincipal) + '</span></div>';
     html += '<div class="pt-row"><span>추정 운용수익 (연 ' + annualReturn + '%)</span><span>' + fmt(pensionProfit) + '</span></div>';
-    html += '<div class="pt-row pt-total"><span>원금+운용수익 합계</span><span>' + fmt(pensionFV) + '</span></div>';
-    html += '<div class="pt-row pt-tight"><span>운용수익에 대해 일반 과세계좌였다면 냈을 세금 (15.4%)</span><span>' + fmt(pensionGeneralTax) + '</span></div>';
-    html += '<div class="pt-row pt-total"><span>과세이연 효과 (수령 전까지 미룬 세금)</span><span>' + fmt(pensionGeneralTax) + '</span></div>';
-    html += '<p class="pt-note">ISA와 달리 영구 비과세가 아니라 수령 시 연금소득세로 나갑니다.</p>';
+    html += '<div class="pt-row"><span>원금+운용수익 합계</span><span>' + fmt(pensionFV) + '</span></div>';
+    html += '<div class="pt-row pt-total"><span>과세이연 효과<span class="pt-tip" tabindex="0" data-tip="운용수익에 대해 일반 과세계좌였다면 냈을 15.4% 세금을 수령 시까지 미루는 효과입니다. ISA처럼 영구 비과세는 아니라 수령 시 연금소득세로 나가지만, 연금소득세율(확정기간형 3.3~5.5%, 종신형 3%)이 15.4%보다 낮아 보통은 미루기만 하는 게 아니라 실제로 덜 냅니다. 정확한 차액은 아래 순 과세이연 효과를 확인하세요.">?</span></span><span>' + fmt(pensionGeneralTax) + '</span></div>';
 
     html += '<h4>ISA 비과세 효과 (운용 단계, ' + isaYears + '년 만기 1회 기준)</h4>';
     html += '<div class="pt-row"><span>ISA 납입 원금 (' + isaYears + '년)</span><span>' + fmt(isaPrincipal) + '</span></div>';
     html += '<div class="pt-row"><span>추정 운용수익 (연 ' + annualReturn + '%)</span><span>' + fmt(isaProfit) + '</span></div>';
-    html += '<div class="pt-row pt-total"><span>원금+운용수익 합계</span><span>' + fmt(isaFV) + '</span></div>';
+    html += '<div class="pt-row"><span>원금+운용수익 합계</span><span>' + fmt(isaFV) + '</span></div>';
     html += '<div class="pt-row"><span>비과세 한도 (' + (isOrdinary ? '서민형·농어민형' : '일반형') + ')</span><span>' + fmt(taxFreeLimit) + '</span></div>';
     html += '<div class="pt-row"><span>ISA 분리과세 (9.9%, 한도 초과분만)</span><span>' + fmt(isaTax) + '</span></div>';
     html += '<div class="pt-row pt-tight"><span>운용수익에 대해 일반 과세계좌였다면 냈을 세금 (15.4%)</span><span>' + fmt(generalTax) + '</span></div>';
-    html += '<div class="pt-row pt-total"><span>ISA로 아낀 세금 (1회, ' + isaYears + '년 만기)</span><span>' + fmt(isaSaved) + '</span></div>';
-    html += '<p class="pt-note">만기마다 재가입해 ' + isaCycles + '번 반복한다고 가정했습니다(복리효과 미반영).</p>';
-    html += '<div class="pt-row pt-total"><span>누적 절세효과 (' + pensionYears + '년 ÷ ' + isaYears + '년 ≈ ' + isaCycles + '회)</span><span>' + fmt(isaSavedCumulative) + '</span></div>';
+    html += '<div class="pt-row"><span>ISA로 아낀 세금 (1회, ' + isaYears + '년 만기)</span><span>' + fmt(isaSaved) + '</span></div>';
+    html += '<div class="pt-row pt-total"><span>누적 절세효과 (' + pensionYears + '년 ÷ ' + isaYears + '년 ≈ ' + isaCycles + '회)<span class="pt-tip" tabindex="0" data-tip="만기마다 재가입해 ' + isaCycles + '번 반복한다고 가정했습니다(복리효과 미반영).">?</span></span><span>' + fmt(isaSavedCumulative) + '</span></div>';
 
     html += '<h4>연금 수령 시 참고</h4>';
     if (isWholeLife) {
-      html += '<div class="pt-row"><span>적용 세율 (종신형, 확정)</span><span>' + fmtPct(WHOLE_LIFE_RATE) + '</span></div>';
-      html += '<p class="pt-note">실제 연 수령액은 보험사 지급률에 따라 다르고, 모델링하지 않아 순 과세이연 효과는 계산하지 않았습니다.</p>';
+      html += '<div class="pt-row"><span>적용 세율 (종신형, 확정)<span class="pt-tip" tabindex="0" data-tip="실제 연 수령액은 보험사 지급률에 따라 다르고, 모델링하지 않아 순 과세이연 효과는 계산하지 않았습니다.">?</span></span><span>' + fmtPct(WHOLE_LIFE_RATE) + '</span></div>';
     } else {
-      html += '<div class="pt-row pt-total"><span>추정 연 수령액 (' + payoutYears + '년 수령 기준)</span><span>' + fmt(payoutAnnual) + '</span></div>';
+      html += '<div class="pt-row"><span>추정 연 수령액 (' + payoutYears + '년 수령 기준)<span class="pt-tip" tabindex="0" data-tip="납입 원금과 추정 운용수익을 더한 금액 기준이며, 실제 수령액은 운용 성과에 따라 달라집니다.">?</span></span><span>' + fmt(payoutAnnual) + '</span></div>';
       if (exceedsThreshold) {
         html += '<div class="pt-warn">⚠ 1,500만원을 넘어 ' + startAge + '세 기준 ' + fmtPct(appliedRate) + ' 분리과세 대신 종합과세 또는 16.5% 분리과세를 선택해야 합니다. 실제 세액을 추정할 수 없어 순 과세이연 효과도 계산하지 않았습니다.</div>';
       } else {
         html += '<div class="pt-row"><span>' + startAge + '세 수령 기준 적용 세율</span><span>' + fmtPct(appliedRate) + '</span></div>';
         html += '<div class="pt-row"><span>추정 연금소득세</span><span>' + fmt(payoutTax) + '</span></div>';
-        html += '<div class="pt-row pt-total"><span>순 과세이연 효과 (과세이연 효과 − ' + payoutYears + '년 수령세 총액)</span><span>' + fmt(netDeferralBenefit) + '</span></div>';
-        html += '<p class="pt-note">과세 대상(운용수익 vs 원금+수익 전체)과 세율이 달라 정확한 상쇄는 아닌 참고용 수치입니다.</p>';
+        html += '<div class="pt-row pt-total"><span>순 과세이연 효과 (과세이연 효과 − ' + payoutYears + '년 수령세 총액)<span class="pt-tip" tabindex="0" data-tip="과세이연 효과(15.4% 기준)에서 수령 기간 동안 실제로 낸 연금소득세를 뺀 값입니다. 과세 대상(운용수익만 vs 원금+운용수익 전체)과 세율이 달라 정확한 1:1 상쇄는 아닌 참고용 수치입니다. 연 수령액이 1,500만원을 넘으면 종합과세(또는 16.5% 분리과세)로 전환돼 세율이 15.4%보다 높아질 수 있어, 그 경우엔 이 계산을 하지 않습니다.">?</span></span><span>' + fmt(netDeferralBenefit) + '</span></div>';
       }
-      html += '<p class="pt-note">납입 원금과 추정 운용수익을 더한 금액 기준이며, 실제 수령액은 운용 성과에 따라 달라집니다.</p>';
     }
 
     html += '<h4>총 절세효과 요약</h4>';
@@ -354,12 +358,10 @@ classes: wide
     if (netDeferralBenefit !== null) {
       html += '<div class="pt-row"><span>연금저축·IRP 순 과세이연 효과 (수령 ' + payoutYears + '년 포함)</span><span>' + fmt(netDeferralBenefit) + '</span></div>';
     }
-    html += '<div class="pt-row pt-total"><span>총 절세효과</span><span>' + fmt(totalSaved) + '</span></div>';
-    if (netDeferralBenefit !== null) {
-      html += '<p class="pt-note">세액공제·ISA는 ' + pensionYears + '년 안팎, 순 과세이연 효과는 그 뒤 수령 ' + payoutYears + '년까지 포함해 기간이 서로 다릅니다.</p>';
-    } else {
-      html += '<p class="pt-note">' + (isWholeLife ? '종신형이라 연 수령액을 모델링하지 않아' : '1,500만원 초과로 실제 세액을 추정할 수 없어') + ' 순 과세이연 효과는 이 합계에 포함하지 않았습니다.</p>';
-    }
+    var totalTip = netDeferralBenefit !== null
+      ? ('세액공제·ISA는 ' + pensionYears + '년 안팎, 순 과세이연 효과는 그 뒤 수령 ' + payoutYears + '년까지 포함해 기간이 서로 다릅니다.')
+      : ((isWholeLife ? '종신형이라 연 수령액을 모델링하지 않아' : '1,500만원 초과로 실제 세액을 추정할 수 없어') + ' 순 과세이연 효과는 이 합계에 포함하지 않았습니다.');
+    html += '<div class="pt-row pt-total pt-grand"><span>총 절세효과<span class="pt-tip" tabindex="0" data-tip="' + totalTip + '">?</span></span><span>' + fmt(totalSaved) + '</span></div>';
 
     lastOutput = { totalRefund: totalRefund, isaSaved: isaSavedCumulative, totalSaved: totalSaved };
     calculated = true;
