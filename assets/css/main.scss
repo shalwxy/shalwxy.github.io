@@ -225,7 +225,7 @@ header .page__title + .page__meta {
    그만큼 아래로 밀어내 여백을 만든다(실제로 테마 기본값도 margin-top 2em과 함께
    padding-top 2em을 같이 줬던 것도 이 때문일 가능성이 높다). */
 .page__meta + .pagination {
-  padding-top: 2.5em;
+  padding-top: 1.25em;
   border-top: none;
 }
 
@@ -620,6 +620,15 @@ button.btn {
    $type-size-6이 된다(우연히도 테마 기본 0.75em 체계와 맞아떨어져 더 계산할 필요가 없다). */
 footer.page__meta .back-to-top {
   font-size: 1em;
+}
+
+/* "맨 위로 이동" 위쪽 여백: 테마 기본 .page__meta { margin-top: 2em }이 footer에도 그대로
+   적용된다(실측 24px). 이 2em은 footer 자신의 font-size($type-size-6, 0.75em) 기준이라
+   font-size는 그대로 두고 margin-top만 절반(1em)으로 낮추면 실제 픽셀값도 정확히
+   절반(12px)이 된다 — 버튼 아래쪽 여백(.page__meta + .pagination의 padding-top)도 같이
+   절반으로 낮춘 것과 맞춘 요청사항. */
+footer.page__meta {
+  margin-top: 1em;
 }
 
 /* 글 목록/태그 아카이브의 "맨 위로 이동"은 .page__meta 같은 축소 컨텍스트 밖에 있어서
