@@ -74,25 +74,6 @@
 <script>
 (function() {
   var homeHref = '{{ home_url | relative_url }}';
-  {%- comment -%}
-    backstage/draft 이스터에그 목적지. 정적 HTML에 <a href>를 두지 않고 순수 JS
-    네비게이션으로만 구현한 이유 — 크롤러는 DOM에 실제로 렌더링된 링크(앵커 태그)를
-    따라가서 페이지를 발견하지, 스크립트 안의 문자열을 훑어 "이것도 링크일 수 있다"고
-    추정해 방문하지는 않는다. 또한 렌더링 크롤러도 페이지를 그릴 뿐 정해진 속도로
-    클릭을 반복하는 임의의 상호작용까지 흉내 내진 않으므로, 이 경로들은 사람이
-    직접 입력해야만 열린다(setupPacedClickEasterEgg 참고).
-  {%- endcomment -%}
-  var backstageEasterEggHref = '{{ "/backstage/" | relative_url }}';
-  var draftEasterEggHref = '{{ "/draft/" | relative_url }}';
-
-  {%- comment -%}
-    입력창(검색창, been-here.md 글쓰기 input 등)에 포커스가 가 있을 땐 이스터에그
-    판정을 건너뛴다.
-  {%- endcomment -%}
-  function isTypingTarget(e) {
-    var tag = e.target.tagName;
-    return tag === 'INPUT' || tag === 'TEXTAREA' || e.target.isContentEditable;
-  }
 
   function setupHomeLink() {
     var title = document.querySelector('.site-title');
@@ -139,43 +120,6 @@
     });
   }
 
-  {%- comment -%}
-    이스터에그 트리거: 화면 어디든 클릭(또는 탭)을 "정해진 속도"로 일정 횟수 반복하면
-    발동한다 — 안드로이드의 "빌드 번호 7번 탭하면 개발자 모드" 같은, 가장 흔하고
-    검증된 숨김 기능 패턴이다. 모양 그리기(드래그)나 두 손가락 제스처는 모바일에서
-    스크롤/핀치줌 같은 네이티브 제스처와 자꾸 충돌해서 포기했고, 길게 누르기는
-    텍스트 선택과 충돌해서 포기했다 — 순수 click 이벤트는 그런 네이티브 동작과
-    경쟁하는 대상이 없어서 가장 안전하다.
-
-    minGapMs~maxGapMs는 "바로 전 클릭과의 간격이 이 범위에 들어와야 다음 클릭으로
-    인정한다"는 뜻이다. backstage(빠르게 연타, 0~350ms)와 draft(천천히 또박또박,
-    600~2000ms)는 이 범위가 서로 겹치지 않게 떨어뜨려놔서, 한쪽 리듬으로 치면
-    반대쪽은 아예 진행되지 않는다 — 서로 실수로 걸릴 일이 없다.
-  {%- endcomment -%}
-  function setupPacedClickEasterEgg(requiredClicks, minGapMs, maxGapMs, href) {
-    var count = 0;
-    var lastClick = null;
-
-    document.addEventListener('click', function(e) {
-      if (isTypingTarget(e)) return;
-
-      var now = Date.now();
-      if (lastClick !== null) {
-        var gap = now - lastClick;
-        count = (gap >= minGapMs && gap <= maxGapMs) ? count + 1 : 1;
-      } else {
-        count = 1;
-      }
-      lastClick = now;
-
-      if (count >= requiredClicks) {
-        count = 0;
-        lastClick = null;
-        window.location.href = href;
-      }
-    });
-  }
-
   function setupCitationNotes() {
     document.addEventListener('click', function(e) {
       var icon = e.target.closest('.citation-note__icon');
@@ -209,8 +153,6 @@
     setupHomeLink();
     setupSearchToggle();
     setupMenu();
-    setupPacedClickEasterEgg(5, 0, 350, backstageEasterEggHref);
-    setupPacedClickEasterEgg(5, 600, 2000, draftEasterEggHref);
     setupCitationNotes();
   }
 

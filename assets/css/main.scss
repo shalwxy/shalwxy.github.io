@@ -215,11 +215,17 @@ header .page__title + .page__meta {
 /* "맨 위로 이동"(footer.page__meta)과 "뒤로/목록"(.pagination) 사이 구분선은 불필요하다는
    피드백에 따라 없앤다. 테마 기본은 .page__meta 바로 다음에 오는 .pagination에
    border-top(_sass/minimal-mistakes/_page.scss)을 거는데, 이 블로그는 항상 그 순서로
-   오므로 이 조합만 지운다. border만 없애면 테마가 같이 주는 margin-top/padding-top
-   2em씩(총 4em)이 선 없이 덩그러니 남아 어색해서 여백도 같이 줄인다. */
+   오므로 이 조합만 지운다.
+
+   간격은 margin-top이 아니라 padding-top으로 준다 — .pagination이 이 페이지 구조(sidebar
+   레이아웃의 float:left .page__inner-wrap 안)에서는 margin-top이 인접 형제(footer)와의
+   사이에 어떤 값을 줘도(개발자 도구로 직접 확인: 1em이든 100px든) 전혀 반영되지 않고
+   항상 딱 붙어버린다 — 아마 margin collapsing이 이 구조에서 예상과 다르게 동작하는
+   것으로 보인다. padding-top은 같은 상황에서 정상적으로 안쪽 내용(뒤로/목록 버튼)을
+   그만큼 아래로 밀어내 여백을 만든다(실제로 테마 기본값도 margin-top 2em과 함께
+   padding-top 2em을 같이 줬던 것도 이 때문일 가능성이 높다). */
 .page__meta + .pagination {
-  margin-top: 1em;
-  padding-top: 0;
+  padding-top: 2.5em;
   border-top: none;
 }
 
@@ -626,6 +632,15 @@ footer.page__meta .back-to-top {
   font-size: $type-size-6;
 }
 
+/* 글에서 태그를 눌러 /lab/tags/#태그 같은 주소로 들어오면 브라우저가 #태그 섹션을 뷰포트
+   맨 위에 맞춰 스크롤하는데, .masthead가 sticky로 그 자리에 떠 있어서 섹션 제목(h2)이
+   masthead 밑에 가려지고 그 아래 글 목록부터 보여 "중간에서 시작"하는 것처럼 보인다.
+   scroll-margin-top으로 masthead 높이(로고 한 줄 + 위아래 padding 1em, 약 4em)만큼
+   여유를 둬서 제목이 가려지지 않게 한다. */
+.taxonomy__section {
+  scroll-margin-top: 4.5em;
+}
+
 /* 태그 아카이브: 주소에 #태그 가 있으면 해당 태그 섹션만 표시 */
 .layout--archive:has(.taxonomy__section:target) .taxonomy__section:not(:target) {
   display: none;
@@ -696,25 +711,44 @@ footer.page__meta .back-to-top {
 
 /* 실제 글 목록(제목/요약/메타)은 archive-single.html을 그대로 재사용하는데,
    그 안의 글자 크기들이 전부 em 단위라 여기 폭에만 더 작은 font-size를 주면
-   전체가 같은 비율로 축소된다 */
+   전체가 같은 비율로 축소된다.
+
+   display: none/block으로만 페이지를 전환하면, 마지막 페이지처럼 글이 5개보다 적게
+   남은 페이지가 보일 때 영역 전체 높이가 줄어서 바로 아래 페이저(.category-list__pager)가
+   위로 당겨 붙는다 — 페이지를 오가며 다른 글을 훑어볼 때마다 페이저 버튼 위치가
+   흔들린다. 모든 페이지를 같은 그리드 셀(1/1)에 겹쳐 쌓아서 셀 높이가 항상 가장 긴
+   페이지 기준으로 고정되게 하고, 보이지 않는 페이지는 display 대신 visibility: hidden으로
+   감춘다 — display: none은 그리드 크기 계산에서 아예 빠져버려 높이가 다시 널뛰지만,
+   visibility: hidden은 공간은 그대로 차지한 채 안 보이기만 해서 셀 높이가 유지된다. */
 .category-list__pages {
+  display: grid;
   font-size: $type-size-6;
 }
 
 .category-list__page {
-  display: none;
+  grid-area: 1 / 1;
+  visibility: hidden;
+
+  /* 테마 기본(_base.scss)이 a/h1/h2/img 등에 transition: all 0.2s를 걸어두는데,
+     상속되는 visibility도 "all"에 걸려서 트랜지션 대상이 된다. visible → hidden은
+     CSS 트랜지션 규칙상 전환이 끝나는 시점에야 실제로 숨겨지므로, 페이지를 바꾸면
+     새 페이지가 바로 보이는 동안 이전 페이지가 0.2초간 같은 자리에 남아 글자가
+     겹쳐 보인다. 이 영역 안에서는 트랜지션을 꺼서 visibility가 즉시 전환되게 한다. */
+  * {
+    transition: none;
+  }
 }
 
 .category-list__page:first-child {
-  display: block;
+  visibility: visible;
 }
 
 .category-list:has(.category-list__page:target) .category-list__page {
-  display: none;
+  visibility: hidden;
 }
 
 .category-list:has(.category-list__page:target) .category-list__page:target {
-  display: block;
+  visibility: visible;
 }
 
 .category-list__pager {
@@ -867,5 +901,48 @@ footer.page__meta .back-to-top {
 
   time {
     white-space: nowrap;
+  }
+}
+
+/* playground 목록 카드: 아래 3가지는 모바일 화면에서만 바뀌고(스크린샷 기준) 웹(태블릿
+   37.5em 2열 · 데스크톱 48em 4열)은 기존 그대로 둔다. 37.4375em은 $small(37.5em)의 -1px로,
+   이 파일 다른 곳(nav__list의 63.9375em = $large - 1px)과 같은 "경계보다 1px 작게"
+   패턴이다 — 정확히 37.5em에서는 테마의 min-width: 37.5em 2열 규칙이 이미 따로 적용되므로
+   겹치지 않는다. */
+@media (max-width: 37.4375em) {
+  /* 1. 모바일에서만 1열(풀폭 카드)을 2열로 바꾼다 — 값은 테마가 37.5em 이상에서 쓰는
+     2열 수치(.grid__item, 48.98%/2.04% 간격)를 그대로 가져왔다. */
+  .grid__item {
+    float: left;
+    width: 48.9795918367%;
+    margin-left: 0;
+    margin-right: 0;
+
+    &:nth-child(2n + 1) {
+      clear: both;
+      margin-left: 0;
+    }
+
+    &:nth-child(2n + 2) {
+      clear: none;
+      margin-left: 2.0408163265%;
+    }
+  }
+
+  /* 2. 제목이 한 줄뿐이면 2줄 높이(위 .grid__item .archive__item-title의 min-height: 2.5em)
+     박스 안에서 글자가 위쪽에 붙고 아래쪽이 빈 채로 남아, 그만큼 날짜 행과 멀어져 보인다. 박스 안
+     내용 정렬만 끝(아래)으로 바꿔서(-webkit-box-pack), 전체 박스 높이(= 카드 간 정렬 기준)는
+     그대로 두고 한 줄 제목만 아래쪽(날짜 행 바로 위)으로 붙인다. 2줄 제목은 이미 박스를
+     꽉 채우므로 영향이 없다. */
+  .grid__item .archive__item-title {
+    -webkit-box-pack: end;
+  }
+
+  /* 3. "2026-11-13"(작성일) 바로 뒤에 수정일 아이콘·날짜가 공백 없이 붙어 보인다 —
+     구분점(.page__meta-sep)의 ::before를 그리드 카드에서는 감춰서(테마 기본) 그 안에 있던
+     좌우 padding(유일한 공백 소스)도 같이 사라졌기 때문이다. 수정일 쪽에 여백을 더해
+     작성일과 띄운다. */
+  .grid__item .page__meta-updated {
+    margin-left: 0.5em;
   }
 }
