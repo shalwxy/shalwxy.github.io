@@ -831,8 +831,9 @@ footer.page__meta {
    (archive-single.html, .grid__item)로 옮겼다 — "자세히 보기"/"관련 글 보기" 버튼이
    없어도 된다면, 날짜·수정일·읽는시간 표시를 lab/essay와 공유하는 page__meta.html을
    그대로 쓸 수 있고 전용 CSS 묶음(.showcase*, 10여 개 클래스)도 없앨 수 있어서다.
-   열 수(작은 화면 2열, 중간 화면 4열)는 테마 기본값 그대로 두고, 카드에 테두리·그림자·
-   hover 효과만 더해 showcase 카드와 비슷한 입체감을 준다. */
+   열 수(태블릿 2열·데스크톱 4열)는 테마 기본값 그대로 두고, 카드에 테두리·그림자·hover
+   효과만 더해 showcase 카드와 비슷한 입체감을 준다(모바일은 1열 기본값을 나중에 2열로
+   덮어썼다 — 아래 @media (max-width: $small - 1) 참고). */
 .grid__item .archive__item {
   // 2~4열로 나뉘는 좁은 칸에서 1.5em 패딩은 카드 안쪽 실제 내용 폭을 너무 많이 잡아먹어서
   // (138px 카드 기준 양쪽 패딩만 48px) 제목·날짜가 비좁게 여러 줄로 꺾였다. 0.75em→0.3em까지
@@ -867,15 +868,13 @@ footer.page__meta {
   margin-top: 0.3em;
 }
 
-/* 제목→날짜, 날짜 아래 여백도 각각 0.3em(요청 사항) — 둘 다 이 파일 위쪽의 일반 규칙
-   (.archive__item-title + .page__meta의 margin-top: 0, .list__item/.grid__item .page__meta의
-   margin-bottom: 0)을 그리드 카드에서만 더 구체적인 선택자로 덮어쓴다. */
+/* 제목→날짜 간격 0.3em(요청 사항) — 이 파일 위쪽의 일반 규칙(.archive__item-title + .page__meta의
+   margin-top: 0)을 그리드 카드에서만 더 구체적인 선택자로 덮어쓴다. 날짜 아래 여백은 따로
+   margin-bottom을 주지 않는다 — 카드 자신에 이미 사방 0.3em 패딩(.archive__item, 위쪽
+   padding: 0.3em)이 있어서, margin을 더하면 패딩과 겹쳐 아래쪽만 0.3em+0.3em로 두 배가 된다.
+   패딩 하나로도 이미 원하는 0.3em이 나온다. */
 .grid__item .archive__item-title + .page__meta {
   margin-top: 0.3em;
-}
-
-.grid__item .page__meta {
-  margin-bottom: 0.3em;
 }
 
 /* 이미지도 원본 비율(1200×800 = 3:2)이 전부 같지만, 테마 기본은 max-height로만 높이를
