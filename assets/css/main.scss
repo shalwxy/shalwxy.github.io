@@ -68,6 +68,18 @@ header .page__title + .page__meta {
   margin-top: 0;
 }
 
+/* lab/essay 등 목록(.list__item, playground 제외)도 grid 카드와 같은 원인으로 제목-날짜
+   간격이 떠 보인다 — line-height: initial(브라우저 기본)이 글자 아래에 안 보이는 여백을
+   남겨서, margin-top: 0만으로는 그 여백만큼 간격이 남는다. 그리드 카드에서 이미 실측해둔
+   값(line-height: 1.2 + margin-top: -0.35em)을 그대로 적용한다. */
+.list__item .archive__item-title {
+  line-height: 1.2;
+}
+
+.list__item .archive__item-title + .page__meta {
+  margin-top: -0.35em;
+}
+
 .page__meta-info {
   display: flex;
   flex-wrap: wrap;
