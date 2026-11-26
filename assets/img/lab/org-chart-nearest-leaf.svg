@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 210">
+  <rect x="0" y="0" width="360" height="210" fill="#ffffff"/>
+
+  <!-- 간선 -->
+  <g stroke="#2b2b2b" stroke-width="1.5">
+    <line x1="170" y1="40" x2="100" y2="110"/>
+    <line x1="170" y1="40" x2="260" y2="110"/>
+    <line x1="100" y1="110" x2="60"  y2="180"/>
+    <line x1="100" y1="110" x2="140" y2="180"/>
+  </g>
+
+  <!-- 노드. 3은 자식이 없는 말단(초록 강조) -->
+  <g fill="#ffffff" stroke="#2b2b2b" stroke-width="1.5">
+    <circle cx="170" cy="40"  r="18"/>
+    <circle cx="100" cy="110" r="18"/>
+    <circle cx="60"  cy="180" r="18"/>
+    <circle cx="140" cy="180" r="18"/>
+  </g>
+  <circle cx="260" cy="110" r="18" fill="#ffffff" stroke="#2f9e44" stroke-width="2.5"/>
+
+  <g font-size="16" text-anchor="middle" fill="#2b2b2b" font-family="'Pretendard', -apple-system, sans-serif">
+    <text x="170" y="46">1</text>
+    <text x="100" y="116">2</text>
+    <text x="260" y="116" fill="#2f9e44">3</text>
+    <text x="60"  y="186">4</text>
+    <text x="140" y="186">5</text>
+  </g>
+</svg>
