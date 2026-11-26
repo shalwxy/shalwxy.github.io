@@ -6,6 +6,17 @@
 @import "minimal-mistakes/skins/{{ site.minimal_mistakes_skin | default: 'default' }}";
 @import "minimal-mistakes";
 
+// 링크 복사 토스트·인용 출처 말풍선이 공통으로 쓰는 "어두운 떠있는 말풍선" 배경색
+$overlay-tooltip-bg: rgba(0, 0, 0, 0.85);
+
+// 테마 breakpoint 변수(예: $small, $large)는 "이 폭 이상"을 기준으로 잡혀 있어서, 그 "바로
+// 아래"를 타겟팅하려면 항상 "경계값 - 1"을 써야 한다. 그 반복되는 "- 1" 패턴을 모아둔다.
+@mixin below($breakpoint) {
+  @media (max-width: $breakpoint - 1) {
+    @content;
+  }
+}
+
 /* 상단 masthead 고정 (스크롤해도 상단에 붙어있음) */
 .masthead {
   position: sticky;
@@ -318,7 +329,7 @@ button.btn {
   z-index: 100;
   padding: 0.6em 1.2em;
   border-radius: $border-radius;
-  background: rgba(0, 0, 0, 0.85);
+  background: $overlay-tooltip-bg;
   color: #fff;
   font-size: 1em;
   white-space: nowrap;
@@ -434,7 +445,7 @@ button.btn {
   display: table;
   width: 100%;
 
-  @media (max-width: $small - 1) {
+  @include below($small) {
     display: block;
     width: auto;
   }
@@ -551,7 +562,7 @@ button.btn {
     transform: translate(-50%, 0.3em);
     padding: 0.65em 0.8em;
     border-radius: $border-radius;
-    background: rgba(0, 0, 0, 0.85);
+    background: $overlay-tooltip-bg;
     color: #fff;
     font-size: 0.85em;
     font-weight: normal;
@@ -845,7 +856,7 @@ footer.page__meta {
    그대로 쓸 수 있고 전용 CSS 묶음(.showcase*, 10여 개 클래스)도 없앨 수 있어서다.
    열 수(태블릿 2열·데스크톱 4열)는 테마 기본값 그대로 두고, 카드에 테두리·그림자·hover
    효과만 더해 showcase 카드와 비슷한 입체감을 준다(모바일은 1열 기본값을 나중에 2열로
-   덮어썼다 — 아래 @media (max-width: $small - 1) 참고). */
+   덮어썼다 — 아래 @include below($small) 참고). */
 .grid__item .archive__item {
   // 2~4열로 나뉘는 좁은 칸에서 1.5em 패딩은 카드 안쪽 실제 내용 폭을 너무 많이 잡아먹어서
   // (138px 카드 기준 양쪽 패딩만 48px) 제목·날짜가 비좁게 여러 줄로 꺾였다. 0.75em→0.3em까지
@@ -934,14 +945,15 @@ footer.page__meta {
 }
 
 /* 모바일에서만 1열(풀폭 카드)을 2열로 바꾼다(스크린샷 기준) — 웹(태블릿 $small 이상 2열 ·
-   데스크톱 $medium 이상 4열)은 기존 그대로 둔다. $small - 1은 이 파일의
-   @media screen and (max-width: $large - 1)과 같은 "경계보다 1px 작게" 패턴이다 — 정확히
-   $small에서는 테마의 min-width: $small 2열 규칙이 이미 따로 적용되므로 겹치지 않는다.
-   값은 테마가 37.5em 이상에서 쓰는 2열 수치(.grid__item, 48.98%/2.04% 간격)를 그대로 가져왔다. */
-@media (max-width: $small - 1) {
+   데스크톱 $medium 이상 4열)은 기존 그대로 둔다. below($small)은 "$small보다 1px 작은 폭부터"라는
+   뜻이다(위 @mixin below 참고) — 정확히 $small에서는 테마의 min-width: $small 2열 규칙이
+   이미 따로 적용되므로 겹치지 않는다. 폭·간격은 테마가 37.5em 이상에서 2열에 쓰는 것과 같은
+   susy 식(span(5 of 10)/gutter(of 10))을 그대로 가져다 썼다 — 숫자를 직접 베껴 적지 않고
+   같은 식을 쓰면 테마의 그리드 설정이 바뀌어도 같이 따라간다. */
+@include below($small) {
   .grid__item {
     float: left;
-    width: 48.9795918367%;
+    width: span(5 of 10);
     margin-left: 0;
     margin-right: 0;
 
@@ -952,7 +964,7 @@ footer.page__meta {
 
     &:nth-child(2n + 2) {
       clear: none;
-      margin-left: 2.0408163265%;
+      margin-left: gutter(of 10);
     }
   }
 }

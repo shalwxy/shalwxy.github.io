@@ -1,8 +1,7 @@
 {%- comment -%}
   글 상단 메타 줄(날짜·읽는시간 옆)에 태그를 작은 배지로 보여주는 조각. page__meta.html에서
-  단일 글 페이지(include.type이 없을 때)에만 포함한다. 태그 아카이브 경로 계산은
-  tag-list.html과 동일한 로직이다. 서브블로그 목록은 _config.yml의 site.sub_blogs 하나로
-  통일돼 있어서, 새 서브블로그를 추가해도 여기는 고칠 필요 없다.
+  단일 글 페이지(include.type이 없을 때)에만 포함한다. 서브블로그 목록은 _config.yml의
+  site.sub_blogs 하나로 통일돼 있어서, 새 서브블로그를 추가해도 여기는 고칠 필요 없다.
 {%- endcomment -%}
 {%- if page.tags[0] -%}
   {%- case site.tag_archive.type -%}

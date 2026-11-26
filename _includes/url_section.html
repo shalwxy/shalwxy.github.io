@@ -2,9 +2,9 @@
   page.url의 첫 경로 조각(서브 블로그 이름)을 url_section에 assign한다. 예) /lab/engineering/ -> lab,
   / -> nil. site.sub_blogs(_config.yml)에 있는지 확인하는 용도로 쓰인다.
 
-  tag-list.html, head/custom.html, search/lunr-search-scripts.html, page__meta-tags.html, seo.html이
-  전부 이 계산을 썼었는데, 각 파일에 그대로 복사돼 있다 보니 서로를 가리키는 "다른 파일에도
-  똑같이 있다"는 주석이 파일이 하나 늘 때마다 매번 놓쳐서 어긋났다 — 여기로 한 번만 두고
-  include해서 쓴다. category_url.html과 같은 방식(include로 변수만 assign)이다.
+  head/custom.html, search/lunr-search-scripts.html, page__meta-tags.html, seo.html이 전부 이
+  계산을 썼었는데, 각 파일에 그대로 복사돼 있다 보니 서로를 가리키는 "다른 파일에도 똑같이
+  있다"는 주석이 파일이 하나 늘 때마다 매번 놓쳐서 어긋났다 — 여기로 한 번만 두고 include해서
+  쓴다. category_url.html과 같은 방식(include로 변수만 assign)이다.
 {%- endcomment -%}
 {%- assign url_section = page.url | split: '/' | where_exp: "s", "s != ''" | first -%}
