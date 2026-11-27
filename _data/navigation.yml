@@ -66,6 +66,8 @@ backstage:
     children:
       - title: "타래타운"
         url: /backstage/project/taraetown/
+      - title: "블로그펄스"
+        url: /backstage/project/blogpulse/
 
 # backstage와 마찬가지로 메인 nav에는 일부러 안 넣는다 — 공개 전 준비 공간.
 draft:
