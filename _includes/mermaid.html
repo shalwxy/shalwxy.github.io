@@ -43,8 +43,12 @@
   const stage = modal.querySelector('.mermaid-modal__stage');
   const resetBtn = modal.querySelector('[data-mermaid-zoom-reset]');
 
-  const MIN_SCALE = 0.5;
+  const MIN_SCALE = 0.2;
   const MAX_SCALE = 6;
+  const FIT_PADDING = 0.92;
+  // baseScale: 처음 열었을 때 다이어그램을 뷰포트에 맞춘 배율(= 100%의 기준점).
+  // scale: 그 기준 위에서 사용자가 휠/버튼으로 추가 확대·축소한 배수.
+  let baseScale = 1;
   let scale = 1;
   let translateX = 0;
   let translateY = 0;
@@ -53,7 +57,7 @@
   let dragStartY = 0;
 
   function applyTransform() {
-    stage.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+    stage.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale * baseScale})`;
     resetBtn.textContent = `${Math.round(scale * 100)}%`;
   }
 
@@ -71,10 +75,29 @@
 
   function openModal(svg) {
     stage.innerHTML = '';
-    stage.appendChild(svg.cloneNode(true));
-    resetTransform();
+    const clone = svg.cloneNode(true);
+    stage.appendChild(clone);
+
+    // mermaid svg는 width="100%"로 렌더링되어 크기가 부모(stage, 내용물 크기에 맞춰
+    // 늘어나는 flex item)에 의존하는데, 그 부모 크기가 다시 svg 크기에 의존해 순환이
+    // 생기면 브라우저가 아주 작은 기본 크기로 주저앉는다. viewBox의 고유 크기로
+    // width/height를 고정해 순환을 끊고, 그 위에 transform(scale)만 입힌다.
+    const viewBox = clone.viewBox && clone.viewBox.baseVal;
+    const naturalWidth = (viewBox && viewBox.width) || clone.getBoundingClientRect().width || 300;
+    const naturalHeight = (viewBox && viewBox.height) || clone.getBoundingClientRect().height || 150;
+    clone.style.width = `${naturalWidth}px`;
+    clone.style.height = `${naturalHeight}px`;
+
     modal.hidden = false;
     document.body.style.overflow = 'hidden';
+
+    // 모달이 보이는 상태에서 실제 뷰포트 크기를 재서 "처음 열었을 때 꽉 차 보이는" 배율을 구한다.
+    const vp = viewport.getBoundingClientRect();
+    baseScale = Math.min(
+      (vp.width * FIT_PADDING) / naturalWidth,
+      (vp.height * FIT_PADDING) / naturalHeight
+    ) || 1;
+    resetTransform();
   }
 
   function closeModal() {
