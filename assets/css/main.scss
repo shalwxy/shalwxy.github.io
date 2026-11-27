@@ -729,6 +729,21 @@ button.btn {
   }
 }
 
+/* 넓은 표(ADR 표처럼 칼럼이 4개 이상이고 첫 열 레이블 자체가 긴 경우): compare-table과
+   같은 원리로 table-layout: fixed + 첫 열 줄바꿈 허용을 적용해, 테마 기본 nowrap 규칙
+   때문에 표 전체가 본문 폭을 넘어 사이드바 TOC를 침범하는 것을 막는다. 나머지 칼럼은
+   폭을 지정하지 않아 남은 공간을 균등하게 나눠 가진다(table-layout: fixed 표준 동작) —
+   칼럼 수가 다른 표에도 그대로 재사용할 수 있다. */
+.page__content .wide-table table {
+  table-layout: fixed;
+
+  th:first-child,
+  td:first-child {
+    width: 16%;
+    white-space: normal;
+  }
+}
+
 /* 본문 그림 캡션: 테마 기본(세리프·왼쪽 정렬) 대신 본문 글꼴로 가운데 정렬 */
 .page__content figure {
   flex-direction: column;
