@@ -77,10 +77,17 @@ async function fetchDiscussions() {
   return data.repository.discussions.nodes;
 }
 
-// discussion_term이 "pathname"이라 discussion 제목이 곧 글 경로다 (예: "/lab/engineering/foo/").
+// discussion_term이 "pathname"이라 discussion 제목이 곧 글 경로다. 실제로는 맨 앞 "/"가 없이
+// "lab/engineering/foo/" 형태로 저장돼 있어서(giscus/과거 설정 영향으로 추정), 있어도 없어도
+// 매칭되게 선택적으로 받는다.
 function subBlogOf(title) {
-  const match = /^\/([^/]+)\//.exec(title ?? '');
+  const match = /^\/?([^/]+)\//.exec(title ?? '');
   return match && SUB_BLOGS.includes(match[1]) ? match[1] : null;
+}
+
+// postUrl 조립용으로 앞에 "/"가 없으면 붙여서 "/lab/..." 형태로 정규화한다.
+function normalizePath(title) {
+  return title.startsWith('/') ? title : `/${title}`;
 }
 
 function truncate(text, max) {
@@ -92,14 +99,17 @@ function truncate(text, max) {
 // giscus는 discussion_term(pathname)과 제목이 "정확히" 같은 discussion을 그 글의 댓글창으로 쓴다.
 // 하지만 이 저장소는 "누구나 discussion 생성 가능"이 켜져 있어야 giscus가 동작하므로, 아무 GitHub
 // 계정이나 실제 글과 똑같은 제목(경로)으로 또 다른 discussion을 만들 수 있다. 그런 가짜 discussion의
-// 댓글/반응을 진짜 글의 것처럼 섞어 보여주지 않도록, 제목이 완전히 같은 discussion들 중
+// 댓글/반응을 진짜 글의 것처럼 섞어 보여주지 않도록, 정규화한 경로가 완전히 같은 discussion들 중
 // 번호(number)가 가장 작은(=가장 먼저 만들어진) 것만 그 경로의 "진짜" discussion으로 신뢰한다.
+// (normalizePath로 그룹화하므로 "lab/foo/"와 "/lab/foo/"처럼 선행 슬래시 유무만 다른 제목도
+// 같은 글로 취급돼 dedup이 우회되지 않는다.)
 function pickCanonicalDiscussions(discussions) {
   const byTitle = new Map();
   for (const discussion of discussions) {
-    const existing = byTitle.get(discussion.title);
+    const key = normalizePath(discussion.title ?? '');
+    const existing = byTitle.get(key);
     if (!existing || discussion.number < existing.number) {
-      byTitle.set(discussion.title, discussion);
+      byTitle.set(key, discussion);
     }
   }
   return [...byTitle.values()];
@@ -122,7 +132,7 @@ async function main() {
       continue;
     }
 
-    const postUrl = `${SITE_URL}${discussion.title}`;
+    const postUrl = `${SITE_URL}${normalizePath(discussion.title)}`;
     const items = bySubBlog.get(subBlog);
 
     for (const comment of discussion.comments.nodes) {
