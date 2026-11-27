@@ -107,12 +107,20 @@ function pickCanonicalDiscussions(discussions) {
 
 async function main() {
   const discussions = await fetchDiscussions();
+  console.log(`[recent-activity] 카테고리(${CATEGORY_ID})에서 discussion ${discussions.length}개 조회됨`);
+  for (const d of discussions) {
+    console.log(`  - #${d.number} "${d.title}" comments=${d.comments.nodes.length} reactions=${d.reactions.nodes.length}`);
+  }
+
   const canonicalDiscussions = pickCanonicalDiscussions(discussions);
   const bySubBlog = new Map(SUB_BLOGS.map((name) => [name, []]));
 
   for (const discussion of canonicalDiscussions) {
     const subBlog = subBlogOf(discussion.title);
-    if (!subBlog) continue;
+    if (!subBlog) {
+      console.log(`[recent-activity] "${discussion.title}" -> 서브블로그로 분류 안 됨, 건너뜀`);
+      continue;
+    }
 
     const postUrl = `${SITE_URL}${discussion.title}`;
     const items = bySubBlog.get(subBlog);
@@ -158,9 +166,13 @@ async function main() {
     // (워크플로우의 git diff가 이 파일 자체의 변경 여부로 커밋 여부를 결정한다.)
     if (current) {
       const currentItems = JSON.parse(current).items;
-      if (JSON.stringify(currentItems) === JSON.stringify(payload.items)) continue;
+      if (JSON.stringify(currentItems) === JSON.stringify(payload.items)) {
+        console.log(`[recent-activity] ${subBlog}: 변경 없음 (${payload.items.length}개), 건너뜀`);
+        continue;
+      }
     }
 
+    console.log(`[recent-activity] ${subBlog}: ${payload.items.length}개로 갱신`);
     await writeFile(filePath, `${JSON.stringify(payload, null, 2)}\n`);
   }
 }
