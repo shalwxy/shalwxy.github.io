@@ -28,6 +28,7 @@ const QUERY = `
     repository(owner: $owner, name: $repo) {
       discussions(categoryId: $category, first: 50, orderBy: { field: UPDATED_AT, direction: DESC }) {
         nodes {
+          number
           title
           url
           comments(last: 10) {
@@ -88,11 +89,28 @@ function truncate(text, max) {
   return trimmed.length > max ? `${trimmed.slice(0, max)}…` : trimmed;
 }
 
+// giscus는 discussion_term(pathname)과 제목이 "정확히" 같은 discussion을 그 글의 댓글창으로 쓴다.
+// 하지만 이 저장소는 "누구나 discussion 생성 가능"이 켜져 있어야 giscus가 동작하므로, 아무 GitHub
+// 계정이나 실제 글과 똑같은 제목(경로)으로 또 다른 discussion을 만들 수 있다. 그런 가짜 discussion의
+// 댓글/반응을 진짜 글의 것처럼 섞어 보여주지 않도록, 제목이 완전히 같은 discussion들 중
+// 번호(number)가 가장 작은(=가장 먼저 만들어진) 것만 그 경로의 "진짜" discussion으로 신뢰한다.
+function pickCanonicalDiscussions(discussions) {
+  const byTitle = new Map();
+  for (const discussion of discussions) {
+    const existing = byTitle.get(discussion.title);
+    if (!existing || discussion.number < existing.number) {
+      byTitle.set(discussion.title, discussion);
+    }
+  }
+  return [...byTitle.values()];
+}
+
 async function main() {
   const discussions = await fetchDiscussions();
+  const canonicalDiscussions = pickCanonicalDiscussions(discussions);
   const bySubBlog = new Map(SUB_BLOGS.map((name) => [name, []]));
 
-  for (const discussion of discussions) {
+  for (const discussion of canonicalDiscussions) {
     const subBlog = subBlogOf(discussion.title);
     if (!subBlog) continue;
 

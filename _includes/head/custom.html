@@ -140,12 +140,12 @@
     var wrap = document.createElement('div');
     wrap.className = 'persica-activity';
     wrap.innerHTML =
-      '<button class="persica-activity__btn" type="button" aria-label="최근 댓글·좋아요" aria-expanded="false">' +
+      '<button class="persica-activity__btn" type="button" aria-label="최근 반응" aria-expanded="false">' +
         '<i class="fas fa-comment-dots" aria-hidden="true"></i>' +
       '</button>' +
-      '<div class="persica-activity__panel persica-activity__panel--hidden" role="dialog" aria-label="최근 댓글·좋아요">' +
+      '<div class="persica-activity__panel persica-activity__panel--hidden" role="dialog" aria-label="최근 반응">' +
         '<div class="persica-activity__header">' +
-          '<span>최근 댓글 · 좋아요</span>' +
+          '<span>최근 반응</span>' +
           '<button class="persica-activity__refresh" type="button" aria-label="새로고침">' +
             '<i class="fas fa-rotate-right" aria-hidden="true"></i>' +
           '</button>' +
@@ -162,7 +162,7 @@
 
     function renderList(items) {
       if (!items || !items.length) {
-        list.innerHTML = '<li class="persica-activity__empty">아직 댓글이나 좋아요가 없어요.</li>';
+        list.innerHTML = '<li class="persica-activity__empty">아직 반응이 없어요</li>';
         return;
       }
 
