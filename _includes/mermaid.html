@@ -27,7 +27,9 @@
 
   mermaid.initialize({
     startOnLoad: false,
-    flowchart: { nodeSpacing: 500, rankSpacing: 70, padding: 20 },
+    // nodeSpacing/rankSpacing은 flowchart 방향(TB/LR)에 따라 가로·세로 축이 서로
+    // 뒤바뀌므로 여기 전역으로 두지 않는다 — 필요한 다이어그램에 직접
+    // %%{init: {"flowchart": {...}}}%% 지시어로 넣는다. themeCSS는 방향과 무관해 전역이어도 안전하다.
     themeCSS: [
       // 서브그래프 제목만 골라 굵게·크게 — .cluster-label으로 감싸인 .nodeLabel만 해당되고
       // 박스 안 일반 노드 텍스트(같은 .nodeLabel 클래스를 쓰지만 .cluster-label 밖에 있음)는
