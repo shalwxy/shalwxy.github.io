@@ -174,9 +174,10 @@
         var detail = item.type === 'comment'
           ? (item.excerpt || '(내용 없음)')
           : ((REACTION_EMOJI[item.content] || '') + ' 좋아요를 남겼습니다');
-        // GitHub Discussions 쪽 permalink(item.url) 대신, 블로그 내 그 글의 댓글 영역(#giscus-comments)으로
-        // 이동시킨다. giscus iframe은 cross-origin이라 "그 댓글 하나"까지 스크롤시킬 수는 없지만,
-        // 적어도 실제 그 글의 댓글창까지는 보내줄 수 있다.
+        // 블로그 내 그 글의 댓글 영역(#giscus-comments)으로 보낸다. giscus는 반응(reaction) 바를
+        // 댓글 목록보다 먼저, 위젯 맨 위에 그려주므로(giscus 공식 동작) 이 앵커 하나로 댓글/좋아요
+        // 둘 다 "그 글의 반응이 보이는 지점"에 충분히 가깝게 도착한다. iframe이 cross-origin이라
+        // "그 댓글/반응 하나"까지 정확히 스크롤시킬 수는 없다.
         var targetUrl = item.postUrl + '#giscus-comments';
 
         html +=
