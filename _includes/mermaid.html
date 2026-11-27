@@ -25,7 +25,14 @@
 <script type="module">
   import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
 
-  mermaid.initialize({ startOnLoad: false });
+  mermaid.initialize({
+    startOnLoad: false,
+    flowchart: { nodeSpacing: 500, rankSpacing: 70, padding: 20 },
+    // 서브그래프 제목만 골라 굵게·크게 — .cluster-label으로 감싸인 .nodeLabel만 해당되고
+    // 박스 안 일반 노드 텍스트(같은 .nodeLabel 클래스를 쓰지만 .cluster-label 밖에 있음)는
+    // 영향받지 않는다.
+    themeCSS: '.cluster-label .nodeLabel, .cluster-label .nodeLabel p { font-weight: 700; font-size: 20px; }',
+  });
 
   const nodes = [];
   document.querySelectorAll('pre > code.language-mermaid').forEach((code) => {
