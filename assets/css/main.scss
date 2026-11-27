@@ -49,6 +49,15 @@ $overlay-tooltip-bg: rgba(0, 0, 0, 0.85);
   margin-left: 0;
 }
 
+/* 홈·검색 아이콘은 테마 기본 크기라 오른쪽의 최근 반응(persica-activity__btn)·삼선 메뉴
+   (persica-nav__btn) 아이콘(font-size: $type-size-4)보다 작아 보였다. 네 아이콘 크기를
+   맞추기 위해 동일한 크기를 준다. */
+.site-title,
+.search__toggle {
+  font-size: $type-size-4;
+  line-height: 1;
+}
+
 /* 글 상단 메타 줄: 날짜·읽는시간·태그는 왼쪽에, 공유 버튼은 같은 줄 우측에 배치한다.
    좁은 화면에서는 두 그룹이 자연스럽게 줄바꿈되고, 각 그룹 내부(날짜/읽는시간/태그)도
    필요하면 다시 줄바꿈된다. 글 하단 footer도 같은 page__meta 클래스를 쓰므로(테마 기본,
