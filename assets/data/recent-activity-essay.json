@@ -1,4 +1,45 @@
 {
-  "generatedAt": null,
-  "items": []
+  "generatedAt": "2026-11-27T01:23:17.418Z",
+  "items": [
+    {
+      "type": "reaction",
+      "createdAt": "2026-11-25T21:59:36Z",
+      "author": "pengduck",
+      "content": "ROCKET",
+      "postUrl": "https://persica.co.kr/essay/review/reading/2210002/",
+      "url": "https://github.com/shalwxy/shalwxy.github.io/discussions/12"
+    },
+    {
+      "type": "comment",
+      "createdAt": "2026-11-15T13:54:39Z",
+      "author": "pengduck",
+      "excerpt": "대단한 정독이셔용..!",
+      "postUrl": "https://persica.co.kr/essay/review/reading/attention-and-observation/",
+      "url": "https://github.com/shalwxy/shalwxy.github.io/discussions/7#discussioncomment-19632659"
+    },
+    {
+      "type": "reaction",
+      "createdAt": "2026-11-15T13:54:05Z",
+      "author": "pengduck",
+      "content": "THUMBS_UP",
+      "postUrl": "https://persica.co.kr/essay/review/reading/attention-and-observation/",
+      "url": "https://github.com/shalwxy/shalwxy.github.io/discussions/7"
+    },
+    {
+      "type": "reaction",
+      "createdAt": "2026-11-13T07:52:25Z",
+      "author": "pengduck",
+      "content": "THUMBS_UP",
+      "postUrl": "https://persica.co.kr/essay/learning/life/mortgage-consultation/",
+      "url": "https://github.com/shalwxy/shalwxy.github.io/discussions/4"
+    },
+    {
+      "type": "comment",
+      "createdAt": "2026-11-13T07:52:05Z",
+      "author": "pengduck",
+      "excerpt": "고맙읍니다!",
+      "postUrl": "https://persica.co.kr/essay/learning/life/mortgage-consultation/",
+      "url": "https://github.com/shalwxy/shalwxy.github.io/discussions/4#discussioncomment-19585134"
+    }
+  ]
 }

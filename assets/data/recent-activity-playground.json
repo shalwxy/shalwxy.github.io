@@ -1,4 +1,69 @@
 {
-  "generatedAt": null,
-  "items": []
+  "generatedAt": "2026-11-27T01:23:17.418Z",
+  "items": [
+    {
+      "type": "comment",
+      "createdAt": "2026-11-25T21:55:03Z",
+      "author": "pengduck",
+      "excerpt": "업데이트도 반영되었군요! 응원합니다!",
+      "postUrl": "https://persica.co.kr/playground/3000007/",
+      "url": "https://github.com/shalwxy/shalwxy.github.io/discussions/9#discussioncomment-19903192"
+    },
+    {
+      "type": "reaction",
+      "createdAt": "2026-11-25T21:54:05Z",
+      "author": "pengduck",
+      "content": "ROCKET",
+      "postUrl": "https://persica.co.kr/playground/3000007/",
+      "url": "https://github.com/shalwxy/shalwxy.github.io/discussions/9"
+    },
+    {
+      "type": "comment",
+      "createdAt": "2026-11-13T14:55:20Z",
+      "author": "jisu0309",
+      "excerpt": "5세트 완료 — 정확도 89% (정확 129 / 판정 145) 예이~~",
+      "postUrl": "https://persica.co.kr/playground/cpr-rhythm/",
+      "url": "https://github.com/shalwxy/shalwxy.github.io/discussions/6#discussioncomment-19592814"
+    },
+    {
+      "type": "comment",
+      "createdAt": "2026-11-13T11:36:27Z",
+      "author": "jisu0309",
+      "excerpt": "점수 80점! (선점 35, 뺏김 7)",
+      "postUrl": "https://persica.co.kr/playground/distributed-lock-race/",
+      "url": "https://github.com/shalwxy/shalwxy.github.io/discussions/5#discussioncomment-19589157"
+    },
+    {
+      "type": "reaction",
+      "createdAt": "2026-11-13T10:05:07Z",
+      "author": "pengduck",
+      "content": "THUMBS_UP",
+      "postUrl": "https://persica.co.kr/playground/cpr-rhythm/",
+      "url": "https://github.com/shalwxy/shalwxy.github.io/discussions/6"
+    },
+    {
+      "type": "comment",
+      "createdAt": "2026-11-13T09:38:27Z",
+      "author": "pengduck",
+      "excerpt": "아.. 늙크크는 슬퍼용",
+      "postUrl": "https://persica.co.kr/playground/distributed-lock-race/",
+      "url": "https://github.com/shalwxy/shalwxy.github.io/discussions/5#discussioncomment-19586979"
+    },
+    {
+      "type": "reaction",
+      "createdAt": "2026-11-13T09:37:10Z",
+      "author": "pengduck",
+      "content": "THUMBS_UP",
+      "postUrl": "https://persica.co.kr/playground/distributed-lock-race/",
+      "url": "https://github.com/shalwxy/shalwxy.github.io/discussions/5"
+    },
+    {
+      "type": "reaction",
+      "createdAt": "2026-11-13T07:51:16Z",
+      "author": "pengduck",
+      "content": "THUMBS_UP",
+      "postUrl": "https://persica.co.kr/playground/first-home-buyer-simulator/",
+      "url": "https://github.com/shalwxy/shalwxy.github.io/discussions/3"
+    }
+  ]
 }
