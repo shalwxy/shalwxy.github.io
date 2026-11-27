@@ -1,4 +1,4 @@
-name: Update recent activity
+name: recent-update-activity
 
 # scripts/fetch-recent-activity.mjs를 돌려 assets/data/recent-activity-*.json을 최신화한다.
 # 매시 정각에 자동 실행되고, Actions 탭에서 수동(workflow_dispatch)으로도 바로 돌릴 수 있다.

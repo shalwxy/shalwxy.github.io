@@ -490,18 +490,20 @@ button.btn {
   to { transform: rotate(360deg); }
 }
 
+// renderList()가 JS에서 항상 최대 5개까지만 그리므로, 높이를 미리 제한해 스크롤을 만들
+// 필요가 없다 — 내용물 높이에 맞게 자연스럽게 늘어나게 둔다.
 .persica-activity__list {
   margin: 0;
   padding: 0.25rem 0;
   list-style: none;
-  max-height: 320px;
-  overflow-y: auto;
 }
 
+// 패널 자체가 280px짜리 좁은 드롭다운이라, 본문 기본 글자 크기를 그대로 쓰면 항목 하나가
+// 안에 다 안 들어간다(아이콘+작성자+시간을 한 줄에, 내용 미리보기를 그 아래 줄에 둔다).
 .persica-activity__item a {
   display: flex;
-  align-items: baseline;
-  gap: 0.4rem;
+  flex-direction: column;
+  gap: 0.15rem;
   padding: 0.5rem 0.75rem;
   color: $text-color;
   text-decoration: none;
@@ -512,14 +514,23 @@ button.btn {
   }
 }
 
+.persica-activity__meta {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: $type-size-6;
+
+  i {
+    font-size: $type-size-7;
+    color: $muted-text-color;
+  }
+}
+
 .persica-activity__author {
   font-weight: bold;
-  flex-shrink: 0;
 }
 
 .persica-activity__excerpt {
-  flex: 1 1 auto;
-  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -528,6 +539,7 @@ button.btn {
 
 .persica-activity__time {
   flex-shrink: 0;
+  margin-left: auto;
   font-size: $type-size-7;
   color: $muted-text-color;
 }

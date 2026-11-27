@@ -177,10 +177,12 @@
         html +=
           '<li class="persica-activity__item">' +
             '<a href="' + escapeHtml(item.url) + '" target="_blank" rel="noopener">' +
-              '<i class="fas ' + icon + '" aria-hidden="true"></i>' +
-              '<span class="persica-activity__author">' + escapeHtml(item.author) + '</span>' +
+              '<span class="persica-activity__meta">' +
+                '<i class="fas ' + icon + '" aria-hidden="true"></i>' +
+                '<span class="persica-activity__author">' + escapeHtml(item.author) + '</span>' +
+                '<time class="persica-activity__time">' + formatRelativeTime(item.createdAt) + '</time>' +
+              '</span>' +
               '<span class="persica-activity__excerpt">' + escapeHtml(detail) + '</span>' +
-              '<time class="persica-activity__time">' + formatRelativeTime(item.createdAt) + '</time>' +
             '</a>' +
           '</li>';
       }
