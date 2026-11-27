@@ -1,19 +1,154 @@
 {%- comment -%}
-  Mermaid 다이어그램 렌더링. kramdown+rouge는 mermaid 언어를 모르는 코드 블록이라 하이라이팅
+  Mermaid 다이어그램 렌더링 + 확대 모달. kramdown+rouge는 mermaid 언어를 모르는 코드 블록이라 하이라이팅
   div 없이 <pre><code class="language-mermaid">...</code></pre>만 그대로 출력한다(rouge가 아는
   언어였다면 .highlight 래퍼가 붙는다) — 그 pre를 mermaid.js가 읽을 수 있는
-  <div class="mermaid">...</div>로 바꿔치기한 다음 렌더링한다. scripts.html에서 본문에
-  "language-mermaid"가 있는 글에서만 include한다.
+  <div class="mermaid">...</div>로 바꿔치기한 다음 렌더링한다. 렌더링이 끝난 뒤에야 실제 <svg>가
+  생기므로, startOnLoad 대신 mermaid.run()을 직접 호출해 완료를 기다렸다가 클릭 핸들러를 붙인다.
+  다이어그램을 클릭하면 그 SVG를 복제해 전체화면 모달에 띄우고, 휠/버튼으로 확대·축소, 드래그로
+  이동할 수 있게 한다. scripts.html에서 본문에 "language-mermaid"가 있는 글에서만 include한다.
 {%- endcomment -%}
+<div class="mermaid-modal" id="mermaid-modal" hidden>
+  <div class="mermaid-modal__backdrop"></div>
+  <div class="mermaid-modal__dialog" role="dialog" aria-modal="true" aria-label="다이어그램 확대 보기">
+    <div class="mermaid-modal__toolbar">
+      <button type="button" class="btn mermaid-modal__btn" data-mermaid-zoom-out aria-label="축소">−</button>
+      <button type="button" class="btn mermaid-modal__btn mermaid-modal__btn--reset" data-mermaid-zoom-reset>100%</button>
+      <button type="button" class="btn mermaid-modal__btn" data-mermaid-zoom-in aria-label="확대">+</button>
+      <button type="button" class="btn mermaid-modal__btn mermaid-modal__close" data-mermaid-close aria-label="닫기">&times;</button>
+    </div>
+    <div class="mermaid-modal__viewport">
+      <div class="mermaid-modal__stage"></div>
+    </div>
+  </div>
+</div>
+
 <script type="module">
   import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
 
+  mermaid.initialize({ startOnLoad: false });
+
+  const nodes = [];
   document.querySelectorAll('pre > code.language-mermaid').forEach((code) => {
     const div = document.createElement('div');
     div.className = 'mermaid';
     div.textContent = code.textContent;
     code.parentElement.replaceWith(div);
+    nodes.push(div);
   });
 
-  mermaid.initialize({ startOnLoad: true });
+  await mermaid.run({ nodes });
+
+  const modal = document.getElementById('mermaid-modal');
+  const viewport = modal.querySelector('.mermaid-modal__viewport');
+  const stage = modal.querySelector('.mermaid-modal__stage');
+  const resetBtn = modal.querySelector('[data-mermaid-zoom-reset]');
+
+  const MIN_SCALE = 0.5;
+  const MAX_SCALE = 6;
+  let scale = 1;
+  let translateX = 0;
+  let translateY = 0;
+  let isDragging = false;
+  let dragStartX = 0;
+  let dragStartY = 0;
+
+  function applyTransform() {
+    stage.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+    resetBtn.textContent = `${Math.round(scale * 100)}%`;
+  }
+
+  function resetTransform() {
+    scale = 1;
+    translateX = 0;
+    translateY = 0;
+    applyTransform();
+  }
+
+  function zoomBy(factor) {
+    scale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, scale * factor));
+    applyTransform();
+  }
+
+  function openModal(svg) {
+    stage.innerHTML = '';
+    stage.appendChild(svg.cloneNode(true));
+    resetTransform();
+    modal.hidden = false;
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    modal.hidden = true;
+    document.body.style.overflow = '';
+  }
+
+  nodes.forEach((div) => {
+    div.classList.add('mermaid-zoomable');
+    div.setAttribute('role', 'button');
+    div.setAttribute('tabindex', '0');
+    div.setAttribute('aria-label', '다이어그램 확대 보기');
+    div.addEventListener('click', () => {
+      const svg = div.querySelector('svg');
+      if (svg) openModal(svg);
+    });
+    div.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        const svg = div.querySelector('svg');
+        if (svg) openModal(svg);
+      }
+    });
+  });
+
+  modal.querySelector('[data-mermaid-close]').addEventListener('click', closeModal);
+  modal.querySelector('.mermaid-modal__backdrop').addEventListener('click', closeModal);
+  modal.querySelector('[data-mermaid-zoom-in]').addEventListener('click', () => zoomBy(1.25));
+  modal.querySelector('[data-mermaid-zoom-out]').addEventListener('click', () => zoomBy(1 / 1.25));
+  resetBtn.addEventListener('click', resetTransform);
+
+  document.addEventListener('keydown', (e) => {
+    if (!modal.hidden && e.key === 'Escape') closeModal();
+  });
+
+  viewport.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    zoomBy(e.deltaY < 0 ? 1.1 : 1 / 1.1);
+  }, { passive: false });
+
+  viewport.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    dragStartX = e.clientX - translateX;
+    dragStartY = e.clientY - translateY;
+    viewport.classList.add('is-dragging');
+  });
+
+  window.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    translateX = e.clientX - dragStartX;
+    translateY = e.clientY - dragStartY;
+    applyTransform();
+  });
+
+  window.addEventListener('mouseup', () => {
+    isDragging = false;
+    viewport.classList.remove('is-dragging');
+  });
+
+  viewport.addEventListener('touchstart', (e) => {
+    if (e.touches.length !== 1) return;
+    isDragging = true;
+    dragStartX = e.touches[0].clientX - translateX;
+    dragStartY = e.touches[0].clientY - translateY;
+  }, { passive: true });
+
+  viewport.addEventListener('touchmove', (e) => {
+    if (!isDragging || e.touches.length !== 1) return;
+    translateX = e.touches[0].clientX - dragStartX;
+    translateY = e.touches[0].clientY - dragStartY;
+    applyTransform();
+  }, { passive: true });
+
+  viewport.addEventListener('touchend', () => {
+    isDragging = false;
+  });
 </script>

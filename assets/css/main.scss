@@ -369,6 +369,113 @@ button.btn {
   margin: 2em auto 0;
 }
 
+/* mermaid 다이어그램: 클릭하면 확대 모달이 뜬다는 걸 알리는 커서·hover 피드백.
+   (렌더링 직후 JS가 .mermaid div에 이 클래스를 붙인다 — mermaid.html 참고) */
+.mermaid-zoomable {
+  cursor: zoom-in;
+  transition: box-shadow 0.2s ease;
+
+  &:hover,
+  &:focus-visible {
+    box-shadow: 0 0 0 2px $primary-color;
+    outline: none;
+  }
+}
+
+/* mermaid 확대 모달: 배경(backdrop) 위에 다이얼로그를 가운데 띄운다.
+   dialog 안은 "툴바(확대/축소/리셋/닫기) + 뷰포트(드래그로 이동, 휠로 확대)" 2단 구성. */
+.mermaid-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &[hidden] {
+    display: none;
+  }
+}
+
+.mermaid-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+}
+
+.mermaid-modal__dialog {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 92vw;
+  height: 92vh;
+  background: $background-color;
+  border-radius: $border-radius;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+.mermaid-modal__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5em;
+  padding: 0.75em 1em;
+  border-bottom: 1px solid $border-color;
+}
+
+.mermaid-modal__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.25em;
+  height: 2.25em;
+  padding: 0 0.5em;
+  font-size: 1em;
+  line-height: 1;
+}
+
+.mermaid-modal__btn--reset {
+  min-width: 3.5em;
+  font-size: 0.85em;
+}
+
+.mermaid-modal__close {
+  margin-left: 0.5em;
+  font-size: 1.3em;
+}
+
+/* 뷰포트: flex로 stage를 가운데 두고(초기 위치), 드래그로 이동(grab/grabbing 커서),
+   휠로 확대·축소한다. touch-action: none으로 터치 드래그 시 브라우저 기본 스크롤/핀치와
+   충돌하지 않게 막는다. */
+.mermaid-modal__viewport {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  cursor: grab;
+  touch-action: none;
+
+  &.is-dragging {
+    cursor: grabbing;
+  }
+}
+
+/* stage는 flex로 가운데 놓인 자기 자리를 기준으로 transform(translate + scale)만
+   덧붙인다(mermaid.html의 JS가 매번 style.transform 전체를 다시 쓴다) — 레이아웃
+   위치는 그대로 두고 시각적으로만 이동·확대되므로 JS와 겹쳐도 충돌하지 않는다. */
+.mermaid-modal__stage {
+  transform-origin: center;
+
+  svg {
+    display: block;
+    max-width: none !important;
+    height: auto;
+  }
+}
+
 /* 커스텀 햄버거 메뉴 (JS로 DOM에 삽입) */
 .persica-nav {
   position: relative;
