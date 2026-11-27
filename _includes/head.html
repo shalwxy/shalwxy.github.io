@@ -1,0 +1,48 @@
+{%- comment -%}
+  remote_theme(mmistakes/minimal-mistakes@4.26.2)의 _includes/head.html을 통째로 복사해서
+  main.css를 불러오는 <link> 한 줄에만 "?v=커밋SHA" 캐시 버스팅 쿼리를 붙였다.
+
+  이 사이트는 github-pages gem(Gemfile 참고)으로 GitHub Pages의 기본(safe mode) 빌더를 쓰는데,
+  safe mode는 커스텀 _plugins를 전부 무시하므로 "빌드할 때 파일명에 콘텐츠 해시를 넣는" 식의
+  진짜 cache busting(예: jekyll-assets, jekyll-digest 같은 플러그인)은 쓸 수 없다. 그래서
+  차선으로, github-pages gem에 포함된 jekyll-github-metadata가 GitHub Pages에서 실제로 빌드될 때
+  채워주는 site.github.build_revision(배포된 커밋 SHA)을 쿼리 파라미터로 붙이는 방법을 쓴다.
+  파일명 자체는 그대로지만, 커밋이 바뀔 때마다 URL이 바뀌니 브라우저/CDN 캐시 관점에서는
+  "새 파일"과 동일하게 취급돼 캐시 무효화가 된다. 로컬 빌드처럼 build_revision이 비어있을 때는
+  site.time을 대신 써서 최소한 매 빌드마다 값이 바뀌게만 해준다.
+
+  remote_theme 버전을 올릴 때는 업스트림의 같은 파일과 다시 비교해서 변경分이 있으면 반영해야 한다.
+{%- endcomment -%}
+<meta charset="utf-8">
+
+{% include seo.html %}
+
+{% unless site.atom_feed.hide %}
+  <link href="{% if site.atom_feed.path %}{{ site.atom_feed.path }}{% else %}{{ '/feed.xml' | relative_url }}{% endif %}" type="application/atom+xml" rel="alternate" title="{{ site.title }} Feed">
+{% endunless %}
+
+{%- comment %} https://docs.google.com/presentation/d/1rmxwWa9P6_xHqonmh5ONXRS-jPc5XKbnv99Rjkhe04s/present {% endcomment -%}
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script type="text/javascript">
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  {% if site.enable_copy_code_button -%}
+    window.enable_copy_code_button = true;
+  {%- endif %}
+</script>
+
+{%- assign asset_version = site.time | date: '%s' -%}
+{%- if site.github.build_revision -%}
+  {%- assign asset_version = site.github.build_revision -%}
+{%- endif -%}
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}?v={{ asset_version }}">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+{% if site.head_scripts %}
+  {% for script in site.head_scripts %}
+    <script src="{{ script | relative_url }}"></script>
+  {% endfor %}
+{% endif %}
