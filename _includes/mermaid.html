@@ -28,10 +28,15 @@
   mermaid.initialize({
     startOnLoad: false,
     flowchart: { nodeSpacing: 500, rankSpacing: 70, padding: 20 },
-    // 서브그래프 제목만 골라 굵게·크게 — .cluster-label으로 감싸인 .nodeLabel만 해당되고
-    // 박스 안 일반 노드 텍스트(같은 .nodeLabel 클래스를 쓰지만 .cluster-label 밖에 있음)는
-    // 영향받지 않는다.
-    themeCSS: '.cluster-label .nodeLabel, .cluster-label .nodeLabel p { font-weight: 700; font-size: 20px; }',
+    themeCSS: [
+      // 서브그래프 제목만 골라 굵게·크게 — .cluster-label으로 감싸인 .nodeLabel만 해당되고
+      // 박스 안 일반 노드 텍스트(같은 .nodeLabel 클래스를 쓰지만 .cluster-label 밖에 있음)는
+      // 영향받지 않는다.
+      '.cluster-label .nodeLabel, .cluster-label .nodeLabel p { font-weight: 700; font-size: 20px; }',
+      // 사각형 꼴은 모두 모서리를 둥글게 — 일반 노드(rect.basic)와 서브그래프 테두리
+      // (.cluster rect)까지. 실린더(DB) 모양은 <path>라 그대로 영향받지 않는다.
+      '.node rect.basic, .cluster rect { rx: 8px; ry: 8px; }',
+    ].join(' '),
   });
 
   const nodes = [];
