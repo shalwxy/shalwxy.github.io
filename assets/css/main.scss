@@ -418,6 +418,129 @@ button.btn {
   }
 }
 
+/* 서브 블로그 최근 댓글/좋아요 패널: 사이드바 카테고리와 중복되는 게 아니라 별도 기능이라
+   삼선 메뉴(.persica-nav--sub)와 달리 데스크톱에서도 그대로 보이게 둔다. */
+.persica-activity {
+  position: relative;
+  margin: 0;
+}
+
+.persica-activity__btn {
+  border: none;
+  background: transparent;
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  font-size: $type-size-4;
+  color: $primary-color;
+  line-height: 1;
+
+  &:hover {
+    color: mix($primary-color, #000, 70%);
+  }
+}
+
+.persica-activity__panel {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  background: $background-color;
+  border: 1px solid $border-color;
+  border-radius: $border-radius;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  width: 280px;
+  max-width: calc(100vw - 2rem);
+  z-index: 30;
+
+  &--hidden {
+    display: none;
+  }
+}
+
+.persica-activity__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid $border-color;
+  font-size: $type-size-6;
+  color: $muted-text-color;
+}
+
+.persica-activity__refresh {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: $muted-text-color;
+  padding: 0.25rem;
+  line-height: 1;
+
+  &:hover {
+    color: $primary-color;
+  }
+
+  &.is-spinning i {
+    animation: persica-activity-spin 0.6s linear;
+  }
+}
+
+@keyframes persica-activity-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.persica-activity__list {
+  margin: 0;
+  padding: 0.25rem 0;
+  list-style: none;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.persica-activity__item a {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  padding: 0.5rem 0.75rem;
+  color: $text-color;
+  text-decoration: none;
+
+  &:hover {
+    background: mix($primary-color, $background-color, 10%);
+    color: $primary-color;
+  }
+}
+
+.persica-activity__author {
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.persica-activity__excerpt {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: $type-size-6;
+}
+
+.persica-activity__time {
+  flex-shrink: 0;
+  font-size: $type-size-7;
+  color: $muted-text-color;
+}
+
+.persica-activity__empty,
+.persica-activity__loading,
+.persica-activity__error {
+  padding: 0.75rem;
+  font-size: $type-size-6;
+  color: $muted-text-color;
+  text-align: center;
+}
+
 @media screen and (max-width: $large - 1) {
   .sidebar {
     display: none;

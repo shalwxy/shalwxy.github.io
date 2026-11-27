@@ -1,0 +1,41 @@
+name: Update recent activity
+
+# scripts/fetch-recent-activity.mjs를 돌려 assets/data/recent-activity-*.json을 최신화한다.
+# 매시 정각에 자동 실행되고, Actions 탭에서 수동(workflow_dispatch)으로도 바로 돌릴 수 있다.
+# 스크립트가 내용이 안 바뀐 파일은 건드리지 않으므로, 실제로 새 댓글/좋아요가 없으면 커밋도 없다.
+
+on:
+  schedule:
+    - cron: "0 * * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  discussions: read
+
+concurrency:
+  group: recent-activity
+  cancel-in-progress: true
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Fetch recent activity
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/fetch-recent-activity.mjs
+
+      - name: Commit if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add assets/data/recent-activity-*.json
+          git diff --cached --quiet || git commit -m "chore: 서브블로그 최근 댓글/좋아요 데이터 갱신"
+          git push
