@@ -407,20 +407,29 @@ button.btn {
   position: relative;
   display: flex;
   flex-direction: column;
-  width: 92vw;
-  height: 92vh;
+  width: 50vw;
+  height: 50vh;
+  min-width: 280px;
+  min-height: 280px;
   background: $background-color;
   border-radius: $border-radius;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
   overflow: hidden;
+  // cqw/cqh가 이 dialog 자신의 실제 렌더 크기(50vw/50vh든 min-width/height 바닥이든)를
+  // 기준으로 잡히게 한다. 이게 있어야 아래 툴바가 뷰포트가 아니라 "이 창 크기" 대비
+  // 비율로 커지고 작아진다.
+  container-type: size;
 }
 
+/* 툴바 치수는 전부 clamp(최소, 다이얼로그 크기 비율, 최대)로 잡는다 — 중간 항(cqh/cqw)이
+   다이얼로그가 커지거나 작아질 때 비율을 유지시켜주고, 양끝 고정값은 아주 작은 창에서
+   버튼이 읽을 수 없이 쪼그라들거나 아주 큰 창에서 과하게 비대해지는 걸 막는 바닥/천장이다. */
 .mermaid-modal__toolbar {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 0.5em;
-  padding: 0.75em 1em;
+  gap: clamp(0.3rem, 1.3cqw, 0.5rem);
+  padding: clamp(0.4rem, 1.6cqh, 0.75rem) clamp(0.6rem, 2.2cqw, 1rem);
   border-bottom: 1px solid $border-color;
 }
 
@@ -428,21 +437,21 @@ button.btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 2.25em;
-  height: 2.25em;
-  padding: 0 0.5em;
-  font-size: 1em;
+  min-width: clamp(1.6rem, 6cqh, 2.25rem);
+  height: clamp(1.6rem, 6cqh, 2.25rem);
+  padding: 0 clamp(0.3rem, 1cqw, 0.5rem);
+  font-size: clamp(0.75rem, 2.6cqh, 1rem);
   line-height: 1;
 }
 
 .mermaid-modal__btn--reset {
-  min-width: 3.5em;
-  font-size: 0.85em;
+  min-width: clamp(2.5rem, 9.5cqh, 3.5rem);
+  font-size: clamp(0.65rem, 2.3cqh, 0.85rem);
 }
 
 .mermaid-modal__close {
-  margin-left: 0.5em;
-  font-size: 1.3em;
+  margin-left: clamp(0.3rem, 1cqw, 0.5rem);
+  font-size: clamp(0.9rem, 3.4cqh, 1.3rem);
 }
 
 /* 뷰포트: flex로 stage를 가운데 두고(초기 위치), 드래그로 이동(grab/grabbing 커서),
