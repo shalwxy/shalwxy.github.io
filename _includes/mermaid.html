@@ -70,6 +70,15 @@
   let dragStartX = 0;
   let dragStartY = 0;
   let pinchStartDistance = 0;
+  // 휠/핀치로 마지막으로 확대·축소한 화면 좌표. +/- 버튼도 이 지점을 기준으로 확대되게 해서
+  // "어디를 보고 있었는지"가 버튼을 눌러도 안 끊기게 한다. 모달을 열거나 100%로 리셋하면
+  // 다시 중앙 기준으로 돌아가도록 null로 비운다.
+  let lastZoomPoint = null;
+
+  function viewportCenter() {
+    const vp = viewport.getBoundingClientRect();
+    return { x: vp.left + vp.width / 2, y: vp.top + vp.height / 2 };
+  }
 
   function touchDistance(touches) {
     const dx = touches[0].clientX - touches[1].clientX;
@@ -93,11 +102,7 @@
     scale = 1;
     translateX = 0;
     translateY = 0;
-    applyTransform();
-  }
-
-  function zoomBy(factor) {
-    scale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, scale * factor));
+    lastZoomPoint = null;
     applyTransform();
   }
 
@@ -121,7 +126,15 @@
     translateX += dx * (1 - appliedFactor);
     translateY += dy * (1 - appliedFactor);
     scale = nextScale;
+    lastZoomPoint = { x: clientX, y: clientY };
     applyTransform();
+  }
+
+  // 툴바 +/- 버튼은 커서 위치가 없으니, 방금 휠/핀치로 확대·축소하던 지점을 그대로 이어받는다.
+  // 아직 한 번도 확대한 적이 없으면(모달을 막 열었거나 100%로 리셋한 직후) 뷰포트 중앙을 쓴다.
+  function zoomByButton(factor) {
+    const point = lastZoomPoint || viewportCenter();
+    zoomAt(factor, point.x, point.y);
   }
 
   function openModal(svg) {
@@ -176,8 +189,8 @@
 
   modal.querySelector('[data-mermaid-close]').addEventListener('click', closeModal);
   modal.querySelector('.mermaid-modal__backdrop').addEventListener('click', closeModal);
-  modal.querySelector('[data-mermaid-zoom-in]').addEventListener('click', () => zoomBy(1.25));
-  modal.querySelector('[data-mermaid-zoom-out]').addEventListener('click', () => zoomBy(1 / 1.25));
+  modal.querySelector('[data-mermaid-zoom-in]').addEventListener('click', () => zoomByButton(1.25));
+  modal.querySelector('[data-mermaid-zoom-out]').addEventListener('click', () => zoomByButton(1 / 1.25));
   resetBtn.addEventListener('click', resetTransform);
 
   document.addEventListener('keydown', (e) => {
