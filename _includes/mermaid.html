@@ -70,12 +70,18 @@
   let dragStartX = 0;
   let dragStartY = 0;
   let pinchStartDistance = 0;
-  let pinchStartScale = 1;
 
   function touchDistance(touches) {
     const dx = touches[0].clientX - touches[1].clientX;
     const dy = touches[0].clientY - touches[1].clientY;
     return Math.hypot(dx, dy);
+  }
+
+  function touchMidpoint(touches) {
+    return {
+      x: (touches[0].clientX + touches[1].clientX) / 2,
+      y: (touches[0].clientY + touches[1].clientY) / 2,
+    };
   }
 
   function applyTransform() {
@@ -92,6 +98,29 @@
 
   function zoomBy(factor) {
     scale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, scale * factor));
+    applyTransform();
+  }
+
+  // stage는 transform-origin: center라 scale은 항상 stage 자신의 중심(화면상 고정점 C = 뷰포트
+  // 중심)을 기준으로 커진다. 마우스 커서 아래 다이어그램 지점이 확대 후에도 같은 화면 좌표에
+  // 남아있게 하려면, scale이 바뀐 만큼 translate를 보정해줘야 한다 — "줌 투 포인트" 공식:
+  // newTranslate = oldTranslate + (mouse - C - oldTranslate) * (1 - 실제 적용된 배율 변화량).
+  // 요청한 factor가 MIN/MAX_SCALE에 걸려 잘릴 수 있으니, 보정에는 클램프 후 실제 비율을 써야 한다.
+  function zoomAt(factor, clientX, clientY) {
+    const prevScale = scale;
+    const nextScale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, scale * factor));
+    const appliedFactor = nextScale / prevScale;
+
+    const vp = viewport.getBoundingClientRect();
+    const centerX = vp.left + vp.width / 2;
+    const centerY = vp.top + vp.height / 2;
+
+    const dx = (clientX - centerX) - translateX;
+    const dy = (clientY - centerY) - translateY;
+
+    translateX += dx * (1 - appliedFactor);
+    translateY += dy * (1 - appliedFactor);
+    scale = nextScale;
     applyTransform();
   }
 
@@ -157,7 +186,7 @@
 
   viewport.addEventListener('wheel', (e) => {
     e.preventDefault();
-    zoomBy(e.deltaY < 0 ? 1.1 : 1 / 1.1);
+    zoomAt(e.deltaY < 0 ? 1.1 : 1 / 1.1, e.clientX, e.clientY);
   }, { passive: false });
 
   viewport.addEventListener('mousedown', (e) => {
@@ -183,7 +212,6 @@
     if (e.touches.length === 2) {
       isDragging = false;
       pinchStartDistance = touchDistance(e.touches);
-      pinchStartScale = scale;
       return;
     }
     if (e.touches.length !== 1) return;
@@ -195,8 +223,14 @@
   viewport.addEventListener('touchmove', (e) => {
     if (e.touches.length === 2) {
       if (!pinchStartDistance) return;
-      scale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, pinchStartScale * (touchDistance(e.touches) / pinchStartDistance)));
-      applyTransform();
+      // 매 touchmove마다 "직전 프레임 대비 거리 변화량"을 배율로 삼아 zoomAt에 넘긴다 —
+      // 절대 배율(시작 거리 기준)을 쓰면 중심점 보정 없이 그냥 scale만 바뀌어 두 손가락
+      // 중간점이 아니라 stage 중심 기준으로 확대돼 버린다. 중간점도 손가락이 움직이는 대로
+      // 매 프레임 다시 잡아서, 핀치 중 손가락이 이동해도 그 지점이 계속 확대 중심이 되게 한다.
+      const distance = touchDistance(e.touches);
+      const mid = touchMidpoint(e.touches);
+      zoomAt(distance / pinchStartDistance, mid.x, mid.y);
+      pinchStartDistance = distance;
       return;
     }
     if (!isDragging || e.touches.length !== 1) return;
